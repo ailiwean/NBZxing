@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/capture_containter"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <SurfaceView
+        android:id="@+id/capture_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="true"
+        android:fitsSystemWindows="true" />
+
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="#bf000000">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:onClick="onClick"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:id="@+id/openAlbum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:onClick="onClick"
+            android:text="相册"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/capture_crop_layout"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/capture"
+        android:contentDescription="@string/app_name">
+
+        <ImageView
+            android:id="@+id/capture_scan_line"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:background="@drawable/kakalib_scan_ray"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/loadingHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="正在加载..."
+            android:textColor="@android:color/white" />
+
+
+        <LinearLayout
+            android:id="@+id/light_layout"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/light_img"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/light_close" />
+
+            <TextView
+                android:id="@+id/light_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="轻点照亮"
+                android:textColor="@android:color/white"
+                android:textSize="13dp" />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/bottom_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/capture_crop_layout"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/scan_mask"
+        android:contentDescription="@string/app_name" />
+
+    <ImageView
+        android:id="@+id/left_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_mask"
+        android:layout_below="@id/rl_title"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@id/capture_crop_layout"
+        android:background="@drawable/scan_mask"
+        android:contentDescription="@string/app_name" />
+
+    <ImageView
+        android:id="@+id/right_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_mask"
+        android:layout_below="@id/rl_title"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/capture_crop_layout"
+        android:background="@drawable/scan_mask"
+        android:contentDescription="@string/app_name" />
+
+    <ImageView
+        android:id="@+id/top_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/capture_crop_layout"
+        android:layout_below="@id/rl_title"
+        android:layout_alignStart="@id/capture_crop_layout"
+        android:layout_alignEnd="@id/capture_crop_layout"
+        android:background="@drawable/scan_mask"
+        android:contentDescription="@string/app_name" />
+
+
+</RelativeLayout>
