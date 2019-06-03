@@ -15,8 +15,6 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -33,21 +31,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
-import com.google.zxing.common.HybridBinarizer;
 import com.wishzixing.lib.able.AccountLigFieAble;
 import com.wishzixing.lib.config.CameraConfig;
+import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.listener.OnGestureListener;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.util.LightManager;
 import com.wishzixing.lib.util.RxBeepTool;
-import com.wishzixing.lib.util.RxQrBarTool;
+import com.wishzixing.lib.util.RxQrBarParseTool;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -67,10 +61,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
 
     private InactivityTimer inactivityTimer;
 
-    /**
-     * 扫描处理
-     */
-    private CaptureActivityHandler handler;
 
     /**
      * 整体根布局
@@ -142,7 +132,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                     initScanerAnimation();
 
                     //初始化自动调焦
-                    CameraManager.get().requestAutoFocus(handler, R.id.auto_focus);
+                    CameraManager.get().requestAutoFocus(CameraCoordinateHandler.getInstance(), R.id.auto_focus);
 
                 }
             }, 100);
@@ -169,7 +159,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                                 initScanerAnimation();
 
                                 //初始化自动调焦
-                                CameraManager.get().requestAutoFocus(handler, R.id.auto_focus);
+                                CameraManager.get().requestAutoFocus(CameraCoordinateHandler.getInstance(), R.id.auto_focus);
 
                             }
                         }, 100);
@@ -319,7 +309,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         mContainer.setOnTouchListener(onGestureListener);
 
     }
-
 
     private void initPermission() {
         //请求Camera权限 与 文件读写 权限
@@ -494,7 +483,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                 Bitmap photo = MediaStore.Images.Media.getBitmap(resolver, originalUri);
 
                 // 开始对图像资源解码
-                Result rawResult = RxQrBarTool.decodeFromPhoto(photo);
+                Result rawResult = RxQrBarParseTool.getInstance().decodeFromPhoto(photo);
 
                 handleDecode(rawResult);
 
@@ -544,10 +533,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
 
     public abstract void onScanFail(String message);
 
-    //设定扫描模式
-    public void setScanModel(@RxQrBarTool.Type int scanModel) {
-        RxQrBarTool.scanModel = scanModel;
-    }
 
     //扫描到数据回调子类
     @SuppressLint("NewApi")
@@ -563,156 +548,11 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         initCallBackResult(result);
 
     }
-    //==============================================================================================解析结果 及 后续处理 end
-
-    static class CaptureActivityHandler extends Handler {
-
-        DecodeThread decodeThread = null;
-        private State state;
-
-        WeakReference<ActivityScanerCode> content;
-
-        public CaptureActivityHandler(ActivityScanerCode activityScanerCode) {
-            content = new WeakReference<>(activityScanerCode);
-            decodeThread = new DecodeThread(content.get());
-            decodeThread.start();
-            state = State.SUCCESS;
-            CameraManager.get().startPreview();
-            restartPreviewAndDecode();
-        }
-
-        @Override
-        public void handleMessage(Message message) {
-            if (message.what == R.id.auto_focus) {
-                if (state == State.PREVIEW) {
-                    CameraManager.get().requestAutoFocus(this, R.id.auto_focus);
-                }
-            } else if (message.what == R.id.restart_preview) {
-                restartPreviewAndDecode();
-            } else if (message.what == R.id.decode_succeeded) {
-                state = State.SUCCESS;
-                content.get().handleDecode((Result) message.obj);// 解析成功，回调
-            } else if (message.what == R.id.decode_failed) {
-                state = State.PREVIEW;
-                CameraManager.get().requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
-            }
-        }
-
-        public void quitSynchronously() {
-            state = State.DONE;
-            decodeThread.interrupt();
-            CameraManager.get().stopPreview();
-            removeMessages(R.id.decode_succeeded);
-            removeMessages(R.id.decode_failed);
-            removeMessages(R.id.decode);
-            removeMessages(R.id.auto_focus);
-        }
-
-        private void restartPreviewAndDecode() {
-            if (state == State.SUCCESS) {
-                state = State.PREVIEW;
-                CameraManager.get().requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
-            }
-        }
-    }
-
-    static class DecodeThread extends Thread {
-
-        private final CountDownLatch handlerInitLatch;
-        private Handler handler;
-
-        WeakReference<ActivityScanerCode> content;
-
-        DecodeThread(ActivityScanerCode activityScanerCode) {
-            handlerInitLatch = new CountDownLatch(1);
-            content = new WeakReference<>(activityScanerCode);
-        }
-
-        Handler getHandler() {
-            try {
-                handlerInitLatch.await();
-            } catch (InterruptedException ie) {
-                // continue?
-            }
-            return handler;
-        }
-
-        @Override
-        public void run() {
-            Looper.prepare();
-            handler = new DecodeHandler(content.get());
-            handlerInitLatch.countDown();
-            Looper.loop();
-        }
-    }
-
-    static class DecodeHandler extends Handler {
-
-        WeakReference<ActivityScanerCode> content;
-
-        DecodeHandler(ActivityScanerCode activityScanerCode) {
-            content = new WeakReference<>(activityScanerCode);
-        }
-
-        @Override
-        public void handleMessage(Message message) {
-            if (message.what == R.id.decode) {
-                content.get().decode((byte[]) message.obj, message.arg1, message.arg2);
-            } else if (message.what == R.id.quit) {
-                Looper.myLooper().quit();
-            }
-        }
-    }
-
-    private void decode(byte[] data, int width, int height) {
-        Result rawResult = null;
-
-        //modify here
-        byte[] rotatedData = new byte[data.length];
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                rotatedData[x * height + height - y - 1] = data[x + y * width];
-            }
-        }
-        // Here we are swapping, that's the difference to #11
-        int tmp = width;
-        width = height;
-        height = tmp;
-
-
-        CameraManager.PlanarYUVLuminanceSource source = CameraManager.get().buildLuminanceSource(rotatedData, width, height);
-        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
-
-        try {
-
-            rawResult = RxQrBarTool.getMultiFormatReader().decodeWithState(bitmap);
-        } catch (ReaderException e) {
-            // continue
-        } finally {
-
-            RxQrBarTool.getMultiFormatReader().reset();
-        }
-
-        if (rawResult != null) {
-            long end = System.currentTimeMillis();
-            Message message = Message.obtain(handler, R.id.decode_succeeded, rawResult);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("barcode_bitmap", source.renderCroppedGreyscaleBitmap());
-            message.setData(bundle);
-            //Log.d(TAG, "Sending decode succeeded message...");
-            message.sendToTarget();
-        } else {
-
-            Message message = Message.obtain(handler, R.id.decode_failed);
-            if (message.getTarget() != null)
-                message.sendToTarget();
-        }
-    }
 
     //使用自定义相册，选择图片后回调解析
     public void postImgFilePath(String path) {
 
-        Result result = RxQrBarTool.decodeFromPhoto(BitmapFactory.decodeFile(path));
+        Result result = RxQrBarParseTool.getInstance().decodeFromPhoto(BitmapFactory.decodeFile(path));
 
         handleDecode(result);
 

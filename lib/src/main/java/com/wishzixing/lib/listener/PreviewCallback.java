@@ -37,7 +37,6 @@ public class PreviewCallback implements Camera.PreviewCallback {
                     cameraResolution.y, data);
             message.sendToTarget();
             previewHandler = null;
-
         }
     }
 }

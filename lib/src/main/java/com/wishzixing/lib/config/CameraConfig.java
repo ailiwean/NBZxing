@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.hardware.Camera;
+import android.support.annotation.IntDef;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -35,6 +36,7 @@ public class CameraConfig {
     private String previewFormatString;
 
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
+    private Rect framingRectInPreview;
 
     private CameraConfig() {
         mContext = Utils.getAppContext();
@@ -74,6 +76,36 @@ public class CameraConfig {
 
     public Point getCameraPoint() {
         return cameraPoint;
+    }
+
+    /***
+     *
+     * 获取解码区域矩形位置
+     *
+     * @return
+     */
+    public Rect getFramingRect() {
+        return CameraConfig.getInstance().getParseRect();
+    }
+
+    /**
+     * Like {@link #`} but coordinates are in terms of the preview frame,
+     * not UI / screen.
+     */
+    public Rect getFramingRectInPreview() {
+
+        if (framingRectInPreview == null) {
+            Rect rect = new Rect(getFramingRect());
+            Point cameraResolution = CameraConfig.getInstance().getCameraPoint();
+            Point screenResolution = CameraConfig.getInstance().getScreenPoint();
+            //modify here
+            rect.left = rect.left * cameraResolution.y / screenResolution.x;
+            rect.right = rect.right * cameraResolution.y / screenResolution.x;
+            rect.top = rect.top * cameraResolution.x / screenResolution.y;
+            rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;
+            framingRectInPreview = rect;
+        }
+        return framingRectInPreview;
     }
 
     public void initCamera(Camera camera) {
@@ -260,5 +292,24 @@ public class CameraConfig {
         }
         return null;
     }
+
+    //设定扫描模式
+    public void setScanModel(@Type int scanModel) {
+        scanModel = scanModel;
+    }
+
+    public int getScanModel() {
+        return scanModel;
+    }
+
+    public int scanModel = 0;
+    public static final int ALL = 0;
+    public static final int QRCODE = 1;
+    public static final int BARCODE = 2;
+
+    @IntDef({ALL, QRCODE, BARCODE})
+    public @interface Type {
+    }
+
 
 }

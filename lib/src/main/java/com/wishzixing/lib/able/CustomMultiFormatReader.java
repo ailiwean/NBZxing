@@ -1,6 +1,4 @@
-package com.wishzixing.lib.util;
-
-import android.util.Log;
+package com.wishzixing.lib.able;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
@@ -15,6 +13,7 @@ import com.google.zxing.maxicode.MaxiCodeReader;
 import com.google.zxing.oned.MultiFormatOneDReader;
 import com.google.zxing.pdf417.PDF417Reader;
 import com.google.zxing.qrcode.QRCodeReader;
+import com.wishzixing.lib.able.AutoZoomQRCode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +25,7 @@ import java.util.Map;
  * @Author: SWY
  * @Date: 2019/4/9 15:53
  */
-public class MyMultiFormatReader implements Reader {
+public class CustomMultiFormatReader implements Reader {
 
 
     private Map<DecodeHintType, ?> hints;
@@ -110,7 +109,7 @@ public class MyMultiFormatReader implements Reader {
                 readers.add(new MultiFormatOneDReader(hints));
             }
             if (formats.contains(BarcodeFormat.QR_CODE)) {
-                Log.e("添加", "添加");
+
                 readers.add(new AutoZoomQRCode());
             }
             if (formats.contains(BarcodeFormat.DATA_MATRIX)) {

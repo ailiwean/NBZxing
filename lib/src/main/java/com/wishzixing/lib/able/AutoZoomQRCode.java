@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wishzixing.lib.util;
+package com.wishzixing.lib.able;
 
 
 import android.graphics.Rect;
@@ -124,7 +124,6 @@ public class AutoZoomQRCode implements Reader {
                     }
                 }
             }
-
             /***
              * 以下部分为扫码核心, 大小合适或倍率已达最大后解析
              */

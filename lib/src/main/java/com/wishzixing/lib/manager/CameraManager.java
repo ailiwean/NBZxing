@@ -17,7 +17,6 @@
 package com.wishzixing.lib.manager;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -26,7 +25,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.view.SurfaceHolder;
 
-import com.google.zxing.LuminanceSource;
+import com.wishzixing.lib.source.PlanarYUVLuminanceSource;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.listener.AutoFocusCallback;
 import com.wishzixing.lib.listener.PreviewCallback;
@@ -206,68 +205,8 @@ public class CameraManager {
         }
     }
 
-    /***
-     *
-     *  获取解码区域矩形位置
-     *
-     * @return
-     */
-    public Rect getFramingRect() {
-        return CameraConfig.getInstance().getParseRect();
-    }
 
-    /**
-     * Like {@link #getFramingRect} but coordinates are in terms of the preview frame,
-     * not UI / screen.
-     */
-    public Rect getFramingRectInPreview() {
-        if (framingRectInPreview == null) {
-            Rect rect = new Rect(getFramingRect());
-            Point cameraResolution = CameraConfig.getInstance().getCameraPoint();
-            Point screenResolution = CameraConfig.getInstance().getScreenPoint();
-            //modify here
-            rect.left = rect.left * cameraResolution.y / screenResolution.x;
-            rect.right = rect.right * cameraResolution.y / screenResolution.x;
-            rect.top = rect.top * cameraResolution.x / screenResolution.y;
-            rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;
-            framingRectInPreview = rect;
-        }
-        return framingRectInPreview;
-    }
 
-    /**
-     * A factory method to build the appropriate LuminanceSource object based on the format
-     * of the preview buffers, as described by Camera.Parameters.
-     *
-     * @param data   A preview frame.
-     * @param width  The width of the image.
-     * @param height The height of the image.
-     * @return A PlanarYUVLuminanceSource instance.
-     */
-    public PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height) {
-        Rect rect = getFramingRectInPreview();
-        int previewFormat = CameraConfig.getInstance().getPreviewFormat();
-        String previewFormatString = CameraConfig.getInstance().getPreviewFormatString();
-        switch (previewFormat) {
-            // This is the standard Android format which all devices are REQUIRED to support.
-            // In theory, it's the only one we should ever care about.
-            case ImageFormat.NV21:
-                // This format has never been seen in the wild, but is compatible as we only care
-                // about the Y channel, so allow it.
-            case ImageFormat.NV16:
-                return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
-                        rect.width(), rect.height());
-            default:
-                // The Samsung Moment incorrectly uses this variant instead of the 'sp' version.
-                // Fortunately, it too has all the Y data up front, so we can read it.
-                if ("yuv420p".equals(previewFormatString)) {
-                    return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
-                            rect.width(), rect.height());
-                }
-        }
-        throw new IllegalArgumentException("Unsupported picture format: " +
-                previewFormat + '/' + previewFormatString);
-    }
 
     public Context getContext() {
         return context;
@@ -295,109 +234,6 @@ public class CameraManager {
 
     public AutoFocusCallback getAutoFocusCallback() {
         return autoFocusCallback;
-    }
-
-    public final class PlanarYUVLuminanceSource extends LuminanceSource {
-        private final byte[] yuvData;
-        private final int dataWidth;
-        private final int dataHeight;
-        private final int left;
-        private final int top;
-
-        public PlanarYUVLuminanceSource(byte[] yuvData, int dataWidth, int dataHeight, int left, int top,
-                                        int width, int height) {
-            super(width, height);
-
-            if (left + width > dataWidth || top + height > dataHeight) {
-                throw new IllegalArgumentException("Crop rectangle does not fit within image data.");
-            }
-
-            this.yuvData = yuvData;
-            this.dataWidth = dataWidth;
-            this.dataHeight = dataHeight;
-            this.left = left;
-            this.top = top;
-        }
-
-        @Override
-        public byte[] getRow(int y, byte[] row) {
-            if (y < 0 || y >= getHeight()) {
-                throw new IllegalArgumentException("Requested row is outside the image: " + y);
-            }
-            int width = getWidth();
-            if (row == null || row.length < width) {
-                row = new byte[width];
-            }
-            int offset = (y + top) * dataWidth + left;
-            System.arraycopy(yuvData, offset, row, 0, width);
-            return row;
-        }
-
-        @Override
-        public byte[] getMatrix() {
-            int width = getWidth();
-            int height = getHeight();
-
-            // If the caller asks for the entire underlying image, save the copy and give them the
-            // original data. The docs specifically warn that result.length must be ignored.
-            if (width == dataWidth && height == dataHeight) {
-                return yuvData;
-            }
-
-            int area = width * height;
-            byte[] matrix = new byte[area];
-            int inputOffset = top * dataWidth + left;
-
-            // If the width matches the full width of the underlying data, perform a single copy.
-            if (width == dataWidth) {
-                System.arraycopy(yuvData, inputOffset, matrix, 0, area);
-                return matrix;
-            }
-
-            // Otherwise copy one cropped row at a time.
-            byte[] yuv = yuvData;
-            for (int y = 0; y < height; y++) {
-                int outputOffset = y * width;
-                System.arraycopy(yuv, inputOffset, matrix, outputOffset, width);
-                inputOffset += dataWidth;
-            }
-            return matrix;
-        }
-
-        @Override
-        public boolean isCropSupported() {
-            return true;
-        }
-
-        public int getDataWidth() {
-            return dataWidth;
-        }
-
-        public int getDataHeight() {
-            return dataHeight;
-        }
-
-        public Bitmap renderCroppedGreyscaleBitmap() {
-            int width = getWidth();
-            int height = getHeight();
-            int[] pixels = new int[width * height];
-            byte[] yuv = yuvData;
-            int inputOffset = top * dataWidth + left;
-
-            for (int y = 0; y < height; y++) {
-                int outputOffset = y * width;
-                for (int x = 0; x < width; x++) {
-                    int grey = yuv[inputOffset + x] & 0xff;
-                    pixels[outputOffset + x] = 0xFF000000 | (grey * 0x00010101);
-                }
-                inputOffset += dataWidth;
-            }
-
-            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-            return bitmap;
-        }
-
     }
 
 }
