@@ -17,15 +17,10 @@
 package com.wishzixing.lib.manager;
 
 import android.content.Context;
-import android.graphics.ImageFormat;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Build;
-import android.os.Handler;
 import android.view.SurfaceHolder;
 
-import com.wishzixing.lib.source.PlanarYUVLuminanceSource;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.listener.AutoFocusCallback;
 import com.wishzixing.lib.listener.PreviewCallback;
@@ -63,7 +58,6 @@ public class CameraManager {
     }
 
     private final Context context;
-    private final boolean useOneShotPreviewCallback;
     /**
      * Preview frames are delivered here, which we pass on to the registered handler. Make sure to
      * clear the handler so it will only receive one message.
@@ -74,7 +68,6 @@ public class CameraManager {
      */
     private final AutoFocusCallback autoFocusCallback;
     private volatile Camera camera;
-    private Rect framingRectInPreview;
     private boolean initialized;
     private volatile boolean previewing;
     private Camera.Parameters parameter;
@@ -87,8 +80,7 @@ public class CameraManager {
         // the more efficient one shot callback, as the older one can swamp the system and cause it
         // to run out of memory. We can't use SDK_INT because it was introduced in the Donut SDK.
         //useOneShotPreviewCallback = Integer.parseInt(Build.VERSION.SDK) > Build.VERSION_CODES.CUPCAKE;
-        useOneShotPreviewCallback = Integer.parseInt(Build.VERSION.SDK) > 3; // 3 = Cupcake
-        previewCallback = new PreviewCallback(useOneShotPreviewCallback);
+        previewCallback = new PreviewCallback();
         autoFocusCallback = new AutoFocusCallback();
     }
 
@@ -130,7 +122,7 @@ public class CameraManager {
                 initialized = true;
                 CameraConfig.getInstance().initCamera(camera);
             }
-
+            CameraConfig.getInstance().initCamera(camera);
             FlashlightManager.enableFlashlight();
         }
     }
@@ -150,6 +142,7 @@ public class CameraManager {
      * Asks the camera hardware to begin drawing preview frames to the screen.
      */
     public void startPreview() {
+
         if (camera != null && !previewing) {
             camera.startPreview();
             previewing = true;
@@ -161,12 +154,7 @@ public class CameraManager {
      */
     public void stopPreview() {
         if (camera != null && previewing) {
-            if (!useOneShotPreviewCallback) {
-                camera.setPreviewCallback(null);
-            }
             camera.stopPreview();
-            previewCallback.setHandler(null, 0);
-            autoFocusCallback.setHandler(null, 0);
             previewing = false;
         }
     }
@@ -175,38 +163,22 @@ public class CameraManager {
      * A single preview frame will be returned to the handler supplied. The data will arrive as byte[]
      * in the message.obj field, with width and height encoded as message.arg1 and message.arg2,
      * respectively.
-     *
-     * @param handler The handler to send the message to.
-     * @param message The what field of the message to be sent.
      */
-    public void requestPreviewFrame(Handler handler, int message) {
-        if (camera != null && previewing) {
-            previewCallback.setHandler(handler, message);
-            if (useOneShotPreviewCallback) {
-                camera.setOneShotPreviewCallback(previewCallback);
-            } else {
-                camera.setPreviewCallback(previewCallback);
-            }
+    public void requestPreviewFrame() {
+        if (camera != null) {
+            camera.setPreviewCallback(previewCallback);
         }
     }
 
     /**
      * Asks the camera hardware to perform an autofocus.
-     *
-     * @param handler The Handler to notify when the autofocus completes.
-     * @param message The message to deliver.
      */
-    public void requestAutoFocus(Handler handler, int message) {
-
-        if (camera != null && previewing) {
-            autoFocusCallback.setHandler(handler, message);
+    public void requestAutoFocus() {
+        if (camera != null) {
             camera.startPreview();
             camera.autoFocus(autoFocusCallback);
         }
     }
-
-
-
 
     public Context getContext() {
         return context;
@@ -222,10 +194,6 @@ public class CameraManager {
 
     public void setPreviewing(boolean previewing) {
         this.previewing = previewing;
-    }
-
-    public boolean isUseOneShotPreviewCallback() {
-        return useOneShotPreviewCallback;
     }
 
     public PreviewCallback getPreviewCallback() {

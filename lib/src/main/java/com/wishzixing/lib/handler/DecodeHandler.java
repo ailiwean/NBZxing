@@ -1,7 +1,6 @@
 package com.wishzixing.lib.handler;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 
 import com.google.zxing.Result;
@@ -12,35 +11,31 @@ import com.wishzixing.lib.util.RxQrBarParseTool;
 /***
  *  Created by SWY
  *  DATE 2019/6/3
+ *  只负责解析字节数据并回调CameraCoordinateHandler
  *
  */
-public class DecodHandler extends Handler {
+public class DecodeHandler extends Handler {
 
 
-    private DecodHandler() {
+    private DecodeHandler() {
     }
 
     private static class Holder {
-        static DecodHandler decodHandler = new DecodHandler();
+        static DecodeHandler decodeHandler = new DecodeHandler();
     }
 
-    public static DecodHandler getInstance() {
-        return Holder.decodHandler;
+    public static DecodeHandler getInstance() {
+        return Holder.decodeHandler;
     }
 
     @Override
     public void handleMessage(Message message) {
-        if (message.what == R.id.decode) {
 
-            Result result = RxQrBarParseTool.getInstance().decodeFromByte((byte[]) message.obj, message.arg1, message.arg2);
-            sendMessage(result);
-
-        } else if (message.what == R.id.quit) {
-            Looper.myLooper().quit();
-        }
+        Result result = RxQrBarParseTool.getInstance().decodeFromByte((byte[]) message.obj, message.arg1, message.arg2);
+        sendResultMessage(result);
     }
 
-    private void sendMessage(Result rawResult) {
+    private void sendResultMessage(Result rawResult) {
 
         if (rawResult != null) {
             Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_succeeded, rawResult);

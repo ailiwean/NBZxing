@@ -8,8 +8,10 @@ import android.support.annotation.IntDef;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.util.Utils;
 
+import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
 
 /***
@@ -30,7 +32,7 @@ public class CameraConfig {
 
     private Point cameraPoint;
 
-    public Context mContext;
+    public WeakReference<Context> weakReference;
 
     private int previewFormat;
     private String previewFormatString;
@@ -39,12 +41,12 @@ public class CameraConfig {
     private Rect framingRectInPreview;
 
     private CameraConfig() {
-        mContext = Utils.getAppContext();
+        weakReference = new WeakReference<>(Utils.getAppContext());
         screenPoint = creatScreenPoint();
     }
 
     private static class Holer {
-        public static CameraConfig INSTANCE = new CameraConfig();
+        static CameraConfig INSTANCE = new CameraConfig();
     }
 
     public static CameraConfig getInstance() {
@@ -60,7 +62,7 @@ public class CameraConfig {
     }
 
     private Point creatScreenPoint() {
-        WindowManager manager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager manager = (WindowManager) weakReference.get().getSystemService(Context.WINDOW_SERVICE);
         Point screenPoint = new Point();
         manager.getDefaultDisplay().getSize(screenPoint);
         return screenPoint;
@@ -134,6 +136,7 @@ public class CameraConfig {
          */
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);
+
     }
 
     public int getPreviewFormat() {

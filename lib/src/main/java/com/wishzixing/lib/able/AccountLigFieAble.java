@@ -1,6 +1,7 @@
 package com.wishzixing.lib.able;
 
 import android.hardware.Camera;
+import android.util.Log;
 
 /***
  *  Created by SWY
@@ -42,12 +43,11 @@ public class AccountLigFieAble {
         return this;
     }
 
-
     public void account(byte[] data, Camera camera) {
+
         /***
          *  根据像素点采集光场强度
          */
-
         if (callBack == null)
             return;
 

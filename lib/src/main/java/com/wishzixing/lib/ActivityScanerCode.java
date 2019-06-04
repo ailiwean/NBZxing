@@ -35,6 +35,7 @@ import com.google.zxing.Result;
 import com.wishzixing.lib.able.AccountLigFieAble;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
+import com.wishzixing.lib.handler.DecodeHandler;
 import com.wishzixing.lib.listener.OnGestureListener;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.util.LightManager;
@@ -132,7 +133,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                     initScanerAnimation();
 
                     //初始化自动调焦
-                    CameraManager.get().requestAutoFocus(CameraCoordinateHandler.getInstance(), R.id.auto_focus);
+                    CameraManager.get().requestAutoFocus();
 
                 }
             }, 100);
@@ -159,7 +160,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                                 initScanerAnimation();
 
                                 //初始化自动调焦
-                                CameraManager.get().requestAutoFocus(CameraCoordinateHandler.getInstance(), R.id.auto_focus);
+                                CameraManager.get().requestAutoFocus();
 
                             }
                         }, 100);
@@ -184,10 +185,9 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
             valueAnimator.cancel();
         }
 
-        if (handler != null) {
-            handler.quitSynchronously();
-            handler.removeCallbacksAndMessages(null);
-            handler = null;
+        if (CameraCoordinateHandler.getInstance() != null) {
+            CameraCoordinateHandler.getInstance().quitSynchronously();
+            CameraCoordinateHandler.getInstance().removeCallbacksAndMessages(null);
         }
         CameraManager.get().closeDriver();
     }
@@ -464,9 +464,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
 
         } catch (IOException | RuntimeException ioe) {
             return;
-        }
-        if (handler == null) {
-            handler = new CaptureActivityHandler(this);
         }
     }
 

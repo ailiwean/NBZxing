@@ -2,6 +2,7 @@ package com.wishzixing.lib.handler;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
@@ -21,7 +22,7 @@ public class CameraCoordinateHandler extends Handler {
         DecodeThread.getInstance().start();
         state = State.SUCCESS;
         CameraManager.get().startPreview();
-
+        restartPreviewAndDecode();
     }
 
     private static class Holder {
@@ -35,15 +36,20 @@ public class CameraCoordinateHandler extends Handler {
     @Override
     public void handleMessage(Message message) {
         if (message.what == R.id.auto_focus) {
-            if (state == State.PREVIEW) {
-                CameraManager.get().requestAutoFocus(this, R.id.auto_focus);
-            }
-        } else if (message.what == R.id.restart_preview) {
+            CameraManager.get().requestAutoFocus();
+
+        } else if (message.what == R.id.restart_preview)
+
+        {
             restartPreviewAndDecode();
-        } else if (message.what == R.id.decode_succeeded) {
+        } else if (message.what == R.id.decode_succeeded)
+
+        {
             state = State.SUCCESS;
             decodeSucceed((Result) message.obj);
-        } else if (message.what == R.id.decode_failed) {
+        } else if (message.what == R.id.decode_failed)
+
+        {
             state = State.PREVIEW;
             decodeFail();
         }
@@ -56,7 +62,7 @@ public class CameraCoordinateHandler extends Handler {
 
         if (state == State.SUCCESS) {
             state = State.PREVIEW;
-            CameraManager.get().requestPreviewFrame(DecodHandler.getInstance(), R.id.decode);
+            CameraManager.get().requestPreviewFrame();
         }
 
     }

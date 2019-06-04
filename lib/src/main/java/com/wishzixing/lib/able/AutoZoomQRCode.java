@@ -36,6 +36,7 @@ import com.google.zxing.common.DetectorResult;
 import com.google.zxing.qrcode.decoder.Decoder;
 import com.google.zxing.qrcode.decoder.QRCodeDecoderMetaData;
 import com.google.zxing.qrcode.detector.Detector;
+import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.manager.CameraManager;
 
 import java.util.List;
@@ -103,7 +104,7 @@ public class AutoZoomQRCode implements Reader {
             float point2X = p[1].getX();
             float point2Y = p[1].getY();
             float len = (int) Math.sqrt(Math.abs(point1X - point2X) * Math.abs(point1X - point2X) + Math.abs(point1Y - point2Y) * Math.abs(point1Y - point2Y));
-            Rect frameRect = CameraManager.get().getFramingRect();
+            Rect frameRect = CameraConfig.getInstance().getFramingRect();
             if (frameRect != null && camera != null) {
                 float frameWidth = (frameRect.right - frameRect.left) - 200;
                 Camera.Parameters parameters = camera.getParameters();
