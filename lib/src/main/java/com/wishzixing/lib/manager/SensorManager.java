@@ -1,14 +1,12 @@
 package com.wishzixing.lib.manager;
 
 import android.app.Activity;
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.util.Log;
 
 import com.wishzixing.lib.util.Utils;
-
-import java.util.Calendar;
 
 /***
  *  Created by SWY
@@ -25,14 +23,13 @@ public class SensorManager implements SensorEventListener {
 
     private int mX, mY, mZ;
 
+    long stamp = 0;
 
     private static final int DELEY_DURATION = 500;
 
     private SensorChange sensorChange;
 
     private boolean threshold = false;
-
-    private int foucsing = 1;  //1 表示没有被锁定 0表示被锁定
 
     private SensorManager() {
         mSensorManager = (android.hardware.SensorManager) Utils.getAppContext().getSystemService(Activity.SENSOR_SERVICE);
@@ -60,22 +57,31 @@ public class SensorManager implements SensorEventListener {
             int y = (int) event.values[1];
             int z = (int) event.values[2];
 
-            long stamp = System.currentTimeMillis();// 1393844912
-
+            if (mX == 0 && mY == 0 && mZ == 0) {
+                mX = x;
+                mY = y;
+                mZ = z;
+                if (sensorChange != null) {
+                    sensorChange.change();
+                }
+                return;
+            }
 
             int px = Math.abs(mX - x);
             int py = Math.abs(mY - y);
             int pz = Math.abs(mZ - z);
 
+            mX = x;
+            mY = y;
+            mZ = z;
+
             double value = Math.sqrt(px * px + py * py + pz * pz);
 
             if (value > 1.4) {
                 threshold = true;
+                stamp = System.currentTimeMillis();
                 return;
             }
-            mX = x;
-            mY = y;
-            mZ = z;
 
             if (!threshold)
                 return;
@@ -83,9 +89,10 @@ public class SensorManager implements SensorEventListener {
             if (System.currentTimeMillis() - stamp < DELEY_DURATION)
                 return;
 
-            if (sensorChange != null)
+            if (sensorChange != null) {
                 sensorChange.change();
-
+                restParams();
+            }
             stamp = System.currentTimeMillis();
         }
 
@@ -97,7 +104,6 @@ public class SensorManager implements SensorEventListener {
     }
 
     public void startListener() {
-
         restParams();
         mSensorManager.registerListener(this, mSensor,
                 android.hardware.SensorManager.SENSOR_DELAY_NORMAL);

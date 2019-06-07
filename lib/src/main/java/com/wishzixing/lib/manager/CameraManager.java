@@ -137,6 +137,7 @@ public class CameraManager {
             //提前置空防止其他对象访问失效Camera
             Camera camera_ = camera;
             camera = null;
+            camera_.setPreviewCallback(null);
             camera_.release();
         }
     }
