@@ -22,7 +22,6 @@ public class CameraCoordinateHandler extends Handler {
         DecodeThread.getInstance().start();
         state = State.SUCCESS;
         CameraManager.get().startPreview();
-        restartPreviewAndDecode();
     }
 
     private static class Holder {
@@ -35,36 +34,21 @@ public class CameraCoordinateHandler extends Handler {
 
     @Override
     public void handleMessage(Message message) {
-        if (message.what == R.id.auto_focus) {
-            CameraManager.get().requestAutoFocus();
 
-        } else if (message.what == R.id.restart_preview)
-
-        {
-            restartPreviewAndDecode();
-        } else if (message.what == R.id.decode_succeeded)
-
-        {
+        if (message.what == R.id.decode_succeeded) {
             state = State.SUCCESS;
             decodeSucceed((Result) message.obj);
-        } else if (message.what == R.id.decode_failed)
-
-        {
-            state = State.PREVIEW;
-            decodeFail();
+        } else if (message.what == R.id.decode_failed) {
+            //startPreviewAndDecode();
         }
     }
 
     /***
      * 相机重新预览并开始解析
      */
-    private void restartPreviewAndDecode() {
-
-        if (state == State.SUCCESS) {
-            state = State.PREVIEW;
-            CameraManager.get().requestPreviewFrame();
-        }
-
+    public void startPreviewAndDecode() {
+        state = State.PREVIEW;
+        CameraManager.get().requestPreviewFrame();
     }
 
     /***
@@ -93,11 +77,5 @@ public class CameraCoordinateHandler extends Handler {
     private void decodeSucceed(Result result) {
 
     }
-
-    //解析失败
-    private void decodeFail() {
-
-    }
-
 
 }

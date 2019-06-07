@@ -26,6 +26,7 @@ import com.wishzixing.lib.listener.AutoFocusCallback;
 import com.wishzixing.lib.listener.PreviewCallback;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 /**
  * @author vondear
@@ -57,7 +58,7 @@ public class CameraManager {
         SDK_INT = sdkInt;
     }
 
-    private final Context context;
+    private WeakReference<Context> weakReference;
     /**
      * Preview frames are delivered here, which we pass on to the registered handler. Make sure to
      * clear the handler so it will only receive one message.
@@ -74,14 +75,14 @@ public class CameraManager {
 
     private CameraManager(Context context) {
 
-        this.context = context;
+        this.weakReference = new WeakReference<>(context);
         // Camera.setOneShotPreviewCallback() has a race condition in Cupcake, so we use the older
         // Camera.setPreviewCallback() on 1.5 and earlier. For Donut and later, we need to use
         // the more efficient one shot callback, as the older one can swamp the system and cause it
         // to run out of memory. We can't use SDK_INT because it was introduced in the Donut SDK.
         //useOneShotPreviewCallback = Integer.parseInt(Build.VERSION.SDK) > Build.VERSION_CODES.CUPCAKE;
         previewCallback = new PreviewCallback();
-        autoFocusCallback = new AutoFocusCallback();
+        autoFocusCallback = AutoFocusCallback.getInstance();
     }
 
     /**
@@ -120,12 +121,12 @@ public class CameraManager {
 
             if (!initialized) {
                 initialized = true;
-                CameraConfig.getInstance().initCamera(camera);
             }
             CameraConfig.getInstance().initCamera(camera);
             FlashlightManager.enableFlashlight();
         }
     }
+
 
     /**
      * Closes the camera driver if still in use.
@@ -133,8 +134,10 @@ public class CameraManager {
     public void closeDriver() {
         if (camera != null) {
             FlashlightManager.disableFlashlight();
-            camera.release();
+            //提前置空防止其他对象访问失效Camera
+            Camera camera_ = camera;
             camera = null;
+            camera_.release();
         }
     }
 
@@ -170,18 +173,8 @@ public class CameraManager {
         }
     }
 
-    /**
-     * Asks the camera hardware to perform an autofocus.
-     */
-    public void requestAutoFocus() {
-        if (camera != null) {
-            camera.startPreview();
-            camera.autoFocus(autoFocusCallback);
-        }
-    }
-
     public Context getContext() {
-        return context;
+        return weakReference.get();
     }
 
     public Camera getCamera() {

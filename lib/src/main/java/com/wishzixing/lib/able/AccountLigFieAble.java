@@ -51,6 +51,9 @@ public class AccountLigFieAble {
         if (callBack == null)
             return;
 
+        if (data.length == 0)
+            return;
+
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastRecordTime < waitScanTime) {
             return;

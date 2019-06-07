@@ -8,7 +8,6 @@ import android.support.annotation.IntDef;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.util.Utils;
 
 import java.lang.ref.WeakReference;
@@ -26,7 +25,7 @@ public class CameraConfig {
     private static final int DESIRED_SHARPNESS = 30;
 
     //Zxing解析区域对应View
-    public Rect parseRect;
+    public Rect parseRect = new Rect(100, 100, 200, 200);
 
     private Point screenPoint;
 
@@ -57,7 +56,8 @@ public class CameraConfig {
 
         int left = (int) view.getX();
         int top = (int) view.getY();
-        parseRect = new Rect(left, top, left + view.getMeasuredWidth(), top + view.getMeasuredHeight());
+        // parseRect = new Rect(left, top, left + view.getMeasuredWidth(), top + view.getMeasuredHeight());
+        parseRect = new Rect(100, 100, 100, 100);
         return this;
     }
 
@@ -136,7 +136,6 @@ public class CameraConfig {
          */
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);
-
     }
 
     public int getPreviewFormat() {

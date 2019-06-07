@@ -58,7 +58,8 @@ public class AutoZoomQRCode implements Reader {
     }
 
     public AutoZoomQRCode() {
-    }
+
+      }
 
     /**
      * Locates and decodes a QR code in an image.

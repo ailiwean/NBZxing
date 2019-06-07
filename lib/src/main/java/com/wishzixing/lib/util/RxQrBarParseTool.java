@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
@@ -50,6 +51,7 @@ public class RxQrBarParseTool {
      * @return Result 解析结果，解析识别时返回NULL
      */
     public Result decodeFromPhoto(Bitmap photo) {
+
         Result rawResult = null;
         if (photo != null) {
             Bitmap smallBitmap = zoomBitmap(photo, photo.getWidth() / 2, photo.getHeight() / 2);// 为防止原始图片过大导致内存溢出，这里先缩小原图显示，然后释放原始Bitmap占用的内存
@@ -67,8 +69,8 @@ public class RxQrBarParseTool {
 
 
     public Result decodeFromByte(byte[] data, int width, int height) {
-        Result rawResult = null;
 
+        Result rawResult = null;
         //modify here
         byte[] rotatedData = new byte[data.length];
         for (int y = 0; y < height; y++) {
@@ -86,7 +88,7 @@ public class RxQrBarParseTool {
         try {
             rawResult = RxQrBarParseTool.getInstance().getMultiFormatReader().decodeWithState(bitmap);
         } catch (ReaderException e) {
-            // continue
+            e.printStackTrace();
         } finally {
             RxQrBarParseTool.getInstance().getMultiFormatReader().reset();
         }

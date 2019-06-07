@@ -35,9 +35,9 @@ import com.google.zxing.Result;
 import com.wishzixing.lib.able.AccountLigFieAble;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
-import com.wishzixing.lib.handler.DecodeHandler;
 import com.wishzixing.lib.listener.OnGestureListener;
 import com.wishzixing.lib.manager.CameraManager;
+import com.wishzixing.lib.util.AutoFocusUtils;
 import com.wishzixing.lib.util.LightManager;
 import com.wishzixing.lib.util.RxBeepTool;
 import com.wishzixing.lib.util.RxQrBarParseTool;
@@ -133,7 +133,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                     initScanerAnimation();
 
                     //初始化自动调焦
-                    CameraManager.get().requestAutoFocus();
+                    AutoFocusUtils.getInstance().setModel(AutoFocusUtils.SENSOR).startAutoFocus();
 
                 }
             }, 100);
@@ -160,7 +160,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                                 initScanerAnimation();
 
                                 //初始化自动调焦
-                                CameraManager.get().requestAutoFocus();
+                                AutoFocusUtils.getInstance().setModel(AutoFocusUtils.SENSOR).startAutoFocus();
 
                             }
                         }, 100);
@@ -432,6 +432,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
     private void initCamera(SurfaceHolder surfaceHolder) {
         try {
             CameraManager.get().openDriver(surfaceHolder);
+
             Point point = CameraConfig.getInstance().getCameraPoint();
             AtomicInteger width = new AtomicInteger(point.y);
             AtomicInteger height = new AtomicInteger(point.x);
@@ -463,8 +464,10 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
             });
 
         } catch (IOException | RuntimeException ioe) {
-            return;
         }
+
+        CameraCoordinateHandler.getInstance().startPreviewAndDecode();
+
     }
 
     //--------------------------------------打开本地图片识别二维码 start---------------------------------
