@@ -1,43 +1,68 @@
-package com.wishzixing.lib.util;
+package com.wishzixing.lib.able;
 
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.support.annotation.IntDef;
-import android.util.Log;
 
+import com.wishzixing.lib.config.AutoFocusConfig;
+import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.listener.AutoFocusCallback;
 import com.wishzixing.lib.manager.CameraManager;
+import com.wishzixing.lib.manager.PixsValuesCus;
 import com.wishzixing.lib.manager.SensorManager;
 
 /***
  *  Created by SWY
- *  自动调焦
- *  DATE 2019/6/7
+ *  DATE 2019/6/8
  *
  */
-public class AutoFocusUtils {
-
-    private final long TIMEINTERVAL = 1500L;
-
-    private int model = 0;
+public class AutoFocusAble implements PixsValuesCus {
 
     private HandlerThread handlerThread;
     private Handler timeHandler;
 
+    private boolean isFrist = false;
 
-    private AutoFocusUtils() {
+    @Override
+    public void cusAction(byte[] data, Camera camera) {
+
+        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.PIXVALUES) {
+            setPixvaluesAutoFocus(data, camera);
+        } else {
+            startAutoFocus();
+            if (!isFrist) {
+                isFrist = true;
+            }
+        }
+    }
+
+    private void startAutoFocus() {
+        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.TIME)
+            setTimeAutoFocus();
+        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.SENSOR)
+            setSensorAutoFocus();
+    }
+
+    @Override
+    public void stop() {
+        timeHandler.removeCallbacksAndMessages(null);
+    }
+
+    private final long TIMEINTERVAL = 1500L;
+    private int model = 0;
+
+    private AutoFocusAble() {
         handlerThread = new HandlerThread("time");
         handlerThread.start();
         timeHandler = new Handler(handlerThread.getLooper());
     }
 
     private static class Holder {
-        static AutoFocusUtils INSTANCE = new AutoFocusUtils();
+        static AutoFocusAble INSTANCE = new AutoFocusAble();
     }
 
-    public static AutoFocusUtils getInstance() {
-        return Holder.INSTANCE;
+    public static AutoFocusAble getInstance() {
+        return AutoFocusAble.Holder.INSTANCE;
     }
 
     private void setFocus() {
@@ -47,22 +72,6 @@ public class AutoFocusUtils {
         Camera camera = CameraManager.get().getCamera();
         camera.startPreview();
         camera.autoFocus(AutoFocusCallback.getInstance());
-    }
-
-    public AutoFocusUtils setModel(@Type int model) {
-        this.model = model;
-        return this;
-    }
-
-    public void startAutoFocus() {
-
-        if (model == TIME)
-            setTimeAutoFocus();
-        if (model == SENSOR)
-            setSensorAutoFocus();
-        if (model == PIXVALUES)
-            setPixvaluesAutoFocus();
-
     }
 
     private void setTimeAutoFocus() {
@@ -81,7 +90,6 @@ public class AutoFocusUtils {
             @Override
             public void change() {
                 setFocus();
-                Log.e("加速度传感器回调", "加速度传感器回调");
             }
         })
                 .startListener();
@@ -89,24 +97,7 @@ public class AutoFocusUtils {
 
     }
 
-    private void setPixvaluesAutoFocus() {
+    private void setPixvaluesAutoFocus(byte[] data, Camera camera) {
 
-    }
-
-
-    /***
-     * 停止所有自动调焦的方法
-     */
-    public void stopAutoFocus() {
-        timeHandler.removeCallbacksAndMessages(null);
-    }
-
-
-    public static final int TIME = 1;
-    public static final int SENSOR = 2;
-    public static final int PIXVALUES = 3;
-
-    @IntDef({TIME, SENSOR, PIXVALUES})
-    public static @interface Type {
     }
 }

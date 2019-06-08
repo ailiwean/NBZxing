@@ -13,9 +13,12 @@ import java.io.IOException;
 import static android.content.Context.AUDIO_SERVICE;
 
 /***
- * 震动与播放
+ *  Created by SWY
+ *
+ *  DATE 2019/6/2
+ *
  */
-public class RxBeepTool {
+public class RxBeepUtils {
 
     private static final float BEEP_VOLUME = 0.50f;
     private static final int VIBRATE_DURATION = 50;

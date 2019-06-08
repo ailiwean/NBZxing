@@ -18,7 +18,6 @@ package com.wishzixing.lib.manager;
 
 import android.content.Context;
 import android.hardware.Camera;
-import android.os.Build;
 import android.view.SurfaceHolder;
 
 import com.wishzixing.lib.config.CameraConfig;
@@ -28,35 +27,14 @@ import com.wishzixing.lib.listener.PreviewCallback;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-/**
- * @author vondear
- * This object wraps the Camera service object and expects to be the only one talking to it. The
- * implementation encapsulates the steps needed to take preview-sized images, which are used for
- * both preview and decoding.
- */
-
 /***
+ *  Created by SWY
+ *  DATE 2019/6/3
  *  Camera管理,  有关Camera的操作通过该类间接实现
  */
 public class CameraManager {
 
-    static final int SDK_INT; // Later we can use Build.VERSION.SDK_INT
-    private static final String TAG = CameraManager.class.getSimpleName();
-    public static int FRAME_WIDTH = -1;
-    public static int FRAME_HEIGHT = -1;
-    public static int FRAME_MARGINTOP = -1;
     private static CameraManager cameraManager;
-
-    static {
-        int sdkInt;
-        try {
-            sdkInt = Build.VERSION.SDK_INT;
-        } catch (NumberFormatException nfe) {
-            // Just to be safe
-            sdkInt = 10000;
-        }
-        SDK_INT = sdkInt;
-    }
 
     private WeakReference<Context> weakReference;
     /**
@@ -72,6 +50,7 @@ public class CameraManager {
     private boolean initialized;
     private volatile boolean previewing;
     private Camera.Parameters parameter;
+    private Camera.Parameters parameters;
 
     private CameraManager(Context context) {
 
@@ -111,22 +90,27 @@ public class CameraManager {
      * @param holder The surface object which the camera will draw preview frames into.
      * @throws IOException Indicates the camera driver failed to open.
      */
-    public void openDriver(SurfaceHolder holder) throws IOException {
+    public void openDriver(SurfaceHolder holder) {
         if (camera == null) {
             camera = Camera.open();
             if (camera == null) {
-                throw new IOException();
+                try {
+                    throw new IOException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            camera.setPreviewDisplay(holder);
-
+            try {
+                camera.setPreviewDisplay(holder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if (!initialized) {
                 initialized = true;
             }
-            CameraConfig.getInstance().initCamera(camera);
             FlashlightManager.enableFlashlight();
         }
     }
-
 
     /**
      * Closes the camera driver if still in use.
@@ -163,10 +147,26 @@ public class CameraManager {
         }
     }
 
-    /**
-     * A single preview frame will be returned to the handler supplied. The data will arrive as byte[]
-     * in the message.obj field, with width and height encoded as message.arg1 and message.arg2,
-     * respectively.
+    public void initCamera() {
+
+        if (camera == null)
+            return;
+
+        parameters = camera.getParameters();
+        parameters.set("flash-value", 2);
+        parameters.set("flash-mode", "off");
+        parameters.set("zoom", String.valueOf(CameraConfig.getInstance().getTenDesiredZoom() / 10.0));
+        parameters.set("taking-picture-zoom", CameraConfig.getInstance().getTenDesiredZoom());
+        parameters.setPreviewSize(CameraConfig.getInstance().getCameraPoint().x, CameraConfig.getInstance().getCameraPoint().y);
+        camera.setDisplayOrientation(90);
+        camera.setParameters(parameters);
+        camera.startPreview();
+
+    }
+
+
+    /***
+     * 相机重新预览并执行能力
      */
     public void requestPreviewFrame() {
         if (camera != null) {

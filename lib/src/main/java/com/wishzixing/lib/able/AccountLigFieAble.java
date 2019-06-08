@@ -1,15 +1,15 @@
 package com.wishzixing.lib.able;
 
 import android.hardware.Camera;
-import android.util.Log;
+
+import com.wishzixing.lib.manager.PixsValuesCus;
 
 /***
  *  Created by SWY
  *  DATE 2019/6/2
  *  计算预览区域光场强度回调
  */
-public class AccountLigFieAble {
-
+public class AccountLigFieAble implements PixsValuesCus {
 
     private static int STANDVALUES = 100;
 
@@ -29,10 +29,19 @@ public class AccountLigFieAble {
     private AccountLigFieAble() {
     }
 
-    public static class Holder {
-        static AccountLigFieAble INSTANCE = new AccountLigFieAble();
+    @Override
+    public void cusAction(byte[] data, Camera camera) {
+        account(data, camera);
     }
 
+    @Override
+    public void stop() {
+
+    }
+
+    private static class Holder {
+        static AccountLigFieAble INSTANCE = new AccountLigFieAble();
+    }
 
     public static AccountLigFieAble getInstance() {
         return Holder.INSTANCE;
@@ -43,7 +52,7 @@ public class AccountLigFieAble {
         return this;
     }
 
-    public void account(byte[] data, Camera camera) {
+    private void account(byte[] data, Camera camera) {
 
         /***
          *  根据像素点采集光场强度

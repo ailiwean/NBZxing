@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,15 +31,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.zxing.Result;
-import com.wishzixing.lib.able.AccountLigFieAble;
-import com.wishzixing.lib.config.CameraConfig;
+import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.listener.OnGestureListener;
 import com.wishzixing.lib.manager.CameraManager;
-import com.wishzixing.lib.util.AutoFocusUtils;
-import com.wishzixing.lib.util.LightManager;
-import com.wishzixing.lib.util.RxBeepTool;
-import com.wishzixing.lib.util.RxQrBarParseTool;
+import com.wishzixing.lib.util.LightControlUtils;
+import com.wishzixing.lib.util.RxBeepUtils;
+import com.wishzixing.lib.util.RxQrBarParseUtils;
+import com.wishzixing.lib.util.Utils;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -48,7 +46,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -110,6 +107,8 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         //权限初始化
         initPermission();
 
+        Utils.init(this);
+
         hasSurface = false;
         //初始化 CameraManager
         CameraManager.init(this);
@@ -128,12 +127,15 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                    initCamera(surfaceView.getHolder());
+                    CameraManager.get().openDriver(surfaceView.getHolder());
                     //扫描动画初始化
                     initScanerAnimation();
 
-                    //初始化自动调焦
-                    AutoFocusUtils.getInstance().setModel(AutoFocusUtils.SENSOR).startAutoFocus();
+                    Config.useDefault();
+
+                    CameraManager.get().initCamera();
+
+                    CameraManager.get().requestPreviewFrame();
 
                 }
             }, 100);
@@ -154,13 +156,16 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                             @Override
                             public void run() {
 
-                                initCamera(surfaceView.getHolder());
+                                CameraManager.get().openDriver(surfaceView.getHolder());
 
                                 //扫描动画初始化
                                 initScanerAnimation();
 
-                                //初始化自动调焦
-                                AutoFocusUtils.getInstance().setModel(AutoFocusUtils.SENSOR).startAutoFocus();
+                                Config.useDefault();
+
+                                CameraManager.get().initCamera();
+
+                                CameraManager.get().requestPreviewFrame();
 
                             }
                         }, 100);
@@ -186,7 +191,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         }
 
         if (CameraCoordinateHandler.getInstance() != null) {
-            CameraCoordinateHandler.getInstance().quitSynchronously();
             CameraCoordinateHandler.getInstance().removeCallbacksAndMessages(null);
         }
         CameraManager.get().closeDriver();
@@ -357,20 +361,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         lazyLoading.removeCallbacksAndMessages(null);
     }
 
-    public void setCropWidth(int cropWidth) {
-        mCropWidth = cropWidth;
-        CameraManager.FRAME_WIDTH = mCropWidth;
-    }
-
-    public int getCropHeight() {
-        return mCropHeight;
-    }
-
-    public void setCropHeight(int cropHeight) {
-        this.mCropHeight = cropHeight;
-        CameraManager.FRAME_HEIGHT = mCropHeight;
-    }
-
     @SuppressLint("NewApi")
     public void onClick(View view) {
         int viewId = view.getId();
@@ -414,7 +404,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         if (mFlashing) {
             mFlashing = false;
             // 开闪光灯
-            LightManager.openLight();
+            LightControlUtils.openLight();
         }
     }
 
@@ -424,50 +414,8 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         if (!mFlashing) {
             mFlashing = true;
             // 关闪光灯
-            LightManager.closeLight();
+            LightControlUtils.closeLight();
         }
-
-    }
-
-    private void initCamera(SurfaceHolder surfaceHolder) {
-        try {
-            CameraManager.get().openDriver(surfaceHolder);
-
-            Point point = CameraConfig.getInstance().getCameraPoint();
-            AtomicInteger width = new AtomicInteger(point.y);
-            AtomicInteger height = new AtomicInteger(point.x);
-            int cropWidth = mCropLayout.getWidth() * width.get() / mContainer.getWidth();
-            int cropHeight = mCropLayout.getHeight() * height.get() / mContainer.getHeight();
-            setCropWidth(cropWidth);
-            setCropHeight(cropHeight);
-
-            AccountLigFieAble.getInstance().setCallBack(new AccountLigFieAble.LightCallBack() {
-                @Override
-                public void lightValues(boolean isBright) {
-
-                    if (isBright) {
-
-                        if (lightLayout.getTag() == null || !(boolean) lightLayout.getTag()) {
-                            lightLayout.setVisibility(View.INVISIBLE);
-                            initScanerAnimation();
-                        }
-                    } else {
-
-                        lightLayout.setVisibility(View.VISIBLE);
-
-                        ImageView mQrLineView = findViewById(R.id.capture_scan_line);
-                        mQrLineView.setAnimation(null);
-                        mQrLineView.setVisibility(View.INVISIBLE);
-                    }
-
-                }
-            });
-
-        } catch (IOException | RuntimeException ioe) {
-        }
-
-        CameraCoordinateHandler.getInstance().startPreviewAndDecode();
-
     }
 
     //--------------------------------------打开本地图片识别二维码 start---------------------------------
@@ -483,7 +431,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                 Bitmap photo = MediaStore.Images.Media.getBitmap(resolver, originalUri);
 
                 // 开始对图像资源解码
-                Result rawResult = RxQrBarParseTool.getInstance().decodeFromPhoto(photo);
+                Result rawResult = RxQrBarParseUtils.getInstance().decodeFromPhoto(photo);
 
                 handleDecode(rawResult);
 
@@ -495,9 +443,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
     //========================================打开本地图片识别二维码 end=================================
 
     /***
-     *
      * 获取到扫码数据后回调
-     *
      */
     public void initCallBackResult(Result result) {
 
@@ -509,7 +455,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
              * 扫描成功后是否震动
              */
             boolean vibrate = true;
-            RxBeepTool.playBeep(this, vibrate);
+            RxBeepUtils.playBeep(this, vibrate);
 
             onScanResult(result);
 
@@ -552,10 +498,8 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
     //使用自定义相册，选择图片后回调解析
     public void postImgFilePath(String path) {
 
-        Result result = RxQrBarParseTool.getInstance().decodeFromPhoto(BitmapFactory.decodeFile(path));
-
+        Result result = RxQrBarParseUtils.getInstance().decodeFromPhoto(BitmapFactory.decodeFile(path));
         handleDecode(result);
-
     }
 
     private enum State {

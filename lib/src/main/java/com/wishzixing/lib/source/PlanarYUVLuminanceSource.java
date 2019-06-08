@@ -1,13 +1,13 @@
 package com.wishzixing.lib.source;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.google.zxing.LuminanceSource;
 
 /***
  *  Created by SWY
  *  DATE 2019/6/3
- *
  */
 public final class PlanarYUVLuminanceSource extends LuminanceSource {
     private final byte[] yuvData;

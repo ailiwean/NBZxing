@@ -1,10 +1,9 @@
 package com.android.wishzxing;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
-import com.wishzixing.lib.util.Convert;
 import com.wishzixing.lib.util.Utils;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Utils.init(this);
-
         Intent intent = new Intent(this, Scanner.class);
         startActivity(intent);
     }

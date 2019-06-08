@@ -16,11 +16,7 @@ import com.wishzixing.lib.manager.CameraManager;
  */
 public class CameraCoordinateHandler extends Handler {
 
-    private State state;
-
     private CameraCoordinateHandler() {
-        DecodeThread.getInstance().start();
-        state = State.SUCCESS;
         CameraManager.get().startPreview();
     }
 
@@ -36,41 +32,11 @@ public class CameraCoordinateHandler extends Handler {
     public void handleMessage(Message message) {
 
         if (message.what == R.id.decode_succeeded) {
-            state = State.SUCCESS;
             decodeSucceed((Result) message.obj);
+            Log.e("解析成功", "解析成功");
         } else if (message.what == R.id.decode_failed) {
             //startPreviewAndDecode();
         }
-    }
-
-    /***
-     * 相机重新预览并开始解析
-     */
-    public void startPreviewAndDecode() {
-        state = State.PREVIEW;
-        CameraManager.get().requestPreviewFrame();
-    }
-
-    /***
-     * 停止预览与解析
-     */
-    public void quitSynchronously() {
-        state = State.DONE;
-        DecodeThread.getInstance().interrupt();
-        CameraManager.get().stopPreview();
-        removeMessages(R.id.decode_succeeded);
-        removeMessages(R.id.decode_failed);
-        removeMessages(R.id.decode);
-        removeMessages(R.id.auto_focus);
-    }
-
-    private enum State {
-        //预览
-        PREVIEW,
-        //成功
-        SUCCESS,
-        //完成
-        DONE
     }
 
     //解析成功

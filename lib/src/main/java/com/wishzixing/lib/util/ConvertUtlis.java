@@ -3,7 +3,6 @@ package com.wishzixing.lib.util;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.common.HybridBinarizer;
@@ -17,7 +16,7 @@ import com.wishzixing.lib.source.PlanarYUVLuminanceSource;
  *
  *  转换生成二进制Bitmap工具
  */
-public class Convert {
+public class ConvertUtlis {
 
     //BitMap转换二进制Bitmap
     public static BinaryBitmap bitmapToBinary(Bitmap bitmap) {
@@ -28,7 +27,6 @@ public class Convert {
     public static BinaryBitmap byteToBinay(byte[] bytes, int width, int height) {
 
         //width，height都正常
-
         PlanarYUVLuminanceSource source = buildLuminanceSource(bytes, width, height);
         return new BinaryBitmap(new HybridBinarizer(source));
     }
@@ -44,8 +42,7 @@ public class Convert {
      */
     private static PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height) {
 
-        Rect rect = CameraConfig.getInstance().getFramingRectInPreview();
-
+        Rect rect = CameraConfig.getInstance().getFramingRect();
         int previewFormat = CameraConfig.getInstance().getPreviewFormat();
         String previewFormatString = CameraConfig.getInstance().getPreviewFormatString();
         switch (previewFormat) {

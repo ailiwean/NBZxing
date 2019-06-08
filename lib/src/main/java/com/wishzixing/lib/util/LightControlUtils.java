@@ -9,11 +9,11 @@ import com.wishzixing.lib.manager.CameraManager;
  *  DATE 2019/6/2
  *
  */
-public class LightManager {
+public class LightControlUtils {
 
     private static Camera.Parameters parameters;
 
-    private LightManager() {
+    private LightControlUtils() {
     }
 
     public static void openLight() {

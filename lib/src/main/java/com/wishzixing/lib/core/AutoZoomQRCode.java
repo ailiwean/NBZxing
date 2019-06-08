@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wishzixing.lib.able;
+package com.wishzixing.lib.core;
 
 
 import android.graphics.Rect;
@@ -58,8 +58,7 @@ public class AutoZoomQRCode implements Reader {
     }
 
     public AutoZoomQRCode() {
-
-      }
+    }
 
     /**
      * Locates and decodes a QR code in an image.
