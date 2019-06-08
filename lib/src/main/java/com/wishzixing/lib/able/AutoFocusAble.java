@@ -18,7 +18,6 @@ import com.wishzixing.lib.manager.SensorManager;
  */
 public class AutoFocusAble implements PixsValuesCus {
 
-    private HandlerThread handlerThread;
     private Handler timeHandler;
 
     private boolean isFrist = false;
@@ -29,8 +28,8 @@ public class AutoFocusAble implements PixsValuesCus {
         if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.PIXVALUES) {
             setPixvaluesAutoFocus(data, camera);
         } else {
-            startAutoFocus();
             if (!isFrist) {
+                startAutoFocus();
                 isFrist = true;
             }
         }
@@ -52,7 +51,7 @@ public class AutoFocusAble implements PixsValuesCus {
     private int model = 0;
 
     private AutoFocusAble() {
-        handlerThread = new HandlerThread("time");
+        HandlerThread handlerThread = new HandlerThread("time");
         handlerThread.start();
         timeHandler = new Handler(handlerThread.getLooper());
     }

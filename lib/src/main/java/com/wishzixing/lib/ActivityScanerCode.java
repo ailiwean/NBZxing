@@ -57,9 +57,6 @@ import java.util.concurrent.TimeUnit;
 public abstract class ActivityScanerCode extends AppCompatActivity {
 
 
-    private InactivityTimer inactivityTimer;
-
-
     /**
      * 整体根布局
      */
@@ -113,7 +110,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         //初始化 CameraManager
         CameraManager.init(this);
 
-        inactivityTimer = new InactivityTimer(this);
     }
 
     @Override
@@ -134,8 +130,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                     Config.useDefault();
 
                     CameraManager.get().initCamera();
-
-                    CameraManager.get().requestPreviewFrame();
 
                 }
             }, 100);
@@ -164,8 +158,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
                                 Config.useDefault();
 
                                 CameraManager.get().initCamera();
-
-                                CameraManager.get().requestPreviewFrame();
 
                             }
                         }, 100);
@@ -198,128 +190,15 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        inactivityTimer.shutdown();
         super.onDestroy();
     }
 
     private void initView() {
-        /**
-         * 闪光灯 按钮
-         */
-        mContainer = findViewById(R.id.capture_containter);
-        mCropLayout = findViewById(R.id.capture_crop_layout);
-        surfaceView = findViewById(R.id.capture_preview);
-
-        lightLayout = findViewById(R.id.light_layout);
-        lightLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                TextView text = lightLayout.findViewById(R.id.light_text);
-                ImageView imageView = lightLayout.findViewById(R.id.light_img);
-
-                if (text.getText().equals("轻点照亮")) {
-
-                    text.setText("轻点关闭");
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.light_open));
-                    lightLayout.setTag(true);
-                    openLight();
-
-                } else {
-
-                    text.setText("轻点照亮");
-                    imageView.setImageDrawable(getResources().getDrawable(R.drawable.light_close));
-                    lightLayout.setTag(false);
-                    closeLight();
-                }
-
-            }
-        });
-
-        OnGestureListener onGestureListener = new OnGestureListener(this);
-        onGestureListener.regOnDoubleClickCallback(new OnGestureListener.DoubleClickCallback() {
-            @Override
-            public void onDoubleClick() {
-
-                Camera camera = CameraManager.get().getCamera();
-
-                if (camera == null)
-                    return;
-
-                Camera.Parameters p = camera.getParameters();
-
-                if (p == null)
-                    return;
-
-                if (p.getZoom() != p.getMaxZoom()) {
-                    p.setZoom(p.getMaxZoom());
-                } else p.setZoom(1);
-
-                camera.setParameters(p);
-            }
-        });
-
-        onGestureListener.regOnDoubleFingerCallback(new OnGestureListener.DoubleFingerCallback() {
-
-            int change = 0;
-
-            @Override
-            public void onStepFingerChange(float total, float value) {
-                change += Math.abs(value);
-                //变化量大于50进行调焦
-                if (change > 50) {
-
-                    final Camera camera = CameraManager.get().getCamera();
-
-                    if (camera == null)
-                        return;
-
-                    final Camera.Parameters p = camera.getParameters();
-
-                    //防止画面切换闪退
-                    if (p == null)
-                        return;
-
-                    int zoom = (int) (p.getZoom() + (p.getMaxZoom() * total / 800f));
-                    if (zoom > p.getMaxZoom())
-                        zoom = p.getMaxZoom();
-                    if (zoom <= 0)
-                        zoom = 1;
-                    if (valueAnimator != null && valueAnimator.isRunning())
-                        valueAnimator.cancel();
-                    valueAnimator = ValueAnimator.ofInt(p.getZoom(), zoom);
-                    valueAnimator.setDuration(300);
-                    valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation) {
-
-                            p.setZoom((Integer) animation.getAnimatedValue());
-                            camera.setParameters(p);
-
-                        }
-                    });
-                    valueAnimator.start();
-                    change = 0;
-                }
-
-            }
-
-            @Override
-            public void onStepEnd() {
-
-            }
-        });
-
-        mContainer.setOnTouchListener(onGestureListener);
 
     }
 
     private void initPermission() {
-        //请求Camera权限 与 文件读写 权限
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        }
+
     }
 
     private void initScanerAnimation() {
@@ -399,25 +278,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         fragment.startActivityForResult(intent, GET_IMAGE_FROM_PHONE);
     }
 
-    //打开闪光灯
-    private void openLight() {
-        if (mFlashing) {
-            mFlashing = false;
-            // 开闪光灯
-            LightControlUtils.openLight();
-        }
-    }
-
-    //关闭
-    private void closeLight() {
-
-        if (!mFlashing) {
-            mFlashing = true;
-            // 关闪光灯
-            LightControlUtils.closeLight();
-        }
-    }
-
     //--------------------------------------打开本地图片识别二维码 start---------------------------------
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -490,7 +350,6 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
             valueAnimator.cancel();
         }
 
-        inactivityTimer.onActivity();
         initCallBackResult(result);
 
     }
@@ -518,75 +377,4 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
         void onFail(String message);
     }
 
-    /**
-     * Finishes an activity after a period of inactivity.
-     *
-     * @author vondear
-     */
-    public static class InactivityTimer {
-
-        private static final int INACTIVITY_DELAY_SECONDS = 5 * 60;
-
-        private final ScheduledExecutorService inactivityTimer =
-                Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory());
-        private final Activity activity;
-        private ScheduledFuture<?> inactivityFuture = null;
-
-        public InactivityTimer(Activity activity) {
-            this.activity = activity;
-            onActivity();
-        }
-
-        public void onActivity() {
-            cancel();
-            inactivityFuture = inactivityTimer.schedule(new FinishListener(activity),
-                    INACTIVITY_DELAY_SECONDS,
-                    TimeUnit.SECONDS);
-        }
-
-        private void cancel() {
-            if (inactivityFuture != null) {
-                inactivityFuture.cancel(true);
-                inactivityFuture = null;
-            }
-        }
-
-        public void shutdown() {
-            cancel();
-            inactivityTimer.shutdown();
-        }
-
-        private final class DaemonThreadFactory implements ThreadFactory {
-            public Thread newThread(Runnable runnable) {
-                Thread thread = new Thread(runnable);
-                thread.setDaemon(true);
-                return thread;
-            }
-        }
-
-
-        public final class FinishListener
-                implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener, Runnable {
-
-            private final Activity activityToFinish;
-
-            public FinishListener(Activity activityToFinish) {
-                this.activityToFinish = activityToFinish;
-            }
-
-            public void onCancel(DialogInterface dialogInterface) {
-                run();
-            }
-
-            public void onClick(DialogInterface dialogInterface, int i) {
-                run();
-            }
-
-            public void run() {
-                activityToFinish.finish();
-            }
-
-        }
-
-    }
 }

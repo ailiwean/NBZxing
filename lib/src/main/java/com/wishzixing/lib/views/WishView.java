@@ -22,6 +22,7 @@ import com.wishzixing.lib.R;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.listener.OnGestureListener;
 import com.wishzixing.lib.util.PermissionUtils;
+import com.wishzixing.lib.util.ZoomUtils;
 
 import java.lang.ref.WeakReference;
 
@@ -32,9 +33,7 @@ import java.lang.ref.WeakReference;
  */
 public class WishView extends FrameLayout implements WishLife, View.OnClickListener {
 
-
     WeakReference<Activity> get;
-
     /**
      * 整体根布局
      */
@@ -56,6 +55,8 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
     private Handler lazyLoading = new Handler(Looper.getMainLooper());
 
+    WishViewDelegate wishViewDelegate;
+
     public WishView(Context context) {
         super(context);
     }
@@ -72,7 +73,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         //添加内容
         View view = LayoutInflater.from(getContext()).inflate(R.layout.activity_scaner_code, null);
         addView(view);
-
         mContainer = findViewById(R.id.capture_containter);
         mCropLayout = findViewById(R.id.capture_crop_layout);
         surfaceView = findViewById(R.id.capture_preview);
@@ -82,11 +82,10 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         onGestureListener.regOnDoubleClickCallback(new OnGestureListener.DoubleClickCallback() {
             @Override
             public void onDoubleClick() {
-                autoZoom();
+                ZoomUtils.zoomToggle();
             }
         });
         onGestureListener.regOnDoubleFingerCallback(new OnGestureListener.DoubleFingerCallback() {
-
             int change = 0;
 
             @Override
@@ -94,26 +93,21 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
                 change += Math.abs(value);
 
                 //变化量大于50进行调焦
-
                 if (change > 50) {
 
                     final Camera camera = CameraManager.get().getCamera();
-
                     if (camera == null)
                         return;
-
                     final Camera.Parameters p = camera.getParameters();
                     //防止画面切换闪退
                     if (p == null)
                         return;
-
                     int zoom = (int) (p.getZoom() + (p.getMaxZoom() * total / 800f));
                     if (zoom > p.getMaxZoom())
                         zoom = p.getMaxZoom();
                     if (zoom <= 0)
                         zoom = 1;
-
-                    handZoom(zoom, 300);
+                    ZoomUtils.animalZoom(zoom);
                 }
 
             }
@@ -124,124 +118,40 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
             }
         });
         mContainer.setOnTouchListener(onGestureListener);
-
-    }
-
-    //调整焦距
-    private void autoZoom() {
-
-        Camera camera = CameraManager.get().getCamera();
-        if (camera == null)
-            return;
-        Camera.Parameters p = camera.getParameters();
-        if (p == null)
-            return;
-
-        if (!p.isZoomSupported())
-            return;
-
-        if (p.getZoom() != p.getMaxZoom()) {
-            p.setZoom(p.getMaxZoom());
-        } else p.setZoom(1);
-        camera.setParameters(p);
-    }
-
-
-    private void handZoom(int target, long due) {
-
-        final Camera camera = CameraManager.get().getCamera();
-
-        if (camera == null)
-            return;
-
-        final Camera.Parameters p = camera.getParameters();
-        //防止画面切换闪退
-        if (p == null)
-            return;
-
-        if (!p.isZoomSupported())
-            return;
-
-        if (valueAnimator != null && valueAnimator.isRunning())
-            valueAnimator.cancel();
-        ValueAnimator.ofInt(p.getZoom(), target);
-        valueAnimator.setDuration(due);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                p.setZoom((Integer) animation.getAnimatedValue());
-                camera.setParameters(p);
-            }
-        });
-        valueAnimator.start();
-
+        wishViewDelegate = new WishViewDelegate(surfaceView);
     }
 
     @Override
-    public void onCreat(Activity activity) {
+    public void onCreate(Activity activity) {
         get = new WeakReference<>(activity);
         initView();
         PermissionUtils.init(get.get());
+        wishViewDelegate.onCreate(activity);
     }
 
     @Override
     public void onResume() {
-
-        if (surfaceView == null)
-            return;
-
-        final SurfaceHolder surfaceHolder = surfaceView.getHolder();
-
-        if (surfaceHolder == null)
-            return;
-
-        lazyLoading.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                if (hasSurface) {
-                    startCamera();
-                    return;
-                }
-
-                surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-                    @Override
-                    public void surfaceCreated(SurfaceHolder holder) {
-                        startCamera();
-                    }
-
-                    @Override
-                    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-                    }
-
-                    @Override
-                    public void surfaceDestroyed(SurfaceHolder holder) {
-                        hasSurface = false;
-                    }
-                });
-            }
-        }, 100);
-
+        wishViewDelegate.onResume();
     }
 
     @Override
     public void onPause() {
-
+        wishViewDelegate.onPause();
     }
 
     @Override
     public void onStop() {
-
+        wishViewDelegate.onStop();
     }
 
     @Override
     public void onDestory() {
-
+        wishViewDelegate.onDestory();
     }
 
     @Override
     public void onClick(View v) {
+
         if (v == lightLayout) {
             TextView text = lightLayout.findViewById(R.id.light_text);
             ImageView imageView = lightLayout.findViewById(R.id.light_img);
@@ -249,26 +159,12 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
                 text.setText("轻点关闭");
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.light_open));
                 lightLayout.setTag(true);
-                openLight();
             } else {
                 text.setText("轻点照亮");
                 imageView.setImageDrawable(getResources().getDrawable(R.drawable.light_close));
                 lightLayout.setTag(false);
-                closeLight();
             }
         }
-    }
-
-
-    private void startCamera() {
 
     }
-
-    private void openLight() {
-    }
-
-    private void closeLight() {
-
-    }
-
 }

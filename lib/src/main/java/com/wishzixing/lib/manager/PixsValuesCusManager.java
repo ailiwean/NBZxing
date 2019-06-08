@@ -6,6 +6,7 @@ import android.util.Log;
 import com.wishzixing.lib.able.AccountLigFieAble;
 import com.wishzixing.lib.able.AutoFocusAble;
 import com.wishzixing.lib.able.DecodePixAble;
+import com.wishzixing.lib.able.PixsAutoFocusAble;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class PixsValuesCusManager {
         actionList.add(AutoFocusAble.getInstance());
         actionList.add(DecodePixAble.getInstance());
         actionList.add(AccountLigFieAble.getInstance());
+        actionList.add(PixsAutoFocusAble.getInstance());
     }
 
     private static class Holder {

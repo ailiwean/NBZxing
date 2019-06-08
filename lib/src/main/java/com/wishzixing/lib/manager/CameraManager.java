@@ -151,7 +151,6 @@ public class CameraManager {
 
         if (camera == null)
             return;
-
         parameters = camera.getParameters();
         parameters.set("flash-value", 2);
         parameters.set("flash-mode", "off");
@@ -161,7 +160,7 @@ public class CameraManager {
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);
         camera.startPreview();
-
+        requestPreviewFrame();
     }
 
 

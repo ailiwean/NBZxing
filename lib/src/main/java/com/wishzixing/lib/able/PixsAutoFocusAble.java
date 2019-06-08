@@ -21,4 +21,17 @@ public class PixsAutoFocusAble implements PixsValuesCus {
 
     }
 
+    private PixsAutoFocusAble() {
+
+    }
+
+    private static class Holde {
+        static PixsAutoFocusAble INSTANCE = new PixsAutoFocusAble();
+    }
+
+    public static PixsAutoFocusAble getInstance() {
+        return Holde.INSTANCE;
+    }
+
+
 }

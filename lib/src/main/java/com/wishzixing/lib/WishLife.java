@@ -9,7 +9,7 @@ import android.app.Activity;
  */
 public interface WishLife {
 
-    void onCreat(Activity activity);
+    void onCreate(Activity activity);
 
     void onResume();
 
