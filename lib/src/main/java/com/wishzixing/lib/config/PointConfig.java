@@ -85,6 +85,7 @@ public class PointConfig {
             cameraResolution = findBestPreviewSizeValue(previewSizeValueString, screenResolution);
         }
 
+        //cameraResolution为最后调整的适合SurfaceView显示的区域大小
         if (cameraResolution == null) {
             // Ensure that the camera resolution is a multiple of 8, as the screen may not be.
             cameraResolution = new Point(

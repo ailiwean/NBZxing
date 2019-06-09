@@ -1,14 +1,20 @@
 package com.wishzixing.lib.views;
 
 import android.app.Activity;
+import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
+import com.google.zxing.Result;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.Config;
+import com.wishzixing.lib.config.ParseRectConfig;
 import com.wishzixing.lib.manager.CameraManager;
+import com.wishzixing.lib.manager.PixsValuesCus;
+import com.wishzixing.lib.manager.PixsValuesCusManager;
 import com.wishzixing.lib.util.InactivityTimerUtils;
-import com.wishzixing.lib.util.Utils;
 
 /***
  *  Created by SWY
@@ -22,6 +28,8 @@ public class WishViewDelegate implements WishLife {
     private boolean hasSurface = false;
 
     InactivityTimerUtils inactivityTimer;
+    private SurfaceListener surfaceListener;
+    private ResultListener resultListener;
 
     public WishViewDelegate(SurfaceView surfaceView) {
         this.surfaceView = surfaceView;
@@ -29,7 +37,6 @@ public class WishViewDelegate implements WishLife {
 
     @Override
     public void onCreate(Activity activity) {
-        Utils.init(activity);
         CameraManager.init(activity);
         hasSurface = false;
         inactivityTimer = new InactivityTimerUtils(activity);
@@ -51,6 +58,9 @@ public class WishViewDelegate implements WishLife {
                     Config.useDefault();
 
                     CameraManager.get().initCamera();
+
+                    if (surfaceListener != null)
+                        surfaceListener.onCreate();
 
                 }
             }, 100);
@@ -77,6 +87,8 @@ public class WishViewDelegate implements WishLife {
 
                                 CameraManager.get().initCamera();
 
+                                if (surfaceListener != null)
+                                    surfaceListener.onCreate();
                             }
                         }, 100);
                     }
@@ -85,6 +97,8 @@ public class WishViewDelegate implements WishLife {
                 @Override
                 public void surfaceDestroyed(SurfaceHolder holder) {
                     hasSurface = false;
+                    if (surfaceListener != null)
+                        surfaceListener.onDestory();
                 }
             });
         }
@@ -104,5 +118,53 @@ public class WishViewDelegate implements WishLife {
     @Override
     public void onDestory() {
         inactivityTimer.shutdown();
+    }
+
+    public WishViewDelegate registerSurfaceListener(SurfaceListener surfaceListener) {
+        this.surfaceListener = surfaceListener;
+        return this;
+    }
+
+    public WishViewDelegate registerResultListener(ResultListener resultListener) {
+        this.resultListener = resultListener;
+        return this;
+    }
+
+    //增加新的像素解析能力
+    public void addNewAbleAction(PixsValuesCus pixsValuesCus) {
+        PixsValuesCusManager.getInstance().addNewAction(pixsValuesCus);
+    }
+
+
+    public Camera getCamera() {
+        return CameraManager.get().getCamera();
+    }
+
+    public WishViewDelegate setParseRectFromView(final View view) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                ParseRectConfig.getInstance().setParseRectFromView(view).go();
+            }
+        });
+        return this;
+    }
+
+    //surfaceView显示回调
+    public static interface SurfaceListener {
+
+        void onCreate();
+
+        void onDestory();
+
+    }
+
+    //扫描结果回调
+    public static interface ResultListener {
+
+        void scanSucceed(Result result);
+
+        void scanImgFail();
+
     }
 }

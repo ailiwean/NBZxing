@@ -16,7 +16,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.zxing.Result;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.R;
 import com.wishzixing.lib.WishLife;
@@ -119,6 +121,33 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         });
         mContainer.setOnTouchListener(onGestureListener);
         wishViewDelegate = new WishViewDelegate(surfaceView);
+
+        wishViewDelegate.registerSurfaceListener(new WishViewDelegate.SurfaceListener() {
+            @Override
+            public void onCreate() {
+
+
+            }
+
+            @Override
+            public void onDestory() {
+
+
+            }
+        });
+        wishViewDelegate.registerResultListener(new WishViewDelegate.ResultListener() {
+            @Override
+            public void scanSucceed(Result result) {
+                Toast.makeText(getContext(), result.getText(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void scanImgFail() {
+
+            }
+        });
+        wishViewDelegate.setParseRectFromView(mCropLayout);
+
     }
 
     @Override

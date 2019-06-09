@@ -1,6 +1,7 @@
 package com.wishzixing.lib.config;
 
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 /***
@@ -10,7 +11,7 @@ import android.view.View;
  */
 public class ParseRectConfig {
 
-    Rect parseRect = new Rect(65, 512, 915, 1312);
+    Rect parseRect = new Rect(0, 0, 0, 0);
 
     private ParseRectConfig() {
 

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.util.Log;
 
 import com.wishzixing.lib.util.Utils;
 
@@ -25,7 +24,7 @@ public class SensorManager implements SensorEventListener {
 
     long stamp = 0;
 
-    private static final int DELEY_DURATION = 500;
+    private static final int DELEY_DURATION = 300;
 
     private SensorChange sensorChange;
 

@@ -67,6 +67,9 @@ public class RxQrBarParseUtils {
 
         BinaryBitmap bitmap = ConvertUtlis.byteToBinay(rotatedData, width, height);
 
+        if (bitmap == null)
+            return null;
+
         try {
             rawResult = CustomMultiFormatReader.getInstance().decodeWithState(bitmap);
         } catch (ReaderException e) {
