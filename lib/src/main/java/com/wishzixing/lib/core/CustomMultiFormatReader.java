@@ -111,8 +111,7 @@ public class CustomMultiFormatReader implements Reader {
                 readers.add(new MultiFormatOneDReader(hints));
             }
             if (formats.contains(BarcodeFormat.QR_CODE)) {
-
-                readers.add(new AutoZoomQRCode());
+                readers.add(new QRCodeReader());
             }
             if (formats.contains(BarcodeFormat.DATA_MATRIX)) {
                 readers.add(new DataMatrixReader());
@@ -130,7 +129,9 @@ public class CustomMultiFormatReader implements Reader {
             if (addOneDReader && tryHarder) {
                 readers.add(new MultiFormatOneDReader(hints));
             }
+
         }
+
         if (readers.isEmpty()) {
             if (!tryHarder) {
                 readers.add(new MultiFormatOneDReader(hints));

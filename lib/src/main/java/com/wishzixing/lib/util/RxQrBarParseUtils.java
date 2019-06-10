@@ -53,19 +53,8 @@ public class RxQrBarParseUtils {
     public Result decodeFromByte(byte[] data, int width, int height) {
 
         Result rawResult = null;
-        //modify here
-        byte[] rotatedData = new byte[data.length];
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                rotatedData[x * height + height - y - 1] = data[x + y * width];
-            }
-        }
-        // Here we are swapping, that's the difference to #11
-        int tmp = width;
-        width = height;
-        height = tmp;
 
-        BinaryBitmap bitmap = ConvertUtlis.byteToBinay(rotatedData, width, height);
+        BinaryBitmap bitmap = ConvertUtlis.byteToBinay(data, width, height);
 
         if (bitmap == null)
             return null;
@@ -80,6 +69,8 @@ public class RxQrBarParseUtils {
 
         return rawResult;
     }
+
+
 
     /**
      * Resize the bitmap

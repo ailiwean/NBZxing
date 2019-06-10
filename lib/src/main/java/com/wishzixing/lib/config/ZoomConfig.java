@@ -19,18 +19,30 @@ public class ZoomConfig {
     private int previewFormat;
     private String previewFormatString;
 
+    //是否自动缩放
+    private boolean isAutoZoom;
+
     private ZoomConfig() {
         init();
     }
 
+    private static class Holer {
+        static ZoomConfig INSTANCE = new ZoomConfig();
+    }
+
     public static ZoomConfig getInstance() {
-        return new ZoomConfig();
+        return Holer.INSTANCE;
     }
 
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
     public ZoomConfig setZoom(int zoom) {
         this.tenDesiredZoom = zoom;
+        return this;
+    }
+
+    public ZoomConfig setAutoZoom(boolean isAutoZoom) {
+        this.isAutoZoom = isAutoZoom;
         return this;
     }
 
@@ -93,5 +105,6 @@ public class ZoomConfig {
 
     public void go() {
         CameraConfig.getInstance().tenDesiredZoom = tenDesiredZoom;
+        CameraConfig.getInstance().isAutoZoom = isAutoZoom;
     }
 }

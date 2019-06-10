@@ -15,8 +15,13 @@ public class ScanModelConfig {
 
     }
 
+
+    private static class Holder {
+        static ScanModelConfig INSTANCE = new ScanModelConfig();
+    }
+
     public static ScanModelConfig getInstance() {
-        return new ScanModelConfig();
+        return Holder.INSTANCE;
     }
 
     //设定扫描模式

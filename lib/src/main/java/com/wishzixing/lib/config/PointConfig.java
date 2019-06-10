@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.util.Log;
-import android.view.Display;
 import android.view.WindowManager;
 
 import com.wishzixing.lib.manager.CameraManager;
@@ -34,8 +33,13 @@ public class PointConfig {
         initCameraPoint();
     }
 
+
+    private static class Holder {
+        static PointConfig INSTANCE = new PointConfig();
+    }
+
     public static PointConfig getInstance() {
-        return new PointConfig();
+        return Holder.INSTANCE;
     }
 
     public PointConfig setScreenPoint(Point point) {

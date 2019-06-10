@@ -9,7 +9,7 @@ import android.hardware.Camera;
  */
 public interface PixsValuesCus {
 
-    void cusAction(byte[] data, Camera camera);
+    void cusAction(byte[] data, Camera camera, int x, int y);
 
     void stop();
 }

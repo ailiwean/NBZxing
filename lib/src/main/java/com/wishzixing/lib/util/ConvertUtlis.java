@@ -27,8 +27,19 @@ public class ConvertUtlis {
     //字节转Bitmap
     public static BinaryBitmap byteToBinay(byte[] bytes, int width, int height) {
 
+        //modify here
+        byte[] rotatedData = new byte[bytes.length];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                rotatedData[x * height + height - y - 1] = bytes[x + y * width];
+            }
+        }
+        // Here we are swapping, that's the difference to #11
+        int tmp = width;
+        width = height;
+        height = tmp;
         //width，height都正常
-        PlanarYUVLuminanceSource source = buildLuminanceSource(bytes, width, height);
+        PlanarYUVLuminanceSource source = buildLuminanceSource(rotatedData, width, height);
 
         if (source == null)
             return null;
@@ -48,10 +59,6 @@ public class ConvertUtlis {
     private static PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height) {
 
         Rect rect = CameraConfig.getInstance().getFramingRect();
-
-        Log.e(rect.left + "left", rect.top + "top");
-        Log.e(rect.right + "right", rect.bottom + "bottom");
-
         if ((rect.left == 0 && rect.right == 0) || (rect.top == 0 && rect.bottom == 0))
             return null;
 

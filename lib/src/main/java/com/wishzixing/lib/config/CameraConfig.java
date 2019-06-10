@@ -2,7 +2,8 @@ package com.wishzixing.lib.config;
 
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.hardware.Camera;
+
+import com.google.zxing.BinaryBitmap;
 
 /***
  *  Created by SWY
@@ -15,6 +16,8 @@ public class CameraConfig {
     private static final int DESIRED_SHARPNESS = 30;
     public int previewFormat;
     public String previewFormatString;
+
+    public boolean isAutoZoom;
 
     //Zxing解析区域对应View
     Rect parseRect;
@@ -50,6 +53,10 @@ public class CameraConfig {
 
     public Rect getFramingRect() {
         return parseRect;
+    }
+
+    public boolean isAutoZoom() {
+        return isAutoZoom;
     }
 
     public int getScanModel() {

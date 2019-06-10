@@ -11,14 +11,18 @@ import android.view.View;
  */
 public class ParseRectConfig {
 
-    Rect parseRect = new Rect(0, 0, 0, 0);
+    Rect parseRect;
 
     private ParseRectConfig() {
 
     }
 
+    private static class Holder {
+        static ParseRectConfig INSTANCE = new ParseRectConfig();
+    }
+
     public static ParseRectConfig getInstance() {
-        return new ParseRectConfig();
+        return Holder.INSTANCE;
     }
 
     public ParseRectConfig setParseRectFromView(final View view) {
@@ -41,6 +45,10 @@ public class ParseRectConfig {
     }
 
     public void go() {
+
+        if (parseRect == null)
+            parseRect = new Rect(0, 0, 0, 0);
+
         CameraConfig.getInstance().parseRect = this.parseRect;
     }
 }

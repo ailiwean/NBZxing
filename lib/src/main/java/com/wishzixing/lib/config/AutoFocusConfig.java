@@ -15,8 +15,13 @@ public class AutoFocusConfig {
 
     }
 
+    private static class Holder {
+        static AutoFocusConfig INSTANCE = new AutoFocusConfig();
+    }
+
+
     public static AutoFocusConfig getInstance() {
-        return new AutoFocusConfig();
+        return Holder.INSTANCE;
     }
 
     public AutoFocusConfig setModel(@Type int type) {

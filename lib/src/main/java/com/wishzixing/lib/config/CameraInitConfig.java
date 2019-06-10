@@ -10,9 +10,6 @@ public class CameraInitConfig {
 
     public static void init() {
 
-
-
-
     }
 
 

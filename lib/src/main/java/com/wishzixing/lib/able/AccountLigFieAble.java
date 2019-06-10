@@ -30,7 +30,7 @@ public class AccountLigFieAble implements PixsValuesCus {
     }
 
     @Override
-    public void cusAction(byte[] data, Camera camera) {
+    public void cusAction(byte[] data, Camera camera, int x, int y) {
         account(data, camera);
     }
 

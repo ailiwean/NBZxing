@@ -23,8 +23,15 @@ public class AutoFocusAble implements PixsValuesCus {
 
     private boolean isFrist = false;
 
+    private void startAutoFocus() {
+        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.TIME)
+            setTimeAutoFocus();
+        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.SENSOR)
+            setSensorAutoFocus();
+    }
+
     @Override
-    public void cusAction(byte[] data, Camera camera) {
+    public void cusAction(byte[] data, Camera camera, int x, int y) {
 
         if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.PIXVALUES) {
             setPixvaluesAutoFocus(data, camera);
@@ -34,13 +41,7 @@ public class AutoFocusAble implements PixsValuesCus {
                 isFrist = true;
             }
         }
-    }
 
-    private void startAutoFocus() {
-        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.TIME)
-            setTimeAutoFocus();
-        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.SENSOR)
-            setSensorAutoFocus();
     }
 
     @Override

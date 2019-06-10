@@ -2,7 +2,6 @@ package com.wishzixing.lib.views;
 
 import android.app.Activity;
 import android.hardware.Camera;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -134,7 +133,6 @@ public class WishViewDelegate implements WishLife {
     public void addNewAbleAction(PixsValuesCus pixsValuesCus) {
         PixsValuesCusManager.getInstance().addNewAction(pixsValuesCus);
     }
-
 
     public Camera getCamera() {
         return CameraManager.get().getCamera();

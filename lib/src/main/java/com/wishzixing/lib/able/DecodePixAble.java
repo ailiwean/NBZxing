@@ -1,6 +1,5 @@
 package com.wishzixing.lib.able;
 
-import android.graphics.Point;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -10,7 +9,6 @@ import android.util.Log;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
-import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.manager.PixsValuesCus;
 import com.wishzixing.lib.util.RxQrBarParseUtils;
@@ -26,10 +24,9 @@ public class DecodePixAble implements PixsValuesCus {
     private DecodeHandler decodeHandler;
 
     @Override
-    public void cusAction(byte[] data, Camera camera) {
-        Point cameraResolution = CameraConfig.getInstance().getCameraPoint();
-        Message message = decodeHandler.obtainMessage(R.id.decode, cameraResolution.x,
-                cameraResolution.y, data);
+    public void cusAction(byte[] data, Camera camera, int x, int y) {
+        Message message = decodeHandler.obtainMessage(R.id.decode, x,
+                y, data);
         message.sendToTarget();
     }
 

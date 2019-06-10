@@ -1,12 +1,16 @@
 package com.wishzixing.lib.manager;
 
+import android.graphics.Point;
 import android.hardware.Camera;
-import android.util.Log;
+import android.os.Handler;
+import android.os.HandlerThread;
 
 import com.wishzixing.lib.able.AccountLigFieAble;
 import com.wishzixing.lib.able.AutoFocusAble;
+import com.wishzixing.lib.able.AutoZoomAble;
 import com.wishzixing.lib.able.DecodePixAble;
 import com.wishzixing.lib.able.PixsAutoFocusAble;
+import com.wishzixing.lib.config.CameraConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,7 @@ public class PixsValuesCusManager {
 
     private PixsValuesCusManager() {
         actionList.add(AutoFocusAble.getInstance());
+        actionList.add(AutoZoomAble.getInstance());
         actionList.add(DecodePixAble.getInstance());
         actionList.add(AccountLigFieAble.getInstance());
         actionList.add(PixsAutoFocusAble.getInstance());
@@ -44,8 +49,10 @@ public class PixsValuesCusManager {
      * 执行这些能力
      */
     public void each(byte[] bytes, Camera camera) {
+
+        Point cameraResolution = CameraConfig.getInstance().getCameraPoint();
         for (int i = 0; i < actionList.size(); i++) {
-            actionList.get(i).cusAction(bytes, camera);
+            actionList.get(i).cusAction(bytes, camera, cameraResolution.x, cameraResolution.y);
         }
     }
 
