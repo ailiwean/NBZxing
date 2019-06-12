@@ -9,7 +9,6 @@ import com.google.zxing.BinaryBitmap;
 import com.google.zxing.FormatException;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.ResultPoint;
-import com.google.zxing.common.DecoderResult;
 import com.google.zxing.common.DetectorResult;
 import com.google.zxing.qrcode.detector.Detector;
 import com.wishzixing.lib.config.CameraConfig;
@@ -31,7 +30,6 @@ public class AutoZoomAble implements PixsValuesCus {
         handler = new Handler(handlerThread.getLooper());
     }
 
-
     private static class Holder {
         static AutoZoomAble INSTANCE = new AutoZoomAble();
     }
@@ -47,9 +45,7 @@ public class AutoZoomAble implements PixsValuesCus {
             @Override
             public void run() {
 
-                BinaryBitmap bitmap = ConvertUtlis.byteToBinay(data, x, y);
-                DecoderResult decoderResult;
-                ResultPoint[] points;
+                BinaryBitmap bitmap = ConvertUtlis.byteToBinay(data, new Rect(0, 0, y, x));
 
                 DetectorResult detectorResult = null;
 
@@ -64,10 +60,12 @@ public class AutoZoomAble implements PixsValuesCus {
                     e.printStackTrace();
                 }
 
-                if (detectorResult == null)
+                if (detectorResult == null) {
                     return;
+                }
 
                 ResultPoint[] p = detectorResult.getPoints();
+
                 //计算扫描框中的二维码的宽度，两点间距离公式
                 float point1X = p[0].getX();
                 float point1Y = p[0].getY();
@@ -90,7 +88,6 @@ public class AutoZoomAble implements PixsValuesCus {
                             else zoom = maxZoom;
                             parameters.setZoom(zoom);
                             camera.setParameters(parameters);
-
                         }
                     }
                 }
@@ -104,4 +101,5 @@ public class AutoZoomAble implements PixsValuesCus {
     public void stop() {
 
     }
+
 }

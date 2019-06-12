@@ -20,4 +20,11 @@ public class PermissionUtils {
             ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
     }
+
+
+    public static boolean hasPermission(Activity activity) {
+        return ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+    }
+
+
 }

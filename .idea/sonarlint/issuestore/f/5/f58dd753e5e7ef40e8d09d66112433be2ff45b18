@@ -1,0 +1,7 @@
+
+{squid:S1450"ZRemove the "surfaceView" field and declare it as a local variable in the relevant methods.(“ς£²ύÿÿÿÿ8£…τη³-
+usquid:S1450"ZRemove the "mCropLayout" field and declare it as a local variable in the relevant methods.(ΣΰΦx8£…τη³-
+Rsquid:S1068"1Remove this unused "valueAnimator" private field.(Δωέψÿÿÿÿ8£…τη³-
+zsquid:S1450"YRemove the "mContainer" field and declare it as a local variable in the relevant methods.(ϋΣ½ϊÿÿÿÿ8£…τη³-
+Ksquid:S1068"/Remove this unused "lazyLoading" private field.(—“›8£…τη³-
+Isquid:S1068".Remove this unused "hasSurface" private field.(ƒΤΨw8£…τη³-

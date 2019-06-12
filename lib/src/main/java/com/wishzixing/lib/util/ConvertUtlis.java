@@ -25,7 +25,11 @@ public class ConvertUtlis {
     }
 
     //字节转Bitmap
-    public static BinaryBitmap byteToBinay(byte[] bytes, int width, int height) {
+    public static BinaryBitmap byteToBinay(byte[] bytes, Rect rect) {
+
+        int width = CameraConfig.getInstance().getCameraPoint().x;
+        int height = CameraConfig.getInstance().getCameraPoint().y;
+
 
         //modify here
         byte[] rotatedData = new byte[bytes.length];
@@ -39,7 +43,7 @@ public class ConvertUtlis {
         width = height;
         height = tmp;
         //width，height都正常
-        PlanarYUVLuminanceSource source = buildLuminanceSource(rotatedData, width, height);
+        PlanarYUVLuminanceSource source = buildLuminanceSource(rotatedData, width, height, rect);
 
         if (source == null)
             return null;
@@ -51,14 +55,12 @@ public class ConvertUtlis {
      * A factory method to build the appropriate LuminanceSource object based on the format
      * of the preview buffers, as described by Camera.Parameters.
      *
-     * @param data   A preview frame.
-     * @param width  The width of the image.
-     * @param height The height of the image.
+     * @param data A preview frame.
      * @return A PlanarYUVLuminanceSource instance.
      */
-    private static PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height) {
+    private static PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height, Rect rect) {
 
-        Rect rect = CameraConfig.getInstance().getFramingRect();
+
         if ((rect.left == 0 && rect.right == 0) || (rect.top == 0 && rect.bottom == 0))
             return null;
 

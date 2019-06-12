@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
+import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.core.CustomMultiFormatReader;
 
 /***
@@ -54,7 +55,7 @@ public class RxQrBarParseUtils {
 
         Result rawResult = null;
 
-        BinaryBitmap bitmap = ConvertUtlis.byteToBinay(data, width, height);
+        BinaryBitmap bitmap = ConvertUtlis.byteToBinay(data, CameraConfig.getInstance().getFramingRect());
 
         if (bitmap == null)
             return null;
@@ -69,7 +70,6 @@ public class RxQrBarParseUtils {
 
         return rawResult;
     }
-
 
 
     /**

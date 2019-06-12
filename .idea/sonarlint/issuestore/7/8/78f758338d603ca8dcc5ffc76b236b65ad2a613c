@@ -1,0 +1,3 @@
+
+Nsquid:S1068"2Remove this unused "resultListener" private field.(°§‰ü8Ù…¥è¥-
+ysquid:S1450"]Remove the "resultListener" field and declare it as a local variable in the relevant methods.(°§‰ü8Ù…¥è¥-

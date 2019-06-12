@@ -14,6 +14,7 @@ import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.manager.PixsValuesCus;
 import com.wishzixing.lib.manager.PixsValuesCusManager;
 import com.wishzixing.lib.util.InactivityTimerUtils;
+import com.wishzixing.lib.util.PermissionUtils;
 
 /***
  *  Created by SWY
@@ -23,6 +24,8 @@ import com.wishzixing.lib.util.InactivityTimerUtils;
 public class WishViewDelegate implements WishLife {
 
     SurfaceView surfaceView;
+
+    Activity mActivity;
 
     private boolean hasSurface = false;
 
@@ -37,12 +40,16 @@ public class WishViewDelegate implements WishLife {
     @Override
     public void onCreate(Activity activity) {
         CameraManager.init(activity);
+        mActivity = activity;
         hasSurface = false;
         inactivityTimer = new InactivityTimerUtils(activity);
     }
 
     @Override
     public void onResume() {
+
+        if (!PermissionUtils.hasPermission(mActivity))
+            return;
 
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
