@@ -2,6 +2,7 @@ package com.wishzixing.lib.able;
 
 import android.hardware.Camera;
 
+import com.google.zxing.BinaryBitmap;
 import com.wishzixing.lib.manager.PixsValuesCus;
 
 /***

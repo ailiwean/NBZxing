@@ -1,6 +1,5 @@
 package com.wishzixing.lib.util;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.hardware.Camera;
 

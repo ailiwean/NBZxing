@@ -3,8 +3,8 @@ package com.wishzixing.lib.able;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 
+import com.google.zxing.BinaryBitmap;
 import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.listener.AutoFocusCallback;

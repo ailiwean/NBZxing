@@ -2,8 +2,6 @@ package com.wishzixing.lib.manager;
 
 import android.graphics.Point;
 import android.hardware.Camera;
-import android.os.Handler;
-import android.os.HandlerThread;
 
 import com.wishzixing.lib.able.AccountLigFieAble;
 import com.wishzixing.lib.able.AutoFocusAble;
@@ -52,7 +50,8 @@ public class PixsValuesCusManager {
 
         Point cameraResolution = CameraConfig.getInstance().getCameraPoint();
         for (int i = 0; i < actionList.size(); i++) {
-            actionList.get(i).cusAction(bytes, camera, cameraResolution.x, cameraResolution.y);
+            //相机旋转90°所以适应屏幕宽高应x,y交换
+            actionList.get(i).cusAction(bytes, camera, cameraResolution.y, cameraResolution.x);
         }
     }
 

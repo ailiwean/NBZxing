@@ -152,9 +152,9 @@ public class CameraManager {
         if (camera == null)
             return;
         parameters = camera.getParameters();
-        parameters.set("flash-value", 2);
+        parameters.set("flash-value", 10);
         parameters.set("flash-mode", "off");
-        parameters.set("zoom", String.valueOf(CameraConfig.getInstance().getTenDesiredZoom() / 10.0));
+        parameters.set("zoom", "1");
         parameters.set("taking-picture-zoom", CameraConfig.getInstance().getTenDesiredZoom());
         parameters.setPreviewSize(CameraConfig.getInstance().getCameraPoint().x, CameraConfig.getInstance().getCameraPoint().y);
         camera.setDisplayOrientation(90);
@@ -162,7 +162,6 @@ public class CameraManager {
         camera.startPreview();
         requestPreviewFrame();
     }
-
 
     /***
      * 相机重新预览并执行能力
