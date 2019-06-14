@@ -1,6 +1,7 @@
 package com.wishzixing.lib.handler;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
@@ -16,12 +17,13 @@ import com.wishzixing.lib.manager.CameraManager;
  */
 public class CameraCoordinateHandler extends Handler {
 
-    private CameraCoordinateHandler() {
-        CameraManager.get().startPreview();
+
+    private CameraCoordinateHandler(Looper mainLooper) {
+        super(mainLooper);
     }
 
     private static class Holder {
-        static CameraCoordinateHandler cameraCoordinateHandler = new CameraCoordinateHandler();
+        static CameraCoordinateHandler cameraCoordinateHandler = new CameraCoordinateHandler(Looper.getMainLooper());
     }
 
     public static CameraCoordinateHandler getInstance() {

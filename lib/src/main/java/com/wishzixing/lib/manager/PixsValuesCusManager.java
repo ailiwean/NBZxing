@@ -53,6 +53,7 @@ public class PixsValuesCusManager {
             //相机旋转90°所以适应屏幕宽高应x,y交换
             actionList.get(i).cusAction(bytes, camera, cameraResolution.y, cameraResolution.x);
         }
+
     }
 
 }

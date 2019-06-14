@@ -5,12 +5,12 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.manager.PixsValuesCus;
+import com.wishzixing.lib.manager.ThreadManager;
 import com.wishzixing.lib.util.RxQrBarParseUtils;
 
 /***
@@ -24,10 +24,23 @@ public class DecodePixAble implements PixsValuesCus {
     private DecodeHandler decodeHandler;
 
     @Override
-    public void cusAction(byte[] data, Camera camera, int x, int y) {
-        Message message = decodeHandler.obtainMessage(R.id.decode, x,
-                y, data);
-        message.sendToTarget();
+    public void cusAction(final byte[] data, Camera camera, final int x, final int y) {
+
+        ThreadManager.getInstance().addTask(new Runnable() {
+            @Override
+            public void run() {
+                Result result = RxQrBarParseUtils.getInstance().decodeFromByte((data), x, y);
+                if (result != null) {
+                    Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_succeeded, result);
+                    message.sendToTarget();
+                } else {
+                    Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_failed);
+                    if (message.getTarget() != null)
+                        message.sendToTarget();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -59,21 +72,11 @@ public class DecodePixAble implements PixsValuesCus {
 
         @Override
         public void handleMessage(Message message) {
-
-            Result result = RxQrBarParseUtils.getInstance().decodeFromByte((byte[]) message.obj, message.arg1, message.arg2);
-            sendResultMessage(result);
+            sendResultMessage((Result) message.obj);
         }
 
         private void sendResultMessage(Result rawResult) {
 
-            if (rawResult != null) {
-                Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_succeeded, rawResult);
-                message.sendToTarget();
-            } else {
-                Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_failed);
-                if (message.getTarget() != null)
-                    message.sendToTarget();
-            }
 
         }
     }

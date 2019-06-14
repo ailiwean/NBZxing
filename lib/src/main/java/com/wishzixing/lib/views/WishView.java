@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,10 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
-import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.R;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.listener.OnGestureListener;
+import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.util.PermissionUtils;
 import com.wishzixing.lib.util.ZoomUtils;
 
@@ -96,7 +95,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
                 //变化量大于50进行调焦
                 if (change > 50) {
-
                     final Camera camera = CameraManager.get().getCamera();
                     if (camera == null)
                         return;
@@ -110,6 +108,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
                     if (zoom <= 0)
                         zoom = 1;
                     ZoomUtils.animalZoom(zoom);
+                    change = 0;
                 }
 
             }
