@@ -10,7 +10,6 @@ import com.google.zxing.Result;
 import com.wishzixing.lib.R;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.manager.PixsValuesCus;
-import com.wishzixing.lib.manager.ThreadManager;
 import com.wishzixing.lib.util.RxQrBarParseUtils;
 
 /***
@@ -26,21 +25,15 @@ public class DecodePixAble implements PixsValuesCus {
     @Override
     public void cusAction(final byte[] data, Camera camera, final int x, final int y) {
 
-        ThreadManager.getInstance().addTask(new Runnable() {
-            @Override
-            public void run() {
-                Result result = RxQrBarParseUtils.getInstance().decodeFromByte((data), x, y);
-                if (result != null) {
-                    Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_succeeded, result);
-                    message.sendToTarget();
-                } else {
-                    Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_failed);
-                    if (message.getTarget() != null)
-                        message.sendToTarget();
-                }
-            }
-        });
-
+        Result result = RxQrBarParseUtils.getInstance().decodeFromByte(data);
+        if (result != null) {
+            Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_succeeded, result);
+            message.sendToTarget();
+        } else {
+            Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_failed);
+            if (message.getTarget() != null)
+                message.sendToTarget();
+        }
     }
 
     @Override

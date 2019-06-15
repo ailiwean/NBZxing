@@ -51,7 +51,7 @@ public class RxQrBarParseUtils {
     }
 
 
-    public Result decodeFromByte(byte[] data, int width, int height) {
+    public Result decodeFromByte(byte[] data) {
 
         Result rawResult = null;
 

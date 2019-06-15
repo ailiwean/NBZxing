@@ -46,12 +46,18 @@ public class PixsValuesCusManager {
     /***
      * 执行这些能力
      */
-    public void each(byte[] bytes, Camera camera) {
+    public void each(final byte[] bytes, final Camera camera) {
 
-        Point cameraResolution = CameraConfig.getInstance().getCameraPoint();
+        final Point cameraResolution = CameraConfig.getInstance().getCameraPoint();
         for (int i = 0; i < actionList.size(); i++) {
             //相机旋转90°所以适应屏幕宽高应x,y交换
-            actionList.get(i).cusAction(bytes, camera, cameraResolution.y, cameraResolution.x);
+            final int finalI = i;
+            ThreadManager.getInstance().addTask(new Runnable() {
+                @Override
+                public void run() {
+                    actionList.get(finalI).cusAction(bytes, camera, cameraResolution.y, cameraResolution.x);
+                }
+            });
         }
 
     }

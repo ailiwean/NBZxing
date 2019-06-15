@@ -45,6 +45,7 @@ public class WishViewDelegate implements WishLife {
         inactivityTimer = new InactivityTimerUtils(activity);
     }
 
+
     @Override
     public void onResume() {
 

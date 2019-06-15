@@ -3,11 +3,9 @@ package com.wishzixing.lib.handler;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
-import com.wishzixing.lib.manager.CameraManager;
 
 /***
  *  Created by SWY
@@ -35,9 +33,8 @@ public class CameraCoordinateHandler extends Handler {
 
         if (message.what == R.id.decode_succeeded) {
             decodeSucceed((Result) message.obj);
-            Log.e("解析成功", "解析成功");
         } else if (message.what == R.id.decode_failed) {
-            //startPreviewAndDecode();
+
         }
     }
 

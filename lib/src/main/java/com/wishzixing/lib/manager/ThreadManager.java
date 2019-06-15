@@ -14,7 +14,8 @@ public class ThreadManager {
     ThreadPoolExecutor executor;
 
     private ThreadManager() {
-        executor = new ThreadPoolExecutor(2, 5, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(5));
+        executor = new ThreadPoolExecutor(2, 5, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(10));
+        //任务拒绝策略
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardOldestPolicy());
     }
 
@@ -29,5 +30,4 @@ public class ThreadManager {
     public void addTask(Runnable runnable) {
         executor.execute(runnable);
     }
-
 }
