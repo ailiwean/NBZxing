@@ -11,7 +11,6 @@ import com.google.zxing.datamatrix.DataMatrixReader;
 import com.google.zxing.maxicode.MaxiCodeReader;
 import com.google.zxing.oned.MultiFormatOneDReader;
 import com.google.zxing.pdf417.PDF417Reader;
-import com.google.zxing.qrcode.QRCodeReader;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.ScanModelConfig;
 
@@ -110,7 +109,7 @@ public class CustomMultiFormatReader implements Reader {
                 readers.add(new MultiFormatOneDReader(hints));
             }
             if (formats.contains(BarcodeFormat.QR_CODE)) {
-                readers.add(new QRCodeReader());
+                readers.add(new QRCodeCore());
             }
             if (formats.contains(BarcodeFormat.DATA_MATRIX)) {
                 readers.add(new DataMatrixReader());
@@ -136,7 +135,7 @@ public class CustomMultiFormatReader implements Reader {
                 readers.add(new MultiFormatOneDReader(hints));
             }
 
-            readers.add(new QRCodeReader());
+            readers.add(new QRCodeCore());
             readers.add(new DataMatrixReader());
             readers.add(new AztecReader());
             readers.add(new PDF417Reader());

@@ -1,10 +1,8 @@
 package com.wishzixing.lib.able;
 
 import android.hardware.Camera;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
@@ -19,14 +17,12 @@ import com.wishzixing.lib.util.RxQrBarParseUtils;
  */
 public class DecodePixAble implements PixsValuesCus {
 
-    private HandlerThread handlerThread = new HandlerThread("Decode");
-    private DecodeHandler decodeHandler;
-
     @Override
     public void cusAction(final byte[] data, Camera camera, final int x, final int y) {
 
         Result result = RxQrBarParseUtils.getInstance().decodeFromByte(data);
         if (result != null) {
+            Log.e("解析成功", "解析成功");
             Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_succeeded, result);
             message.sendToTarget();
         } else {
@@ -42,8 +38,6 @@ public class DecodePixAble implements PixsValuesCus {
     }
 
     private DecodePixAble() {
-        handlerThread.start();
-        decodeHandler = new DecodeHandler(handlerThread.getLooper());
     }
 
     private static class Holder {
@@ -54,23 +48,4 @@ public class DecodePixAble implements PixsValuesCus {
         return Holder.INSTANCE;
     }
 
-    /***
-     *  只负责解析字节数据并回调CameraCoordinateHandler
-     */
-    private static class DecodeHandler extends Handler {
-
-        private DecodeHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message message) {
-            sendResultMessage((Result) message.obj);
-        }
-
-        private void sendResultMessage(Result rawResult) {
-
-
-        }
-    }
 }

@@ -2,6 +2,8 @@ package com.wishzixing.lib.util;
 
 import android.animation.ValueAnimator;
 import android.hardware.Camera;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.wishzixing.lib.manager.CameraManager;
 
@@ -60,7 +62,7 @@ public class ZoomUtils {
         camera.setParameters(p);
     }
 
-    public static void animalZoom(int target) {
+    public static void animalZoom(final int target) {
 
 
         final Camera camera = CameraManager.get().getCamera();
@@ -76,31 +78,104 @@ public class ZoomUtils {
         if (!p.isZoomSupported())
             return;
 
-        if (valueAnimator != null && valueAnimator.isRunning())
-            valueAnimator.cancel();
-        valueAnimator = ValueAnimator.ofInt(p.getZoom(), target);
-        valueAnimator.setDuration(DURCATION);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
+            public void run() {
 
-                final Camera camera = CameraManager.get().getCamera();
+                if (valueAnimator != null && valueAnimator.isRunning())
+                    valueAnimator.cancel();
+                valueAnimator = ValueAnimator.ofInt(p.getZoom(), target);
+                valueAnimator.setDuration(DURCATION);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
 
-                if (camera == null)
-                    return;
+                        final Camera camera = CameraManager.get().getCamera();
 
-                final Camera.Parameters p = camera.getParameters();
-                //防止画面切换闪退
-                if (p == null)
-                    return;
+                        if (camera == null)
+                            return;
 
-                p.setZoom((Integer) animation.getAnimatedValue());
-                camera.setParameters(p);
+                        final Camera.Parameters p = camera.getParameters();
+                        //防止画面切换闪退
+                        if (p == null)
+                            return;
+
+                        p.setZoom((Integer) animation.getAnimatedValue());
+                        camera.setParameters(p);
+
+                    }
+                });
+                valueAnimator.start();
 
             }
         });
-        valueAnimator.start();
 
+
+    }
+
+    public static void animalZoom(final int target, final long milles) {
+
+        final Camera camera = CameraManager.get().getCamera();
+
+        if (camera == null)
+            return;
+
+        final Camera.Parameters p = camera.getParameters();
+        //防止画面切换闪退
+        if (p == null)
+            return;
+
+        if (!p.isZoomSupported())
+            return;
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+
+                if (valueAnimator != null && valueAnimator.isRunning())
+                    valueAnimator.cancel();
+                valueAnimator = ValueAnimator.ofInt(p.getZoom(), target);
+                valueAnimator.setDuration(milles);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+
+                        final Camera camera = CameraManager.get().getCamera();
+
+                        if (camera == null)
+                            return;
+
+                        final Camera.Parameters p = camera.getParameters();
+                        //防止画面切换闪退
+                        if (p == null)
+                            return;
+
+                        p.setZoom((Integer) animation.getAnimatedValue());
+                        camera.setParameters(p);
+
+                    }
+                });
+                valueAnimator.start();
+
+            }
+        });
+
+    }
+
+    public static void setZoom(int zoom) {
+
+        final Camera camera = CameraManager.get().getCamera();
+
+        if (camera == null)
+            return;
+
+        final Camera.Parameters p = camera.getParameters();
+        //防止画面切换闪退
+        if (p == null)
+            return;
+
+        p.setZoom(zoom);
+        camera.setParameters(p);
     }
 
 }
