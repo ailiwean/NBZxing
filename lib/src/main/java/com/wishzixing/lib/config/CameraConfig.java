@@ -3,8 +3,6 @@ package com.wishzixing.lib.config;
 import android.graphics.Point;
 import android.graphics.Rect;
 
-import com.google.zxing.BinaryBitmap;
-
 /***
  *  Created by SWY
  *  DATE 2019/6/1
@@ -78,4 +76,15 @@ public class CameraConfig {
     public int getTenDesiredZoom() {
         return tenDesiredZoom;
     }
+
+    public boolean isPorScreen() {
+        if (screenPoint == null)
+            try {
+                throw new Exception("未获取到屏幕尺寸信息");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return screenPoint.x < screenPoint.y;
+    }
+
 }

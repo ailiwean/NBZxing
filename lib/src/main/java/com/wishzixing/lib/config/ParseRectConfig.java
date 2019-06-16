@@ -1,7 +1,6 @@
 package com.wishzixing.lib.config;
 
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 
 /***
@@ -12,6 +11,7 @@ import android.view.View;
 public class ParseRectConfig {
 
     Rect parseRect;
+    private View v;
 
     private ParseRectConfig() {
 
@@ -26,11 +26,7 @@ public class ParseRectConfig {
     }
 
     public ParseRectConfig setParseRectFromView(final View view) {
-        int left = (int) view.getX();
-        int top = (int) view.getY();
-        int right = left + view.getMeasuredWidth();
-        int bottom = top + view.getMeasuredHeight();
-        parseRect = new Rect(left, top, right, bottom);
+        this.v = view;
         return this;
     }
 
@@ -44,11 +40,38 @@ public class ParseRectConfig {
         return this;
     }
 
-    public void go() {
+    /***
+     * 初始化时生成合适的解析窗口大小
+     */
+    private void creat() {
 
+        int cameraX = CameraConfig.getInstance().getCameraPoint().x;
+        int cameraY = CameraConfig.getInstance().getCameraPoint().y;
+
+        if (CameraConfig.getInstance().isPorScreen()) {
+            int tem = cameraX;
+            cameraX = cameraY;
+            cameraY = tem;
+        }
+
+        float ratioX = (float) cameraX / CameraConfig.getInstance().getScreenPoint().x;
+        float ratioY = (float) cameraY / CameraConfig.getInstance().getScreenPoint().y;
+
+        int left = (int) ((int) v.getX() * ratioX);
+        int top = (int) ((int) v.getY() * ratioY);
+        int right = left + v.getMeasuredWidth();
+        right *= ratioX;
+        int bottom = top + v.getMeasuredHeight();
+        bottom *= ratioY;
+
+        parseRect = new Rect(left, top, right, bottom);
+
+    }
+
+    public void go() {
+        creat();
         if (parseRect == null)
             parseRect = new Rect(0, 0, 0, 0);
-
         CameraConfig.getInstance().parseRect = this.parseRect;
     }
 }

@@ -150,7 +150,7 @@ public class WishViewDelegate implements WishLife {
         view.post(new Runnable() {
             @Override
             public void run() {
-                ParseRectConfig.getInstance().setParseRectFromView(view).go();
+                ParseRectConfig.getInstance().setParseRectFromView(view);
             }
         });
         return this;

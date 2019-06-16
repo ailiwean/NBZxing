@@ -33,7 +33,6 @@ public class PointConfig {
         initCameraPoint();
     }
 
-
     private static class Holder {
         static PointConfig INSTANCE = new PointConfig();
     }
@@ -79,6 +78,9 @@ public class PointConfig {
         if (previewSizeValueString == null) {
             previewSizeValueString = parameters.get("preview-size-value");
         }
+
+        Log.e("preViewSizeValueString:", previewSizeValueString);
+
 
         previewFormat = parameters.getPreviewFormat();
         previewFormatString = parameters.get("preview-format");

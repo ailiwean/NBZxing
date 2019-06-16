@@ -68,7 +68,6 @@ public class AutoZoomAble implements PixsValuesCus {
 
         ResultPoint[] p = detectorResult.getPoints();
 
-
         //计算扫描框中的二维码的宽度，两点间距离公式
         float point1X = p[0].getX();
         float point1Y = p[0].getY();
@@ -76,7 +75,7 @@ public class AutoZoomAble implements PixsValuesCus {
         float point2Y = p[1].getY();
 
 
-        Log.e("1X:" + point1Y, "2Y:" + point2Y);
+        Log.e("size:", p.length + "");
 
         float len = (int) Math.sqrt(Math.abs(point1X - point2X) * Math.abs(point1X - point2X) + Math.abs(point1Y - point2Y) * Math.abs(point1Y - point2Y));
 

@@ -153,8 +153,8 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     @Override
     public void onCreate(Activity activity) {
         get = new WeakReference<>(activity);
-        initView();
         PermissionUtils.init(get.get());
+        initView();
         wishViewDelegate.onCreate(activity);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
