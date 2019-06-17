@@ -3,6 +3,7 @@ package com.wishzixing.lib.util;
 import android.graphics.PointF;
 import android.util.Log;
 
+import com.google.zxing.ResultPoint;
 import com.wishzixing.lib.config.CameraConfig;
 
 /***
@@ -27,7 +28,6 @@ public class MathUtils {
         return min;
     }
 
-
     public static int getMax(float... values) {
 
         if (values.length == 0)
@@ -44,7 +44,24 @@ public class MathUtils {
 
     }
 
-    public static int getLen(PointF a, PointF b) {
+    public static int getLen(ResultPoint[] p) {
+
+        int x1 = (int) p[0].getX();
+        int y1 = (int) p[0].getY();
+
+        int x2 = (int) p[1].getX();
+        int y2 = (int) p[1].getY();
+
+        double len = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+
+        len = Math.sqrt(len);
+
+        Log.e("len:" + len, "len:" + len);
+
+        return 500;
+    }
+
+    public static PointF getRatio() {
 
         int cameraX = CameraConfig.getInstance().getCameraPoint().x;
         int cameraY = CameraConfig.getInstance().getCameraPoint().y;
@@ -58,21 +75,6 @@ public class MathUtils {
         float ratioX = (float) cameraX / CameraConfig.getInstance().getScreenPoint().x;
         float ratioY = (float) cameraY / CameraConfig.getInstance().getScreenPoint().y;
 
-        int aX = (int) a.x;
-        int aY = (int) a.y;
-
-        int bX = (int) b.x;
-        int bY = (int) b.y;
-        
-        int xDiff = (int) ((aX - bX) * ratioX);
-        int yDiff = (int) ((aY - bY) * ratioY);
-
-        int len = (int) Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-
-
-
-        return len;
+        return new PointF(ratioX, ratioY);
     }
-
-
 }

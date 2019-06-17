@@ -1,10 +1,10 @@
 package com.wishzixing.lib.able;
 
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.FormatException;
@@ -68,20 +68,12 @@ public class AutoZoomAble implements PixsValuesCus {
 
         ResultPoint[] p = detectorResult.getPoints();
 
-        if (p.length < 4)
+        Log.e("size:" + p.length, "size:" + p.length);
+
+        if (p.length < 3)
             return;
 
-        float point1X = p[0].getX();
-        float point1Y = p[0].getY();
-        float point2X = p[1].getX();
-        float point2Y = p[1].getY();
-        float point3X = p[2].getX();
-        float point3Y = p[2].getY();
-        float point4X = p[3].getX();
-        float point4Y = p[3].getY();
-
-
-        int len = MathUtils.getLen(new PointF(point3X, point3Y), new PointF(point4X, point4Y));
+        int len = MathUtils.getLen(p);
 
         Rect frameRect = CameraConfig.getInstance().getFramingRect();
         if (frameRect != null && camera != null) {
