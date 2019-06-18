@@ -15,14 +15,14 @@
  */
 package com.wishzixing.lib.cv4j.core.filters.face;
 
-import com.cv4j.core.binary.Erode;
-import com.cv4j.core.datamodel.ByteProcessor;
-import com.cv4j.core.datamodel.ImageProcessor;
-import com.cv4j.core.datamodel.IntIntegralImage;
-import com.cv4j.core.datamodel.Size;
-import com.cv4j.core.filters.CommonFilter;
-import com.cv4j.core.filters.FastEPFilter;
-import com.cv4j.core.filters.GradientFilter;
+import com.wishzixing.lib.cv4j.core.binary.Erode;
+import com.wishzixing.lib.cv4j.core.datamodel.ByteProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.ImageProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.IntIntegralImage;
+import com.wishzixing.lib.cv4j.core.datamodel.Size;
+import com.wishzixing.lib.cv4j.core.filters.CommonFilter;
+import com.wishzixing.lib.cv4j.core.filters.FastEPFilter;
+import com.wishzixing.lib.cv4j.core.filters.GradientFilter;
 
 import java.util.Arrays;
 

@@ -15,9 +15,9 @@
  */
 package com.wishzixing.lib.cv4j.core.filters;
 
-import com.cv4j.core.datamodel.ImageProcessor;
-import com.cv4j.core.datamodel.IntIntegralImage;
-import com.cv4j.image.util.Tools;
+import com.wishzixing.lib.cv4j.core.datamodel.ImageProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.IntIntegralImage;
+import com.wishzixing.lib.cv4j.image.util.Tools;
 
 /**
  * good method try to smooth the minor noise

@@ -15,7 +15,7 @@
  */
 package com.wishzixing.lib.cv4j.core.filters;
 
-import com.cv4j.core.datamodel.ImageProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.ImageProcessor;
 
 public class WhiteImageFilter extends BaseFilter {
 	private double beta;

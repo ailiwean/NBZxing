@@ -15,7 +15,7 @@
  */
 package com.wishzixing.lib.cv4j.core.hist;
 
-import com.cv4j.exception.CV4JException;
+import com.wishzixing.lib.cv4j.exception.CV4JException;
 
 public class CompareHist {
 

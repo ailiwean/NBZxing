@@ -15,10 +15,10 @@
  */
 package com.wishzixing.lib.cv4j.core.pixels;
 
-import com.cv4j.core.datamodel.ByteProcessor;
-import com.cv4j.core.datamodel.ColorProcessor;
-import com.cv4j.core.datamodel.ImageProcessor;
-import com.cv4j.core.datamodel.Scalar;
+import com.wishzixing.lib.cv4j.core.datamodel.ByteProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.ColorProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.ImageProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.Scalar;
 
 public class NormRotate {
 

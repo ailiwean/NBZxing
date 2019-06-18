@@ -15,12 +15,12 @@
  */
 package com.wishzixing.lib.cv4j.core.pixels;
 
+import com.wishzixing.lib.cv4j.core.datamodel.ColorProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.Scalar;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import com.cv4j.core.datamodel.ColorProcessor;
-import com.cv4j.core.datamodel.Scalar;
 
 public class PrincipalColorExtractor {
 

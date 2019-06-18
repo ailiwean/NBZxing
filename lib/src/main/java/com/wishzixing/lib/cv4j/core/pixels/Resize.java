@@ -15,11 +15,11 @@
  */
 package com.wishzixing.lib.cv4j.core.pixels;
 
-import com.cv4j.core.datamodel.ByteProcessor;
-import com.cv4j.core.datamodel.ColorProcessor;
-import com.cv4j.core.datamodel.ImageProcessor;
-import com.cv4j.exception.CV4JException;
-import com.cv4j.image.util.Tools;
+import com.wishzixing.lib.cv4j.core.datamodel.ByteProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.ColorProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.ImageProcessor;
+import com.wishzixing.lib.cv4j.exception.CV4JException;
+import com.wishzixing.lib.cv4j.image.util.Tools;
 
 public class Resize {
 

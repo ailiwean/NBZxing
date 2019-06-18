@@ -17,8 +17,8 @@ package com.wishzixing.lib.cv4j.core.filters;
 
 import android.graphics.Color;
 
-import com.cv4j.core.datamodel.ImageData;
-import com.cv4j.core.datamodel.ImageProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.ImageData;
+import com.wishzixing.lib.cv4j.core.datamodel.ImageProcessor;
 
 public class SinCityFilter extends BaseFilter {
 
