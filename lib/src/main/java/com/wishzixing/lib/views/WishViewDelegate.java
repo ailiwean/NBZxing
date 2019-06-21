@@ -15,6 +15,7 @@ import com.wishzixing.lib.manager.PixsValuesCus;
 import com.wishzixing.lib.manager.PixsValuesCusManager;
 import com.wishzixing.lib.util.InactivityTimerUtils;
 import com.wishzixing.lib.util.PermissionUtils;
+import com.wishzixing.lib.util.YuvUtils;
 
 /***
  *  Created by SWY
@@ -43,6 +44,8 @@ public class WishViewDelegate implements WishLife {
         mActivity = activity;
         hasSurface = false;
         inactivityTimer = new InactivityTimerUtils(activity);
+
+        YuvUtils.init(activity);
     }
 
 

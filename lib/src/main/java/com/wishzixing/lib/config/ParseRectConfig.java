@@ -1,7 +1,10 @@
 package com.wishzixing.lib.config;
 
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.View;
+
+import com.wishzixing.lib.util.MathUtils;
 
 /***
  *  Created by SWY
@@ -45,17 +48,10 @@ public class ParseRectConfig {
      */
     private void creat() {
 
-        int cameraX = CameraConfig.getInstance().getCameraPoint().x;
-        int cameraY = CameraConfig.getInstance().getCameraPoint().y;
+        PointF ratio = MathUtils.getRatio();
 
-        if (CameraConfig.getInstance().isPorScreen()) {
-            int tem = cameraX;
-            cameraX = cameraY;
-            cameraY = tem;
-        }
-
-        float ratioX = (float) cameraX / CameraConfig.getInstance().getScreenPoint().x;
-        float ratioY = (float) cameraY / CameraConfig.getInstance().getScreenPoint().y;
+        float ratioX = ratio.x;
+        float ratioY = ratio.y;
 
         int left = (int) ((int) v.getX() * ratioX);
         int top = (int) ((int) v.getY() * ratioY);
@@ -65,7 +61,6 @@ public class ParseRectConfig {
         bottom *= ratioY;
 
         parseRect = new Rect(left, top, right, bottom);
-
     }
 
     public void go() {

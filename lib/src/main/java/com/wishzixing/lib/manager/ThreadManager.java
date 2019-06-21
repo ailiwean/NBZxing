@@ -20,7 +20,6 @@ public class ThreadManager {
         executor = new ThreadPoolExecutor(2, 5, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
         //任务拒绝策略
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardOldestPolicy());
-
     }
 
     private static class Holder {
@@ -41,7 +40,7 @@ public class ThreadManager {
         }
     }
 
-    public void clear() {
+    public void close() {
         executor.shutdown();
     }
 }

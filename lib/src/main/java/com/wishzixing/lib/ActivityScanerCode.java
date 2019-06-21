@@ -1,23 +1,17 @@
 package com.wishzixing.lib;
 
-import android.Manifest;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -32,20 +26,16 @@ import android.widget.TextView;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.config.Config;
+import com.wishzixing.lib.cv4j.core.datamodel.ByteProcessor;
+import com.wishzixing.lib.cv4j.core.datamodel.ImageProcessor;
+import com.wishzixing.lib.cv4j.core.spatial.conv.LaplasFilter;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
-import com.wishzixing.lib.listener.OnGestureListener;
 import com.wishzixing.lib.manager.CameraManager;
-import com.wishzixing.lib.util.LightControlUtils;
 import com.wishzixing.lib.util.RxBeepUtils;
 import com.wishzixing.lib.util.RxQrBarParseUtils;
 import com.wishzixing.lib.util.Utils;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 
 /**

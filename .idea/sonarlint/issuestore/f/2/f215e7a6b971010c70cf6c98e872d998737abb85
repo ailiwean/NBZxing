@@ -1,0 +1,7 @@
+
+Jsquid:S10683".Remove this unused "mContainer" private field.(ûÓ½úÿÿÿÿ
+Ksquid:S1068I"/Remove this unused "lightLayout" private field.(ğÉàÿÿÿÿÿ
+Isquid:S1068G"-Remove this unused "mFlashing" private field.(Éõşüÿÿÿÿ
+Ksquid:S1068B"/Remove this unused "mCropHeight" private field.(»ÿ÷üÿÿÿÿ
+Hsquid:S3985â")Remove this unused private "State" class.(×²Ê¯8Õ¸õ‚·-
+"squid:ClassVariableVisibilityCheckL"[Make onClickListener a static final constant or non-public and provide accessors if needed.(ñˆ‚ãÿÿÿÿÿ
