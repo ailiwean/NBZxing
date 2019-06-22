@@ -1,10 +1,13 @@
 package com.wishzixing.lib.util;
 
 import android.graphics.PointF;
-import android.util.Log;
 
 import com.google.zxing.ResultPoint;
 import com.wishzixing.lib.config.CameraConfig;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /***
  *  Created by SWY
@@ -46,19 +49,62 @@ public class MathUtils {
 
     public static int getLen(ResultPoint[] p) {
 
+        if (p.length < 4)
+            return Integer.MAX_VALUE;
+
         int x1 = (int) p[0].getX();
         int y1 = (int) p[0].getY();
 
         int x2 = (int) p[1].getX();
         int y2 = (int) p[1].getY();
 
-        double len = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+        int x3 = (int) p[2].getX();
+        int y3 = (int) p[2].getY();
 
-        len = Math.sqrt(len);
+        int x4 = (int) p[3].getX();
+        int y4 = (int) p[3].getY();
 
-        Log.e("len:" + len, "len:" + len);
+        List<Point> points = new ArrayList<>();
+        points.add(new Point(x1, y1));
+        points.add(new Point(x2, y2));
+        points.add(new Point(x3, y3));
+        points.add(new Point(x4, y4));
 
-        return 500;
+        Collections.sort(points);
+
+        Point LT;
+
+        Point LB;
+
+        Point RT;
+
+        Point RB;
+
+        if (points.get(0).y > points.get(1).y) {
+            LT = points.get(1);
+            LB = points.get(0);
+        } else {
+            LT = points.get(0);
+            LB = points.get(1);
+        }
+
+        if (points.get(2).y > points.get(3).y) {
+            RT = points.get(3);
+            RB = points.get(2);
+        } else {
+            RT = points.get(2);
+            RB = points.get(3);
+        }
+
+        return getMax(getDistance(LT, LB), getDistance(LT, RT), getDistance(RT, RB), getDistance(LB, RB));
+    }
+
+    public static int getDistance(Point a, Point b) {
+
+        int xD = a.x - b.x;
+        int yD = a.y - b.y;
+
+        return (int) Math.sqrt(xD * xD + yD * yD);
     }
 
     public static PointF getRatio() {
@@ -72,9 +118,43 @@ public class MathUtils {
             cameraY = tem;
         }
 
-        float ratioX = (float) cameraX / CameraConfig.getInstance().getScreenPoint().x;
-        float ratioY = (float) cameraY / CameraConfig.getInstance().getScreenPoint().y;
+        float diffX = CameraConfig.getInstance().getScreenPoint().x - cameraX;
+        float diffY = CameraConfig.getInstance().getScreenPoint().y - cameraY;
 
-        return new PointF(ratioX, ratioY);
+        return new PointF(diffX, diffY);
+    }
+
+    public static class Point implements Comparable<Point> {
+
+        int x;
+        int y;
+
+        public Point(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public Point setX(int x) {
+            this.x = x;
+            return this;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public Point setY(int y) {
+            this.y = y;
+            return this;
+        }
+
+        @Override
+        public int compareTo(Point o) {
+            return x - o.x;
+        }
     }
 }

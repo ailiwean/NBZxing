@@ -1,22 +1,22 @@
 package com.wishzixing.lib.able;
 
 
-import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicYuvToRGB;
-import android.renderscript.Type;
-import android.util.Log;
 
-import com.wishzixing.lib.cv4j.core.datamodel.CV4JImage;
-import com.wishzixing.lib.cv4j.core.datamodel.Rect;
-import com.wishzixing.lib.cv4j.image.util.QRCodeScanner;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.FormatException;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.ResultPoint;
+import com.google.zxing.common.DetectorResult;
+import com.google.zxing.qrcode.detector.Detector;
+import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.manager.PixsValuesCus;
-import com.wishzixing.lib.util.YuvUtils;
+import com.wishzixing.lib.util.ConvertUtlis;
+import com.wishzixing.lib.util.MathUtils;
+import com.wishzixing.lib.util.ZoomUtils;
 
 /***
  *  Created by SWY
@@ -45,7 +45,43 @@ public class AutoZoomAble implements PixsValuesCus {
     @Override
     public void cusAction(final byte[] data, final Camera camera, final int x, final int y) {
 
+        DetectorResult decoderResult = null;
+        ResultPoint[] points;
 
+        BinaryBitmap binaryBitmap = ConvertUtlis.byteToBinay(data, new Rect(0, 0, x, y));
+
+        if (binaryBitmap == null)
+            return;
+
+        try {
+            decoderResult = new Detector(binaryBitmap.getBlackMatrix()).detect(null);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        } catch (FormatException e) {
+            e.printStackTrace();
+        }
+
+        if (decoderResult == null)
+            return;
+
+        points = decoderResult.getPoints();
+
+        int len = MathUtils.getLen(points);
+
+        Rect rect = CameraConfig.getInstance().getFramingRect();
+
+        if (rect == null)
+            return;
+
+        int showRectLen = rect.bottom - rect.top;
+
+        if (len < showRectLen / 4) {
+            ZoomUtils.setZoom(ZoomUtils.getZoom() + ZoomUtils.getMaxZoom() / 20);
+        }
+
+        if (len > showRectLen / 3 * 2) {
+            ZoomUtils.setZoom(ZoomUtils.getZoom() - ZoomUtils.getMaxZoom() / 20);
+        }
 
     }
 

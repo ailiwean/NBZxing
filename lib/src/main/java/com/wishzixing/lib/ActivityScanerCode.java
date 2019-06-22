@@ -26,9 +26,6 @@ import android.widget.TextView;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.config.Config;
-import com.wishzixing.lib.cv4j.core.datamodel.ByteProcessor;
-import com.wishzixing.lib.cv4j.core.datamodel.ImageProcessor;
-import com.wishzixing.lib.cv4j.core.spatial.conv.LaplasFilter;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.util.RxBeepUtils;

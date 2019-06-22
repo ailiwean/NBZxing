@@ -2,7 +2,6 @@ package com.wishzixing.lib.able;
 
 import android.hardware.Camera;
 import android.os.Message;
-import android.util.Log;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
@@ -22,7 +21,6 @@ public class DecodePixAble implements PixsValuesCus {
 
         Result result = RxQrBarParseUtils.getInstance().decodeFromByte(data);
         if (result != null) {
-            Log.e("解析成功", "解析成功");
             Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_succeeded, result);
             message.sendToTarget();
         } else {

@@ -2,6 +2,7 @@ package com.wishzixing.lib.config;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 import com.wishzixing.lib.util.MathUtils;
@@ -14,6 +15,9 @@ import com.wishzixing.lib.util.MathUtils;
 public class ParseRectConfig {
 
     Rect parseRect;
+
+    Rect showRect;
+
     private View v;
 
     private ParseRectConfig() {
@@ -48,19 +52,25 @@ public class ParseRectConfig {
      */
     private void creat() {
 
-        PointF ratio = MathUtils.getRatio();
+        PointF diff = MathUtils.getRatio();
 
-        float ratioX = ratio.x;
-        float ratioY = ratio.y;
+        float diffX = diff.x;
+        float diffY = diff.y;
 
-        int left = (int) ((int) v.getX() * ratioX);
-        int top = (int) ((int) v.getY() * ratioY);
+        int left = (int) v.getX();
+        int top = (int) v.getY();
         int right = left + v.getMeasuredWidth();
-        right *= ratioX;
         int bottom = top + v.getMeasuredHeight();
-        bottom *= ratioY;
-
+        int oriRight = right;
+        int oriLeft = left;
+        int oriTop = top;
+        int oriBottom = bottom;
+        left -= diffX / 2;
+        top -= diffY / 2;
+        right -= diffX / 2;
+        bottom -= diffY / 2;
         parseRect = new Rect(left, top, right, bottom);
+        showRect = new Rect(oriLeft, oriTop, oriRight, oriBottom);
     }
 
     public void go() {

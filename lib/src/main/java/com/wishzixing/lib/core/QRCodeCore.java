@@ -16,9 +16,6 @@
 
 package com.wishzixing.lib.core;
 
-import android.graphics.Rect;
-import android.util.Log;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
@@ -35,7 +32,6 @@ import com.google.zxing.common.DetectorResult;
 import com.google.zxing.qrcode.decoder.Decoder;
 import com.google.zxing.qrcode.decoder.QRCodeDecoderMetaData;
 import com.google.zxing.qrcode.detector.Detector;
-import com.wishzixing.lib.config.CameraConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -84,21 +80,6 @@ public class QRCodeCore implements Reader {
             decoderResult = decoder.decode(detectorResult.getBits(), hints);
             points = detectorResult.getPoints();
         }
-
-        if (points.length < 2)
-            return null;
-
-        float point1X = points[0].getX();
-        float point1Y = points[0].getY();
-        float point2X = points[1].getX();
-        float point2Y = points[1].getY();
-
-        float len = (int) Math.sqrt(Math.abs(point1X - point2X) * Math.abs(point1X - point2X) + Math.abs(point1Y - point2Y) * Math.abs(point1Y - point2Y));
-        Rect frameRect = CameraConfig.getInstance().getFramingRect();
-        float frameWidth = (frameRect.right - frameRect.left);
-        //小于解析框宽度1/4不解析
-        if (len < frameWidth / 4)
-            return null;
 
         // If the code was mirrored: swap the bottom-left and the top-right points.
         if (decoderResult.getOther() instanceof QRCodeDecoderMetaData) {

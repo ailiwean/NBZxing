@@ -43,6 +43,7 @@ public class ZoomUtils {
 
         if (!p.isZoomSupported())
             return;
+
         p.setZoom(1);
         camera.setParameters(p);
     }
@@ -54,6 +55,9 @@ public class ZoomUtils {
             return;
         Camera.Parameters p = camera.getParameters();
         if (p == null)
+            return;
+
+        if (!p.isZoomSupported())
             return;
 
         if (p.getZoom() != p.getMaxZoom())
@@ -174,8 +178,54 @@ public class ZoomUtils {
         if (p == null)
             return;
 
+        if (!p.isZoomSupported())
+            return;
+
+        if (zoom > p.getMaxZoom())
+            zoom = p.getMaxZoom();
+
+        if (zoom < 1)
+            zoom = 1;
+
         p.setZoom(zoom);
         camera.setParameters(p);
+
+    }
+
+    public static int getZoom() {
+
+        final Camera camera = CameraManager.get().getCamera();
+
+        if (camera == null)
+            return 0;
+
+        final Camera.Parameters p = camera.getParameters();
+        //防止画面切换闪退
+        if (p == null)
+            return 0;
+
+        if (!p.isZoomSupported())
+            return 0;
+
+        return p.getZoom();
+    }
+
+    public static int getMaxZoom() {
+
+        final Camera camera = CameraManager.get().getCamera();
+
+        if (camera == null)
+            return 0;
+
+        final Camera.Parameters p = camera.getParameters();
+        //防止画面切换闪退
+        if (p == null)
+            return 0;
+
+        if (!p.isZoomSupported())
+            return 0;
+
+        return p.getMaxZoom();
     }
 
 }

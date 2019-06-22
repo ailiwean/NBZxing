@@ -20,6 +20,9 @@ public class CameraConfig {
     //Zxing解析区域对应View
     Rect parseRect;
 
+    //Zxing对应显示解码区域大小
+    Rect showRect;
+
     Point screenPoint;
 
     Point cameraPoint;

@@ -3,6 +3,7 @@ package com.wishzixing.lib.handler;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
@@ -32,6 +33,7 @@ public class CameraCoordinateHandler extends Handler {
     public void handleMessage(Message message) {
 
         if (message.what == R.id.decode_succeeded) {
+            Log.e("解析成功", "解析成功");
             decodeSucceed((Result) message.obj);
         } else if (message.what == R.id.decode_failed) {
 
