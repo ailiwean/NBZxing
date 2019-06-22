@@ -1,17 +1,0 @@
-
-7squid:S16590" Declare "k1" on a separate line.(À¸Õ÷
-7squid:S16590" Declare "k2" on a separate line.(À¸Õ÷
-<squid:S16591" Declare "k4" on a separate line.(òÓëèúÿÿÿÿ
-<squid:S16591" Declare "k5" on a separate line.(òÓëèúÿÿÿÿ
-<squid:S16592" Declare "k7" on a separate line.(ÈÅáþüÿÿÿÿ
-<squid:S16592" Declare "k8" on a separate line.(ÈÅáþüÿÿÿÿ
-7squid:S1659I" Declare "sg" on a separate line.(¶‡ ”
-7squid:S1659I" Declare "sb" on a separate line.(¶‡ ”
-;squid:S1659J"Declare "g" on a separate line.(ÞÁÚÿÿÿÿÿ
-;squid:S1659J"Declare "b" on a separate line.(ÞÁÚÿÿÿÿÿ
-Asquid:S1444"*Make this "public static FOUR" field final(Ú¸ýã
-Gsquid:S1444"+Make this "public static EIGHT" field final(ˆÐÉ¥ùÿÿÿÿ
-~"squid:ClassVariableVisibilityCheck"PMake FOUR a static final constant or non-public and provide accessors if needed.(Ú¸ýã
-„"squid:ClassVariableVisibilityCheck"QMake EIGHT a static final constant or non-public and provide accessors if needed.(ˆÐÉ¥ùÿÿÿÿ
-4squid:S2386"Make this member "protected".(Ú¸ýã
-9squid:S2386"Make this member "protected".(ˆÐÉ¥ùÿÿÿÿ

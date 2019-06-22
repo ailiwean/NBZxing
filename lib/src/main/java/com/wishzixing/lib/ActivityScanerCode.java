@@ -302,7 +302,7 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
              * 扫描成功后是否震动
              */
             boolean vibrate = true;
-            RxBeepUtils.playBeep(this, vibrate);
+            //   RxBeepUtils.playBeep(this, vibrate);
 
             onScanResult(result);
 

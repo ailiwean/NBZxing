@@ -8,11 +8,12 @@ package com.wishzixing.lib.config;
 public class Config {
 
     public static void useDefault() {
-        AutoFocusConfig.getInstance().setModel(AutoFocusConfig.SENSOR).go();
+        AutoFocusConfig.getInstance().go();
         PointConfig.getInstance().go();
-        ScanModelConfig.getInstance().setScanModel(ScanModelConfig.ALL).go();
+        ScanConfig.getInstance().go();
         ParseRectConfig.getInstance().go();
         ZoomConfig.getInstance().go();
+        BeepVibrationConfig.getInstance().go();
     }
 
 }

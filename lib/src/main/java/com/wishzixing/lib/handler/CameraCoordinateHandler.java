@@ -3,10 +3,10 @@ package com.wishzixing.lib.handler;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
+import com.wishzixing.lib.listener.ResultListener;
 
 /***
  *  Created by SWY
@@ -16,6 +16,8 @@ import com.wishzixing.lib.R;
  */
 public class CameraCoordinateHandler extends Handler {
 
+
+    private ResultListener resultListener;
 
     private CameraCoordinateHandler(Looper mainLooper) {
         super(mainLooper);
@@ -33,7 +35,6 @@ public class CameraCoordinateHandler extends Handler {
     public void handleMessage(Message message) {
 
         if (message.what == R.id.decode_succeeded) {
-            Log.e("解析成功", "解析成功");
             decodeSucceed((Result) message.obj);
         } else if (message.what == R.id.decode_failed) {
 
@@ -43,6 +44,13 @@ public class CameraCoordinateHandler extends Handler {
     //解析成功
     private void decodeSucceed(Result result) {
 
+        if (resultListener != null)
+            resultListener.scanSucceed(result);
+
+    }
+
+    public void regResultListener(ResultListener resultListener) {
+        this.resultListener = resultListener;
     }
 
 }

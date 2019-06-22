@@ -27,4 +27,5 @@ dependencies {
     compileOnly 'com.android.support:appcompat-v7:28.0.0'
     //google官网提供的扫码工具包
     api 'com.google.zxing:core:3.3.3'
+    
 }

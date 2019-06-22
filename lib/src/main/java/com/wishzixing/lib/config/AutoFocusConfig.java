@@ -9,7 +9,7 @@ import android.support.annotation.IntDef;
  */
 public class AutoFocusConfig {
 
-    private int autoModel;
+    private int autoModel = SENSOR;
 
     private AutoFocusConfig() {
 
@@ -18,7 +18,6 @@ public class AutoFocusConfig {
     private static class Holder {
         static AutoFocusConfig INSTANCE = new AutoFocusConfig();
     }
-
 
     public static AutoFocusConfig getInstance() {
         return Holder.INSTANCE;

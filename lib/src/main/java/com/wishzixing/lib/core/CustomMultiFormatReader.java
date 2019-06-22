@@ -12,7 +12,7 @@ import com.google.zxing.maxicode.MaxiCodeReader;
 import com.google.zxing.oned.MultiFormatOneDReader;
 import com.google.zxing.pdf417.PDF417Reader;
 import com.wishzixing.lib.config.CameraConfig;
-import com.wishzixing.lib.config.ScanModelConfig;
+import com.wishzixing.lib.config.ScanConfig;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -202,13 +202,13 @@ public class CustomMultiFormatReader implements Reader {
         int scanModel = CameraConfig.getInstance().getScanModel();
 
         // 这里设置可扫描的类型，我这里选择了都支持
-        if (scanModel == ScanModelConfig.BARCODE)
+        if (scanModel == ScanConfig.BARCODE)
             decodeFormats.addAll(ONE_D_FORMATS);
 
-        if (scanModel == ScanModelConfig.QRCODE)
+        if (scanModel == ScanConfig.QRCODE)
             decodeFormats.addAll(QR_CODE_FORMATS);
 
-        if (scanModel == ScanModelConfig.ALL) {
+        if (scanModel == ScanConfig.ALL) {
             decodeFormats.addAll(ONE_D_FORMATS);
             decodeFormats.addAll(QR_CODE_FORMATS);
             decodeFormats.addAll(DATA_MATRIX_FORMATS);

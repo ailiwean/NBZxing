@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.FormatException;
@@ -68,7 +69,7 @@ public class AutoZoomAble implements PixsValuesCus {
 
         int len = MathUtils.getLen(points);
 
-        Rect rect = CameraConfig.getInstance().getFramingRect();
+        Rect rect = CameraConfig.getInstance().getShowRect();
 
         if (rect == null)
             return;
@@ -79,7 +80,9 @@ public class AutoZoomAble implements PixsValuesCus {
             ZoomUtils.setZoom(ZoomUtils.getZoom() + ZoomUtils.getMaxZoom() / 20);
         }
 
-        if (len > showRectLen / 3 * 2) {
+        Log.e("len:" + len, "showRectLen/2:" + showRectLen / 2);
+
+        if (len > showRectLen / 2) {
             ZoomUtils.setZoom(ZoomUtils.getZoom() - ZoomUtils.getMaxZoom() / 20);
         }
 

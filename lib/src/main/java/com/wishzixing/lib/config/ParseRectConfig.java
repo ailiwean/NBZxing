@@ -78,5 +78,6 @@ public class ParseRectConfig {
         if (parseRect == null)
             parseRect = new Rect(0, 0, 0, 0);
         CameraConfig.getInstance().parseRect = this.parseRect;
+        CameraConfig.getInstance().showRect = this.showRect;
     }
 }

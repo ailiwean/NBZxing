@@ -6,10 +6,12 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.google.zxing.Result;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.config.ParseRectConfig;
+import com.wishzixing.lib.handler.CameraCoordinateHandler;
+import com.wishzixing.lib.listener.ResultListener;
+import com.wishzixing.lib.listener.SurfaceListener;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.manager.PixsValuesCus;
 import com.wishzixing.lib.manager.PixsValuesCusManager;
@@ -47,7 +49,6 @@ public class WishViewDelegate implements WishLife {
 
         YuvUtils.init(activity);
     }
-
 
     @Override
     public void onResume() {
@@ -130,16 +131,6 @@ public class WishViewDelegate implements WishLife {
         inactivityTimer.shutdown();
     }
 
-    public WishViewDelegate registerSurfaceListener(SurfaceListener surfaceListener) {
-        this.surfaceListener = surfaceListener;
-        return this;
-    }
-
-    public WishViewDelegate registerResultListener(ResultListener resultListener) {
-        this.resultListener = resultListener;
-        return this;
-    }
-
     //增加新的像素解析能力
     public void addNewAbleAction(PixsValuesCus pixsValuesCus) {
         PixsValuesCusManager.getInstance().addNewAction(pixsValuesCus);
@@ -150,30 +141,18 @@ public class WishViewDelegate implements WishLife {
     }
 
     public WishViewDelegate setParseRectFromView(final View view) {
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                ParseRectConfig.getInstance().setParseRectFromView(view);
-            }
-        });
+        ParseRectConfig.getInstance().setParseRectFromView(view);
         return this;
     }
 
-    //surfaceView显示回调
-    public static interface SurfaceListener {
-
-        void onCreate();
-
-        void onDestory();
-
+    public WishViewDelegate regSurfaceListener(SurfaceListener surfaceListener) {
+        this.surfaceListener = surfaceListener;
+        return this;
     }
 
-    //扫描结果回调
-    public static interface ResultListener {
-
-        void scanSucceed(Result result);
-
-        void scanImgFail();
-
+    public WishViewDelegate regResultListener(ResultListener resultListener) {
+        this.resultListener = resultListener;
+        CameraCoordinateHandler.getInstance().regResultListener(resultListener);
+        return this;
     }
 }

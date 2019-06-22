@@ -121,33 +121,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         });
         mContainer.setOnTouchListener(onGestureListener);
         wishViewDelegate = new WishViewDelegate(surfaceView);
-
-        wishViewDelegate.registerSurfaceListener(new WishViewDelegate.SurfaceListener() {
-            @Override
-            public void onCreate() {
-
-
-            }
-
-            @Override
-            public void onDestory() {
-
-
-            }
-        });
-        wishViewDelegate.registerResultListener(new WishViewDelegate.ResultListener() {
-            @Override
-            public void scanSucceed(Result result) {
-                Toast.makeText(getContext(), result.getText(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void scanImgFail() {
-
-            }
-        });
         wishViewDelegate.setParseRectFromView(mCropLayout);
-
     }
 
     @Override
@@ -196,5 +170,12 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
             }
         }
 
+    }
+
+    public WishViewDelegate getDelegate() {
+        if (wishViewDelegate == null) {
+            throw new RuntimeException("WishView must be onCreat");
+        }
+        return wishViewDelegate;
     }
 }

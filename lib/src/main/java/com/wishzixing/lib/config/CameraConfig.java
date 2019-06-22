@@ -33,6 +33,15 @@ public class CameraConfig {
 
     int autoFocusModel = 0;
 
+    //成功是否播放音效
+    boolean isBeep;
+
+    //成功是否震动提醒
+    boolean isVibration;
+
+    //同个二维码只扫描回调一次
+    boolean isJustOne;
+
     private CameraConfig() {
     }
 
@@ -54,6 +63,15 @@ public class CameraConfig {
 
     public Rect getFramingRect() {
         return parseRect;
+    }
+
+    public Rect getShowRect() {
+        return showRect;
+    }
+
+    public CameraConfig setShowRect(Rect showRect) {
+        this.showRect = showRect;
+        return this;
     }
 
     public boolean isAutoZoom() {
@@ -90,4 +108,15 @@ public class CameraConfig {
         return screenPoint.x < screenPoint.y;
     }
 
+    public boolean isBeep() {
+        return isBeep;
+    }
+
+    public boolean isVibration() {
+        return isVibration;
+    }
+
+    public boolean isJustOne() {
+        return isJustOne;
+    }
 }
