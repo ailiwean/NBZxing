@@ -1,20 +1,18 @@
 package com.wishzixing.lib.views;
 
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
@@ -40,29 +38,19 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
     WeakReference<Activity> get;
     /**
-     * 整体根布局
-     */
-    private RelativeLayout mContainer = null;
-
-    /**
      * 扫描框根布局
      */
     private RelativeLayout mCropLayout = null;
-    private LinearLayout lightLayout;
-
-    //调焦连续值生成
-    private ValueAnimator valueAnimator;
 
     private SurfaceView surfaceView;
 
-    //是否能获取Surface输出源
-    private boolean hasSurface = false;
+    private LightView lightView;
 
-    private Handler lazyLoading = new Handler(Looper.getMainLooper());
+    private TextView hintView;
+
+    private FrameLayout lightParent;
 
     WishViewDelegate wishViewDelegate;
-    private LightView lightView;
-    private TextView hintView;
 
     public WishView(Context context) {
         super(context);
@@ -81,15 +69,29 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         //添加内容
         View view = LayoutInflater.from(getContext()).inflate(R.layout.activity_scaner_code, null);
         addView(view);
-        mContainer = findViewById(R.id.capture_containter);
+        /*
+      整体根布局
+     */ /**
+         * 整体根布局
+         */RelativeLayout mContainer = findViewById(R.id.capture_containter);
+
+
         mCropLayout = findViewById(R.id.capture_crop_layout);
+
         surfaceView = findViewById(R.id.capture_preview);
 
         lightView = findViewById(R.id.lightView);
         lightView.setOnClickListener(this);
         lightView.setVisibility(INVISIBLE);
-
         hintView = findViewById(R.id.loadingHint);
+        lightParent = findViewById(R.id.lightparent);
+
+        ImageView ivBack = findViewById(R.id.back);
+        TextView tvAlbum = findViewById(R.id.openAlbum);
+        ivBack.setOnClickListener(this);
+        tvAlbum.setOnClickListener(this);
+        RelativeLayout titleParent = findViewById(R.id.rl_title);
+
 
         OnGestureListener onGestureListener = new OnGestureListener(get.get());
         onGestureListener.regOnDoubleClickCallback(new OnGestureListener.DoubleClickCallback() {
@@ -183,7 +185,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
     }
 
-
     @Override
     public void onCreate(Activity activity) {
         get = new WeakReference<>(activity);
@@ -217,6 +218,14 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     @Override
     public void onClick(View v) {
 
+        if (v.getId() == R.id.back) {
+            get.get().finish();
+        }
+
+        if (v.getId() == R.id.openAlbum) {
+            Toast.makeText(getContext(), "打开相册", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public WishViewDelegate getDelegate() {
@@ -225,4 +234,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         }
         return wishViewDelegate;
     }
+
+
 }

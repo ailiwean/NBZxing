@@ -24,7 +24,6 @@
             android:layout_height="20dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
-            android:onClick="onClick"
             android:src="@drawable/back" />
 
         <TextView
@@ -34,16 +33,13 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
-            android:onClick="onClick"
             android:text="相册"
             android:textColor="@android:color/white"
             android:textSize="16sp" />
 
-
     </RelativeLayout>
 
     <RelativeLayout
-
         android:id="@+id/capture_crop_layout"
         android:layout_width="250dp"
         android:layout_height="250dp"
@@ -68,12 +64,21 @@
             android:text="正在加载..."
             android:textColor="@android:color/white" />
 
-        <com.wishzixing.lib.views.LightView
-
-            android:id="@+id/lightView"
+        <FrameLayout
+            android:id="@+id/lightparent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"
+            android:visibility="visible">
+
+            <com.wishzixing.lib.views.LightView
+
+                android:id="@+id/lightView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
+
 
     </RelativeLayout>
 

@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
+import com.wishzixing.lib.listener.SensorChangeCallback;
 import com.wishzixing.lib.util.Utils;
 
 /***
@@ -26,7 +27,7 @@ public class SensorManager implements SensorEventListener {
 
     private static final int DELEY_DURATION = 300;
 
-    private SensorChange sensorChange;
+    private SensorChangeCallback sensorChange;
 
     private boolean threshold = false;
 
@@ -124,13 +125,9 @@ public class SensorManager implements SensorEventListener {
      * 注册加速度传感器回调
      * @param sensorChange
      */
-    public SensorManager registerListener(SensorChange sensorChange) {
+    public SensorManager registerListener(SensorChangeCallback sensorChange) {
         this.sensorChange = sensorChange;
         return this;
-    }
-
-    public static interface SensorChange {
-        void change();
     }
 
 }

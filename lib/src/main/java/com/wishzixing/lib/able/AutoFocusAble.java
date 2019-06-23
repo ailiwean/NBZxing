@@ -7,6 +7,7 @@ import android.os.HandlerThread;
 import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.listener.AutoFocusCallback;
+import com.wishzixing.lib.listener.SensorChangeCallback;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.manager.PixsValuesCus;
 import com.wishzixing.lib.manager.SensorManager;
@@ -98,7 +99,7 @@ public class AutoFocusAble implements PixsValuesCus {
 
     private void setSensorAutoFocus() {
 
-        SensorManager.getInstance().registerListener(new SensorManager.SensorChange() {
+        SensorManager.getInstance().registerListener(new SensorChangeCallback() {
             @Override
             public void change() {
                 setFocus();
