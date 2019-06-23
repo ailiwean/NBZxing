@@ -10,6 +10,7 @@ import com.wishzixing.lib.listener.AutoFocusCallback;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.manager.PixsValuesCus;
 import com.wishzixing.lib.manager.SensorManager;
+import com.wishzixing.lib.util.AccountUtils;
 
 /***
  *  Created by SWY
@@ -21,6 +22,11 @@ public class AutoFocusAble implements PixsValuesCus {
     private Handler timeHandler;
 
     private boolean isFrist = false;
+
+    private long lastFocusTime = 0;
+
+    //上次广场强度根据不同的广场强度变换确定是否需要调焦
+    private int lastAcDark = 0;
 
     private void startAutoFocus() {
         if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.TIME)
@@ -39,9 +45,7 @@ public class AutoFocusAble implements PixsValuesCus {
                 startAutoFocus();
                 isFrist = true;
             }
-
         }
-
     }
 
     @Override
@@ -67,11 +71,19 @@ public class AutoFocusAble implements PixsValuesCus {
     }
 
     private void setFocus() {
+
+        if (System.currentTimeMillis() - lastFocusTime < 800)
+            return;
+
+        lastFocusTime = System.currentTimeMillis();
+
         if (CameraManager.get().getCamera() == null)
             return;
+
         Camera camera = CameraManager.get().getCamera();
         camera.startPreview();
         camera.autoFocus(AutoFocusCallback.getInstance());
+
     }
 
     private void setTimeAutoFocus() {
@@ -98,6 +110,13 @@ public class AutoFocusAble implements PixsValuesCus {
 
     private void setPixvaluesAutoFocus(byte[] data, Camera camera) {
 
+        int avDark = AccountUtils.getAvDark(data);
+
+        //变换值大于10开始调焦
+        if (Math.abs(lastAcDark - avDark) > 10) {
+            setFocus();
+            lastAcDark = avDark;
+        }
 
     }
 }
