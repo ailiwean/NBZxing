@@ -7,9 +7,12 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import com.wishzixing.lib.WishLife;
+import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.config.ParseRectConfig;
+import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
+import com.wishzixing.lib.listener.LightCallBack;
 import com.wishzixing.lib.listener.ResultListener;
 import com.wishzixing.lib.listener.SurfaceListener;
 import com.wishzixing.lib.manager.CameraManager;
@@ -33,8 +36,8 @@ public class WishViewDelegate implements WishLife {
     private boolean hasSurface = false;
 
     InactivityTimerUtils inactivityTimer;
+
     private SurfaceListener surfaceListener;
-    private ResultListener resultListener;
 
     public WishViewDelegate(SurfaceView surfaceView) {
         this.surfaceView = surfaceView;
@@ -140,6 +143,16 @@ public class WishViewDelegate implements WishLife {
         return CameraManager.get().getCamera();
     }
 
+    public WishViewDelegate setAutoFocusModel(@AutoFocusConfig.Type int type) {
+        AutoFocusConfig.getInstance().setModel(type);
+        return this;
+    }
+
+    public WishViewDelegate setScanModel(@ScanConfig.Type int type) {
+        ScanConfig.getInstance().setScanModel(type);
+        return this;
+    }
+
     public WishViewDelegate setParseRectFromView(final View view) {
         ParseRectConfig.getInstance().setParseRectFromView(view);
         return this;
@@ -151,8 +164,13 @@ public class WishViewDelegate implements WishLife {
     }
 
     public WishViewDelegate regResultListener(ResultListener resultListener) {
-        this.resultListener = resultListener;
         CameraCoordinateHandler.getInstance().regResultListener(resultListener);
         return this;
     }
+
+    public WishViewDelegate regAccountLigListener(LightCallBack lightCallBack) {
+        CameraCoordinateHandler.getInstance().regAccountListener(lightCallBack);
+        return this;
+    }
+
 }

@@ -26,5 +26,5 @@
     <item name="about_version_code" type="id" /><!--false</item>-->
     <item name="split" type="id" /><!--false</item>-->
 
-
+    <item name="isbright" type="id" />
 </resources>

@@ -4,7 +4,6 @@ import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
 
-import com.google.zxing.BinaryBitmap;
 import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.listener.AutoFocusCallback;
@@ -40,6 +39,7 @@ public class AutoFocusAble implements PixsValuesCus {
                 startAutoFocus();
                 isFrist = true;
             }
+
         }
 
     }
@@ -97,6 +97,7 @@ public class AutoFocusAble implements PixsValuesCus {
     }
 
     private void setPixvaluesAutoFocus(byte[] data, Camera camera) {
+
 
     }
 }

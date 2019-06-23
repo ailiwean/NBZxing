@@ -46,9 +46,11 @@ public class DecodePixAble implements PixsValuesCus {
                 scanResult.add(result.getText());
 
         } else {
+
             Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.decode_failed);
             if (message.getTarget() != null)
                 message.sendToTarget();
+
         }
     }
 

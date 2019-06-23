@@ -1,8 +1,10 @@
 package com.wishzixing.lib.able;
 
 import android.hardware.Camera;
+import android.os.Message;
 
-import com.google.zxing.BinaryBitmap;
+import com.wishzixing.lib.R;
+import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.manager.PixsValuesCus;
 
 /***
@@ -25,7 +27,6 @@ public class AccountLigFieAble implements PixsValuesCus {
     int waitScanTime = 300;
 
     boolean isBright = true;
-    private LightCallBack callBack;
 
     private AccountLigFieAble() {
     }
@@ -48,19 +49,12 @@ public class AccountLigFieAble implements PixsValuesCus {
         return Holder.INSTANCE;
     }
 
-    public AccountLigFieAble setCallBack(LightCallBack lightCallBack) {
-        callBack = lightCallBack;
-        return this;
-    }
 
     private void account(byte[] data, Camera camera) {
 
         /***
          *  根据像素点采集光场强度
          */
-        if (callBack == null)
-            return;
-
         if (data.length == 0)
             return;
 
@@ -68,6 +62,7 @@ public class AccountLigFieAble implements PixsValuesCus {
         if (currentTime - lastRecordTime < waitScanTime) {
             return;
         }
+
         lastRecordTime = currentTime;
 
         int width = camera.getParameters().getPreviewSize().width;
@@ -102,18 +97,22 @@ public class AccountLigFieAble implements PixsValuesCus {
 
             if (avDark > STANDVALUES && !isBright) {
                 isBright = true;
-                callBack.lightValues(true);
+                sendMessage(isBright);
             }
             if (avDark < STANDVALUES && isBright) {
                 isBright = false;
-                callBack.lightValues(false);
+                sendMessage(isBright);
             }
         }
     }
 
-    public static interface LightCallBack {
-        void lightValues(boolean isBright);
+    private void sendMessage(boolean isBright) {
+
+        Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.isbright, isBright);
+        message.sendToTarget();
+
     }
+
 
 }
 
