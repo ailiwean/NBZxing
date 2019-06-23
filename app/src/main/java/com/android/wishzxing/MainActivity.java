@@ -36,20 +36,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        wishView.getDelegate().setScanModel(ScanConfig.ALL);
-        wishView.getDelegate().setAutoFocusModel(AutoFocusConfig.PIXVALUES);
-
-        wishView.getDelegate().regAccountLigListener(new LightCallBack() {
-            @Override
-            public void lightValues(boolean isBright) {
-
-                if (isBright) {
-                    Log.e("isBright:" + isBright, "isBright:" + isBright);
-                    Toast.makeText(MainActivity.this, "关闭闪光灯", Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(MainActivity.this, "打开闪光灯", Toast.LENGTH_SHORT).show();
-            }
-        });
-
     }
 
     @Override

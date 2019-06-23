@@ -52,10 +52,10 @@ public class ParseRectConfig {
      */
     private void creat() {
 
-        PointF diff = MathUtils.getRatio();
+        PointF ratio = MathUtils.getRatio();
 
-        float diffX = diff.x;
-        float diffY = diff.y;
+        float ratioX = ratio.x;
+        float ratioY = ratio.y;
 
         int left = (int) v.getX();
         int top = (int) v.getY();
@@ -65,10 +65,10 @@ public class ParseRectConfig {
         int oriLeft = left;
         int oriTop = top;
         int oriBottom = bottom;
-        left -= diffX / 2;
-        top -= diffY / 2;
-        right -= diffX / 2;
-        bottom -= diffY / 2;
+        left *= ratioX;
+        top *= ratioY;
+        right *= ratioX;
+        bottom *= ratioY;
         parseRect = new Rect(left, top, right, bottom);
         showRect = new Rect(oriLeft, oriTop, oriRight, oriBottom);
     }

@@ -12,16 +12,19 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.R;
 import com.wishzixing.lib.WishLife;
+import com.wishzixing.lib.config.AutoFocusConfig;
+import com.wishzixing.lib.config.ScanConfig;
+import com.wishzixing.lib.listener.LightCallBack;
 import com.wishzixing.lib.listener.OnGestureListener;
+import com.wishzixing.lib.listener.ResultListener;
+import com.wishzixing.lib.listener.SurfaceListener;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.util.PermissionUtils;
 import com.wishzixing.lib.util.ZoomUtils;
@@ -58,6 +61,8 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     private Handler lazyLoading = new Handler(Looper.getMainLooper());
 
     WishViewDelegate wishViewDelegate;
+    private LightView lightView;
+    private TextView hintView;
 
     public WishView(Context context) {
         super(context);
@@ -72,14 +77,20 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     }
 
     private void initView() {
+
         //添加内容
         View view = LayoutInflater.from(getContext()).inflate(R.layout.activity_scaner_code, null);
         addView(view);
         mContainer = findViewById(R.id.capture_containter);
         mCropLayout = findViewById(R.id.capture_crop_layout);
         surfaceView = findViewById(R.id.capture_preview);
-        lightLayout = findViewById(R.id.light_layout);
-        lightLayout.setOnClickListener(this);
+
+        lightView = findViewById(R.id.lightView);
+        lightView.setOnClickListener(this);
+        lightView.setVisibility(INVISIBLE);
+
+        hintView = findViewById(R.id.loadingHint);
+
         OnGestureListener onGestureListener = new OnGestureListener(get.get());
         onGestureListener.regOnDoubleClickCallback(new OnGestureListener.DoubleClickCallback() {
             @Override
@@ -120,15 +131,65 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
             }
         });
         mContainer.setOnTouchListener(onGestureListener);
-        wishViewDelegate = new WishViewDelegate(surfaceView);
-        wishViewDelegate.setParseRectFromView(mCropLayout);
+
     }
+
+    //初始化默认Delegate
+    private void initDefDelegate() {
+
+        wishViewDelegate = new WishViewDelegate(surfaceView);
+
+        wishViewDelegate.setParseRectFromView(mCropLayout);
+        wishViewDelegate.setAutoFocusModel(AutoFocusConfig.PIXVALUES);
+        wishViewDelegate.setScanModel(ScanConfig.ALL);
+
+        wishViewDelegate.regAccountLigListener(new LightCallBack() {
+            @Override
+            public void lightValues(boolean isBright) {
+
+                if (!isBright) {
+                    lightView.setVisibility(VISIBLE);
+                    lightView.close();
+                } else {
+                    lightView.setVisibility(INVISIBLE);
+                }
+
+            }
+        });
+
+        wishViewDelegate.regResultListener(new ResultListener() {
+            @Override
+            public void scanSucceed(Result result) {
+
+            }
+
+            @Override
+            public void scanImgFail() {
+
+            }
+        });
+
+        wishViewDelegate.regSurfaceListener(new SurfaceListener() {
+            @Override
+            public void onCreate() {
+                hintView.setText("");
+            }
+
+            @Override
+            public void onDestory() {
+                hintView.setText("正在加载...");
+            }
+        });
+
+    }
+
 
     @Override
     public void onCreate(Activity activity) {
         get = new WeakReference<>(activity);
         PermissionUtils.init(get.get());
         initView();
+        initDefDelegate();
         wishViewDelegate.onCreate(activity);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
@@ -155,20 +216,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
-        if (v == lightLayout) {
-            TextView text = lightLayout.findViewById(R.id.light_text);
-            ImageView imageView = lightLayout.findViewById(R.id.light_img);
-            if (text.getText().equals("轻点照亮")) {
-                text.setText("轻点关闭");
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.light_open));
-                lightLayout.setTag(true);
-            } else {
-                text.setText("轻点照亮");
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.light_close));
-                lightLayout.setTag(false);
-            }
-        }
 
     }
 

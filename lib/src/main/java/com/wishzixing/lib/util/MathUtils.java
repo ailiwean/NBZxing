@@ -118,10 +118,10 @@ public class MathUtils {
             cameraY = tem;
         }
 
-        float diffX = CameraConfig.getInstance().getScreenPoint().x - cameraX;
-        float diffY = CameraConfig.getInstance().getScreenPoint().y - cameraY;
+        float ratioX = (float) cameraX / CameraConfig.getInstance().getScreenPoint().x;
+        float ratioY = (float) cameraY / CameraConfig.getInstance().getScreenPoint().y;
 
-        return new PointF(diffX, diffY);
+        return new PointF(ratioX, ratioY);
     }
 
     public static class Point implements Comparable<Point> {
