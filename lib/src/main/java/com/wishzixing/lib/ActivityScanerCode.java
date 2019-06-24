@@ -20,15 +20,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.manager.CameraManager;
-import com.wishzixing.lib.util.RxBeepUtils;
 import com.wishzixing.lib.util.RxQrBarParseUtils;
 import com.wishzixing.lib.util.Utils;
 
@@ -189,21 +186,21 @@ public abstract class ActivityScanerCode extends AppCompatActivity {
     }
 
     private void initScanerAnimation() {
-        TextView loadingHint = findViewById(R.id.loadingHint);
-        loadingHint.setVisibility(View.INVISIBLE);
-        ImageView mQrLineView = findViewById(R.id.capture_scan_line);
-        mQrLineView.setVisibility(View.VISIBLE);
-        ScaleUpDowm(mQrLineView);
+//        TextView loadingHint = findViewById(R.id.loadingHint);
+//        loadingHint.setVisibility(View.INVISIBLE);
+//        ImageView mQrLineView = findViewById(R.id.capture_scan_line);
+//        mQrLineView.setVisibility(View.VISIBLE);
+//        ScaleUpDowm(mQrLineView);
     }
 
     private void pauseScannerAnimation() {
 
-        ImageView mQrLineView = findViewById(R.id.capture_scan_line);
-        mQrLineView.setVisibility(View.INVISIBLE);
-        mQrLineView.setAnimation(null);
-
-        TextView loadingHint = findViewById(R.id.loadingHint);
-        loadingHint.setVisibility(View.VISIBLE);
+//        ImageView mQrLineView = findViewById(R.id.capture_scan_line);
+//        mQrLineView.setVisibility(View.INVISIBLE);
+//        mQrLineView.setAnimation(null);
+//
+//        TextView loadingHint = findViewById(R.id.loadingHint);
+//        loadingHint.setVisibility(View.VISIBLE);
     }
 
     public void ScaleUpDowm(View view) {

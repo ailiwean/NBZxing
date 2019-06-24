@@ -36,7 +36,7 @@ public class LightView extends FrameLayout {
     }
 
     private void initView() {
-
+        
         View v = LayoutInflater.from(getContext()).inflate(R.layout.light_layout, null);
         iv = v.findViewById(R.id.light_img);
         tv = v.findViewById(R.id.light_text);

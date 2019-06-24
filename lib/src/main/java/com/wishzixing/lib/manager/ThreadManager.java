@@ -16,6 +16,7 @@ public class ThreadManager {
     ThreadPoolExecutor executor;
 
     private ThreadManager() {
+        
 
         executor = new ThreadPoolExecutor(2, 5, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
         //任务拒绝策略

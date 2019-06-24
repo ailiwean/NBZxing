@@ -1,5 +1,6 @@
 package com.wishzixing.lib.views;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
@@ -51,6 +52,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     private FrameLayout lightParent;
 
     WishViewDelegate wishViewDelegate;
+    private ScanView scanView;
 
     public WishView(Context context) {
         super(context);
@@ -64,6 +66,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         super(context, attrs, defStyleAttr);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initView() {
 
         //添加内容
@@ -86,12 +89,13 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         hintView = findViewById(R.id.loadingHint);
         lightParent = findViewById(R.id.lightparent);
 
+        scanView = findViewById(R.id.scanView);
+
         ImageView ivBack = findViewById(R.id.back);
         TextView tvAlbum = findViewById(R.id.openAlbum);
         ivBack.setOnClickListener(this);
         tvAlbum.setOnClickListener(this);
         RelativeLayout titleParent = findViewById(R.id.rl_title);
-
 
         OnGestureListener onGestureListener = new OnGestureListener(get.get());
         onGestureListener.regOnDoubleClickCallback(new OnGestureListener.DoubleClickCallback() {
@@ -133,7 +137,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
             }
         });
         mContainer.setOnTouchListener(onGestureListener);
-
     }
 
     //初始化默认Delegate
@@ -175,11 +178,13 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
             @Override
             public void onCreate() {
                 hintView.setText("");
+                scanView.startScanAnima();
             }
 
             @Override
             public void onDestory() {
                 hintView.setText("正在加载...");
+                scanView.stopScanAnima();
             }
         });
 
@@ -234,6 +239,5 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         }
         return wishViewDelegate;
     }
-
 
 }
