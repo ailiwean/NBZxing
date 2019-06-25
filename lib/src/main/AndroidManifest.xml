@@ -6,4 +6,12 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <application>
+
+        <activity
+            android:name=".PermissionActivity"
+            android:theme="@style/Transparent" />
+
+    </application>
+
 </manifest>

@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:paddingBottom="5dp"
-        android:text="轻点照亮"
+        android:text="轻触照亮"
         android:textColor="@android:color/white"
         android:textSize="13dp" />
 

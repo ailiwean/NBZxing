@@ -2,7 +2,10 @@ package com.wishzixing.lib.views;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
+import com.wishzixing.lib.PermissionActivity;
 import com.wishzixing.lib.R;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.AutoFocusConfig;
@@ -53,6 +57,10 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
     WishViewDelegate wishViewDelegate;
     private ScanView scanView;
+    private RelativeLayout title;
+    private FrameLayout scanParent;
+    private ImageView ivBack;
+    private TextView tvAlbum;
 
     public WishView(Context context) {
         super(context);
@@ -72,12 +80,8 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         //添加内容
         View view = LayoutInflater.from(getContext()).inflate(R.layout.activity_scaner_code, null);
         addView(view);
-        /*
-      整体根布局
-     */ /**
-         * 整体根布局
-         */RelativeLayout mContainer = findViewById(R.id.capture_containter);
 
+        RelativeLayout mContainer = findViewById(R.id.capture_containter);
 
         mCropLayout = findViewById(R.id.capture_crop_layout);
 
@@ -90,12 +94,13 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         lightParent = findViewById(R.id.lightparent);
 
         scanView = findViewById(R.id.scanView);
+        scanParent = findViewById(R.id.scan_animation_layout);
 
-        ImageView ivBack = findViewById(R.id.back);
-        TextView tvAlbum = findViewById(R.id.openAlbum);
+        ivBack = findViewById(R.id.back);
+        tvAlbum = findViewById(R.id.openAlbum);
         ivBack.setOnClickListener(this);
         tvAlbum.setOnClickListener(this);
-        RelativeLayout titleParent = findViewById(R.id.rl_title);
+        title = findViewById(R.id.rl_title);
 
         OnGestureListener onGestureListener = new OnGestureListener(get.get());
         onGestureListener.regOnDoubleClickCallback(new OnGestureListener.DoubleClickCallback() {
@@ -154,8 +159,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
                 if (!isBright) {
                     lightView.setVisibility(VISIBLE);
-                    lightView.close();
-                } else {
+                } else if (!lightView.isBright()) {
                     lightView.setVisibility(INVISIBLE);
                 }
 
@@ -198,6 +202,27 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         initDefDelegate();
         wishViewDelegate.onCreate(activity);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        requestPermission();
+    }
+
+    private void requestPermission() {
+
+        if (PermissionUtils.hasPermission(get.get()))
+            return;
+
+        Intent intent = new Intent(get.get(), PermissionActivity.class);
+        get.get().startActivity(intent);
+        get.get().overridePendingTransition(0, 0);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("REFRESH");
+        get.get().registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                getDelegate().refreshCamera();
+                get.get().unregisterReceiver(this);
+            }
+        }, intentFilter);
     }
 
     @Override
@@ -231,6 +256,9 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
             Toast.makeText(getContext(), "打开相册", Toast.LENGTH_SHORT).show();
         }
 
+        if (v.getId() == lightView.getId()) {
+            lightView.toggle();
+        }
     }
 
     public WishViewDelegate getDelegate() {
@@ -238,6 +266,41 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
             throw new RuntimeException("WishView must be onCreat");
         }
         return wishViewDelegate;
+    }
+
+    //获取默认剪裁解析View
+    public RelativeLayout getCropView() {
+        return mCropLayout;
+    }
+
+    //手电筒View的Parent
+    public FrameLayout getLightParent() {
+        return lightParent;
+    }
+
+    //标题View
+    public RelativeLayout getTitle() {
+        return title;
+    }
+
+    //获取扫描动画View的Parent
+    public FrameLayout getScanParent() {
+        return scanParent;
+    }
+
+    //获取中心提示View
+    public TextView getHintView() {
+        return hintView;
+    }
+
+    //返回
+    public ImageView getBackView() {
+        return ivBack;
+    }
+
+    //相册
+    public TextView getAlbumView() {
+        return tvAlbum;
     }
 
 }

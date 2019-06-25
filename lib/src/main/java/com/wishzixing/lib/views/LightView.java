@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wishzixing.lib.R;
+import com.wishzixing.lib.util.LightControlUtils;
 
 /***
  *  Created by SWY
@@ -19,6 +20,9 @@ public class LightView extends FrameLayout {
 
     private TextView tv;
     private ImageView iv;
+
+
+    private boolean isBright;
 
     public LightView(Context context) {
         super(context);
@@ -36,7 +40,7 @@ public class LightView extends FrameLayout {
     }
 
     private void initView() {
-        
+
         View v = LayoutInflater.from(getContext()).inflate(R.layout.light_layout, null);
         iv = v.findViewById(R.id.light_img);
         tv = v.findViewById(R.id.light_text);
@@ -47,7 +51,7 @@ public class LightView extends FrameLayout {
 
     public void toggle() {
 
-        if (tv.getText().equals("轻触打开"))
+        if (tv.getText().equals("轻触照亮"))
             open();
         else close();
 
@@ -55,16 +59,23 @@ public class LightView extends FrameLayout {
 
     public void open() {
 
+        isBright = true;
+        tv.setText("轻触关闭");
+        LightControlUtils.openLight();
         iv.setImageDrawable(getContext().getResources().getDrawable(R.drawable.light_open));
-        tv.setText("");
 
     }
 
     public void close() {
-
-        tv.setText("轻触打开");
+        isBright = false;
+        tv.setText("轻触照亮");
+        LightControlUtils.closeLight();
         iv.setImageDrawable(getContext().getResources().getDrawable(R.drawable.light_close));
 
+    }
+
+    public boolean isBright() {
+        return isBright;
     }
 
 }

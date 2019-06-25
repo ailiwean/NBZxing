@@ -67,14 +67,7 @@ public class WishViewDelegate implements WishLife {
                 @Override
                 public void run() {
 
-                    CameraManager.get().openDriver(surfaceView.getHolder());
-
-                    Config.useDefault();
-
-                    CameraManager.get().initCamera();
-
-                    if (surfaceListener != null)
-                        surfaceListener.onCreate();
+                    refreshCamera();
 
                 }
             }, 100);
@@ -95,14 +88,8 @@ public class WishViewDelegate implements WishLife {
                             @Override
                             public void run() {
 
-                                CameraManager.get().openDriver(surfaceView.getHolder());
+                                refreshCamera();
 
-                                Config.useDefault();
-
-                                CameraManager.get().initCamera();
-
-                                if (surfaceListener != null)
-                                    surfaceListener.onCreate();
                             }
                         }, 100);
                     }
@@ -128,6 +115,20 @@ public class WishViewDelegate implements WishLife {
     public void onStop() {
 
     }
+
+    public void refreshCamera() {
+
+        CameraManager.get().openDriver(surfaceView.getHolder());
+
+        Config.useDefault();
+
+        CameraManager.get().initCamera();
+
+        if (surfaceListener != null)
+            surfaceListener.onCreate();
+
+    }
+
 
     @Override
     public void onDestory() {
@@ -171,6 +172,10 @@ public class WishViewDelegate implements WishLife {
     public WishViewDelegate regAccountLigListener(LightCallBack lightCallBack) {
         CameraCoordinateHandler.getInstance().regAccountListener(lightCallBack);
         return this;
+    }
+
+    public void postParsePath(String path) {
+
     }
 
 }

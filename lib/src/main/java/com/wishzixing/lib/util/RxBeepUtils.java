@@ -30,6 +30,7 @@ public class RxBeepUtils {
             mediaPlayer.prepare();
             mediaPlayer.start();
         } catch (IOException e) {
+            mediaPlayer.release();
             mediaPlayer = null;
         }
     }
