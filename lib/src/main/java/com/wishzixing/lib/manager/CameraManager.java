@@ -17,6 +17,7 @@
 package com.wishzixing.lib.manager;
 
 import android.content.Context;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.view.SurfaceHolder;
 
@@ -49,8 +50,14 @@ public class CameraManager {
     private volatile Camera camera;
     private boolean initialized;
     private volatile boolean previewing;
-    private Camera.Parameters parameter;
     private Camera.Parameters parameters;
+
+    private ShowType showType;
+
+    public enum ShowType {
+        SurfaceView,
+        TextureView
+    }
 
     private CameraManager(Context context) {
 
@@ -95,6 +102,7 @@ public class CameraManager {
             camera = Camera.open();
             if (camera == null) {
                 try {
+
                     throw new IOException();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -109,7 +117,33 @@ public class CameraManager {
                 initialized = true;
             }
             FlashlightManager.enableFlashlight();
+            this.showType = ShowType.SurfaceView;
         }
+    }
+
+    public void openDriver(SurfaceTexture surfaceTexture) {
+
+        if (camera == null) {
+            camera = Camera.open();
+            if (camera == null) {
+                try {
+                    throw new IOException();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                camera.setPreviewTexture(surfaceTexture);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (!initialized) {
+                initialized = true;
+            }
+            FlashlightManager.enableFlashlight();
+            this.showType = ShowType.TextureView;
+        }
+
     }
 
     /**
@@ -121,6 +155,8 @@ public class CameraManager {
             //提前置空防止其他对象访问失效Camera
             Camera camera_ = camera;
             camera = null;
+            camera_.stopPreview();
+            previewing = false;
             camera_.setPreviewCallback(null);
             camera_.release();
         }
@@ -137,20 +173,11 @@ public class CameraManager {
         }
     }
 
-    /**
-     * Tells the camera to stop drawing preview frames.
-     */
-    public void stopPreview() {
-        if (camera != null && previewing) {
-            camera.stopPreview();
-            previewing = false;
-        }
-    }
-
     public void initCamera() {
 
         if (camera == null)
             return;
+
         parameters = camera.getParameters();
         parameters.set("flash-value", 10);
         parameters.set("flash-mode", "off");
@@ -159,8 +186,12 @@ public class CameraManager {
         parameters.setPreviewSize(CameraConfig.getInstance().getCameraPoint().x, CameraConfig.getInstance().getCameraPoint().y);
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);
-        camera.startPreview();
+        startPreview();
         requestPreviewFrame();
+    }
+
+    public ShowType getShowType() {
+        return showType;
     }
 
     /***

@@ -5,11 +5,18 @@
     android:layout_height="match_parent">
 
     <SurfaceView
-        android:id="@+id/capture_preview"
+        android:id="@+id/surface_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="true"
-        android:fitsSystemWindows="true" />
+        android:fitsSystemWindows="true"
+        android:visibility="gone" />
+
+    <TextureView
+        android:id="@+id/texture_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
     <RelativeLayout
         android:id="@+id/rl_title"

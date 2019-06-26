@@ -10,6 +10,7 @@ import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -49,6 +50,8 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
     private SurfaceView surfaceView;
 
+    private TextureView textureView;
+
     private LightView lightView;
 
     private TextView hintView;
@@ -85,7 +88,9 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
         mCropLayout = findViewById(R.id.capture_crop_layout);
 
-        surfaceView = findViewById(R.id.capture_preview);
+        surfaceView = findViewById(R.id.surface_preview);
+
+        textureView = findViewById(R.id.texture_preview);
 
         lightView = findViewById(R.id.lightView);
         lightView.setOnClickListener(this);
@@ -147,7 +152,9 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     //初始化默认Delegate
     private void initDefDelegate() {
 
-        wishViewDelegate = new WishViewDelegate(surfaceView);
+//        wishViewDelegate = new WishViewDelegate(surfaceView);
+
+        wishViewDelegate = new WishViewDelegate(textureView);
 
         wishViewDelegate.setParseRectFromView(mCropLayout);
         wishViewDelegate.setAutoFocusModel(AutoFocusConfig.PIXVALUES);

@@ -1,9 +1,11 @@
 package com.wishzixing.lib.views;
 
 import android.app.Activity;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 
 import com.wishzixing.lib.WishLife;
@@ -31,9 +33,13 @@ public class WishViewDelegate implements WishLife {
 
     SurfaceView surfaceView;
 
+    TextureView textureView;
+
     Activity mActivity;
 
     private boolean hasSurface = false;
+
+    private boolean hasTexture = false;
 
     InactivityTimerUtils inactivityTimer;
 
@@ -41,6 +47,10 @@ public class WishViewDelegate implements WishLife {
 
     public WishViewDelegate(SurfaceView surfaceView) {
         this.surfaceView = surfaceView;
+    }
+
+    public WishViewDelegate(TextureView textureView) {
+        this.textureView = textureView;
     }
 
     @Override
@@ -58,6 +68,120 @@ public class WishViewDelegate implements WishLife {
 
         if (!PermissionUtils.hasPermission(mActivity))
             return;
+
+        if (surfaceView != null)
+            initSurface();
+
+        if (textureView != null)
+            initTexture();
+
+    }
+
+    private void initTexture() {
+
+        if (hasTexture) {
+
+            textureView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    refreshCamera();
+
+                }
+            }, 100);
+        } else {
+
+            textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+                @Override
+                public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+
+                    refreshCamera();
+
+                    //动态调整Texture
+//                    int mWidth = textureView.getMeasuredWidth();
+//                    int mHeight = textureView.getMeasuredHeight();
+//                    int mDisplayWidth;
+//                    int mDisplayHeight;
+//                    int mPreviewWidth = CameraConfig.getInstance().getCameraPoint().y;
+//                    int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;
+//
+//                    int orientation;
+//                    //变形处理
+//                    RectF previewRect = new RectF(0, 0, mWidth, mHeight);
+//                    double aspect = (double) mPreviewWidth / mPreviewHeight;
+//                    if (mActivity.getResources().getConfiguration().orientation
+//                            == Configuration.ORIENTATION_PORTRAIT) {
+//                        aspect = 1 / aspect;
+//                    }
+//                    if (mWidth < (mHeight * aspect)) {
+//                        mDisplayWidth = mWidth;
+//                        mDisplayHeight = (int) (mHeight * aspect + .5);
+//                    } else {
+//                        mDisplayWidth = (int) (mWidth / aspect + .5);
+//                        mDisplayHeight = mHeight;
+//                    }
+//                    RectF surfaceDimensions = new RectF(0, 0, mDisplayWidth, mDisplayHeight);
+//                    Matrix matrix = new Matrix();
+//                    matrix.setRectToRect(previewRect, surfaceDimensions, Matrix.ScaleToFit.FILL);
+//                    textureView.setTransform(matrix);
+//                    //<-处理变形
+//                    int displayRotation = 0;
+//                    WindowManager windowManager = (WindowManager) mActivity
+//                            .getSystemService(Context.WINDOW_SERVICE);
+//                    int rotation = windowManager.getDefaultDisplay().getRotation();
+//                    switch (rotation) {
+//                        case Surface.ROTATION_0:
+//                            break;
+//                        case Surface.ROTATION_90:
+//                            displayRotation = 90;
+//                            break;
+//                        case Surface.ROTATION_180:
+//                            displayRotation = 180;
+//                            break;
+//                        case Surface.ROTATION_270:
+//                            displayRotation = 270;
+//                            break;
+//                    }
+//
+//                    Camera.CameraInfo info = new Camera.CameraInfo();
+//                    Camera.getCameraInfo(0, info);
+//
+//                    if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
+//                        orientation = (info.orientation - displayRotation + 360) % 360;
+//                    } else {
+//                        orientation = (info.orientation + displayRotation) % 360;
+//                        orientation = (360 - orientation) % 360;
+//                    }
+//
+//                    //变换
+//                    CameraManager.get().getCamera().setDisplayOrientation(orientation);
+
+                }
+
+                @Override
+                public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
+                }
+
+                @Override
+                public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                    return false;
+                }
+
+                @Override
+                public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
+                }
+            });
+
+            hasTexture = true;
+
+        }
+
+
+    }
+
+    private void initSurface() {
 
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
@@ -118,17 +242,20 @@ public class WishViewDelegate implements WishLife {
 
     public void refreshCamera() {
 
-        CameraManager.get().openDriver(surfaceView.getHolder());
+
+        if (surfaceView != null)
+            CameraManager.get().openDriver(surfaceView.getHolder());
+
+        if (textureView != null)
+            CameraManager.get().openDriver(textureView.getSurfaceTexture());
 
         Config.useDefault();
-
-        CameraManager.get().initCamera();
 
         if (surfaceListener != null)
             surfaceListener.onCreate();
 
+        CameraManager.get().initCamera();
     }
-
 
     @Override
     public void onDestory() {

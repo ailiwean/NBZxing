@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        wishView.getDelegate().setScanModel(ScanConfig.BARCODE);
+        wishView.getDelegate().setScanModel(ScanConfig.ALL);
         wishView.getDelegate().setAutoFocusModel(AutoFocusConfig.PIXVALUES);
     }
 

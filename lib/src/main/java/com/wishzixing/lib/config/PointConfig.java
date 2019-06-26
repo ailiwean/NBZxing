@@ -81,7 +81,6 @@ public class PointConfig {
 
         Log.e("preViewSizeValueString:", previewSizeValueString);
 
-
         previewFormat = parameters.getPreviewFormat();
         previewFormatString = parameters.get("preview-format");
 
