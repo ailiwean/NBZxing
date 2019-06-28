@@ -12,11 +12,17 @@
         android:fitsSystemWindows="true"
         android:visibility="gone" />
 
-    <TextureView
-        android:id="@+id/texture_preview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextureView
+            android:id="@+id/texture_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/rl_title"

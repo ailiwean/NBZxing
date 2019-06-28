@@ -7,9 +7,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.AutoFocusConfig;
+import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.config.ParseRectConfig;
 import com.wishzixing.lib.config.ScanConfig;
@@ -81,80 +83,43 @@ public class WishViewDelegate implements WishLife {
 
         if (hasTexture) {
 
-            textureView.postDelayed(new Runnable() {
+            textureView.post(new Runnable() {
                 @Override
                 public void run() {
 
                     refreshCamera();
 
                 }
-            }, 100);
+            });
         } else {
+
 
             textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
                 @Override
                 public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
 
-                    refreshCamera();
+                    textureView.post(new Runnable() {
+                        @Override
+                        public void run() {
 
-                    //动态调整Texture
-//                    int mWidth = textureView.getMeasuredWidth();
-//                    int mHeight = textureView.getMeasuredHeight();
-//                    int mDisplayWidth;
-//                    int mDisplayHeight;
-//                    int mPreviewWidth = CameraConfig.getInstance().getCameraPoint().y;
-//                    int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;
-//
-//                    int orientation;
-//                    //变形处理
-//                    RectF previewRect = new RectF(0, 0, mWidth, mHeight);
-//                    double aspect = (double) mPreviewWidth / mPreviewHeight;
-//                    if (mActivity.getResources().getConfiguration().orientation
-//                            == Configuration.ORIENTATION_PORTRAIT) {
-//                        aspect = 1 / aspect;
-//                    }
-//                    if (mWidth < (mHeight * aspect)) {
-//                        mDisplayWidth = mWidth;
-//                        mDisplayHeight = (int) (mHeight * aspect + .5);
-//                    } else {
-//                        mDisplayWidth = (int) (mWidth / aspect + .5);
-//                        mDisplayHeight = mHeight;
-//                    }
-//                    RectF surfaceDimensions = new RectF(0, 0, mDisplayWidth, mDisplayHeight);
-//                    Matrix matrix = new Matrix();
-//                    matrix.setRectToRect(previewRect, surfaceDimensions, Matrix.ScaleToFit.FILL);
-//                    textureView.setTransform(matrix);
-//                    //<-处理变形
-//                    int displayRotation = 0;
-//                    WindowManager windowManager = (WindowManager) mActivity
-//                            .getSystemService(Context.WINDOW_SERVICE);
-//                    int rotation = windowManager.getDefaultDisplay().getRotation();
-//                    switch (rotation) {
-//                        case Surface.ROTATION_0:
-//                            break;
-//                        case Surface.ROTATION_90:
-//                            displayRotation = 90;
-//                            break;
-//                        case Surface.ROTATION_180:
-//                            displayRotation = 180;
-//                            break;
-//                        case Surface.ROTATION_270:
-//                            displayRotation = 270;
-//                            break;
-//                    }
-//
-//                    Camera.CameraInfo info = new Camera.CameraInfo();
-//                    Camera.getCameraInfo(0, info);
-//
-//                    if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-//                        orientation = (info.orientation - displayRotation + 360) % 360;
-//                    } else {
-//                        orientation = (info.orientation + displayRotation) % 360;
-//                        orientation = (360 - orientation) % 360;
-//                    }
-//
-//                    //变换
-//                    CameraManager.get().getCamera().setDisplayOrientation(orientation);
+                            refreshCamera();
+
+                            //动态调整Texture
+                            int mWidth = textureView.getMeasuredWidth();
+                            int mHeight = textureView.getMeasuredHeight();
+
+                            int mPreviewWidth = CameraConfig.getInstance().getCameraPoint().y;
+                            int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;
+
+                            int xDiff = (int) (((float) mHeight / mPreviewHeight - 1) * mWidth);
+                            ViewGroup.LayoutParams params = textureView.getLayoutParams();
+                            params.width = mWidth + xDiff;
+                            params.height = mHeight;
+                            textureView.setLayoutParams(params);
+                            textureView.setTranslationX(-xDiff / 2);
+
+                        }
+                    });
 
                 }
 
@@ -173,7 +138,6 @@ public class WishViewDelegate implements WishLife {
 
                 }
             });
-
             hasTexture = true;
 
         }
@@ -186,15 +150,14 @@ public class WishViewDelegate implements WishLife {
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (hasSurface) {
             //Camera初始化
-            //延迟初始化相机，提升加载速度
-            surfaceView.postDelayed(new Runnable() {
+            surfaceView.post(new Runnable() {
                 @Override
                 public void run() {
 
                     refreshCamera();
 
                 }
-            }, 100);
+            });
         } else {
 
             surfaceHolder.addCallback(new SurfaceHolder.Callback() {
@@ -208,14 +171,14 @@ public class WishViewDelegate implements WishLife {
                     if (!hasSurface) {
                         hasSurface = true;
                         //延迟初始化相机，提升加载速度
-                        surfaceView.postDelayed(new Runnable() {
+                        surfaceView.post(new Runnable() {
                             @Override
                             public void run() {
 
                                 refreshCamera();
 
                             }
-                        }, 100);
+                        });
                     }
                 }
 

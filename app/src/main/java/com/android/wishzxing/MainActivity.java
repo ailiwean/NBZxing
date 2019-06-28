@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         wishView.getDelegate().setScanModel(ScanConfig.ALL);
-        wishView.getDelegate().setAutoFocusModel(AutoFocusConfig.PIXVALUES);
+        wishView.getDelegate().setAutoFocusModel(AutoFocusConfig.Default);
     }
 
     @Override

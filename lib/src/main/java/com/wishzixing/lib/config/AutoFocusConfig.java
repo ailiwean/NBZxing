@@ -9,7 +9,7 @@ import android.support.annotation.IntDef;
  */
 public class AutoFocusConfig {
 
-    private int autoModel = SENSOR;
+    private int autoModel = Default;
 
     private AutoFocusConfig() {
 
@@ -29,14 +29,15 @@ public class AutoFocusConfig {
     }
 
     public void go() {
-        CameraConfig.getInstance().autoFocusModel = autoModel;
+        CameraConfig.getInstance().autoFocusModel = this.autoModel;
     }
 
     public static final int TIME = 1;
     public static final int SENSOR = 2;
     public static final int PIXVALUES = 3;
+    public static final int Default = 4;
 
-    @IntDef({TIME, SENSOR, PIXVALUES})
+    @IntDef({TIME, SENSOR, PIXVALUES,Default})
     public static @interface Type {
 
     }

@@ -34,19 +34,34 @@ public class AutoFocusAble implements PixsValuesCus {
             setTimeAutoFocus();
         if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.SENSOR)
             setSensorAutoFocus();
+        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.Default)
+            setSensorAutoFocus();
     }
 
     @Override
     public void cusAction(byte[] data, Camera camera, int x, int y) {
 
         if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.PIXVALUES) {
+
             setPixvaluesAutoFocus(data, camera);
-        } else {
+
+        } else if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.SENSOR
+                || CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.TIME) {
+
+            if (!isFrist) {
+                startAutoFocus();
+                isFrist = true;
+            }
+        } else if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.Default) {
+
+            setPixvaluesAutoFocus(data, camera);
+
             if (!isFrist) {
                 startAutoFocus();
                 isFrist = true;
             }
         }
+
     }
 
     @Override
@@ -73,7 +88,7 @@ public class AutoFocusAble implements PixsValuesCus {
 
     private void setFocus() {
 
-        if (System.currentTimeMillis() - lastFocusTime < 800)
+        if (System.currentTimeMillis() - lastFocusTime < 1000)
             return;
 
         lastFocusTime = System.currentTimeMillis();
@@ -112,7 +127,6 @@ public class AutoFocusAble implements PixsValuesCus {
     private void setPixvaluesAutoFocus(byte[] data, Camera camera) {
 
         int avDark = AccountUtils.getAvDark(data);
-
         //变换值大于10开始调焦
         if (Math.abs(lastAcDark - avDark) > 10) {
             setFocus();
