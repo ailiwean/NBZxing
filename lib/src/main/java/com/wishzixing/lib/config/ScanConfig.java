@@ -14,7 +14,7 @@ public class ScanConfig {
     private boolean justOneScan = true;
 
     private ScanConfig() {
-
+            
     }
 
     private static class Holder {

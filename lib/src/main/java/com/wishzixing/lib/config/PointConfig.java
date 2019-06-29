@@ -104,6 +104,7 @@ public class PointConfig {
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
     private Point findBestPreviewSizeValue(CharSequence previewSizeValueString, Point screenResolution) {
+
         int bestX = 0;
         int bestY = 0;
         int diff = Integer.MAX_VALUE;

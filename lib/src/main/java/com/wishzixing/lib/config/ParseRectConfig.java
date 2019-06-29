@@ -2,7 +2,6 @@ package com.wishzixing.lib.config;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.View;
 
 import com.wishzixing.lib.util.MathUtils;

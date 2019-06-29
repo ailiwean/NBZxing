@@ -3,7 +3,6 @@ package com.wishzixing.lib.util;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.common.HybridBinarizer;
@@ -29,7 +28,6 @@ public class ConvertUtlis {
 
         int width = CameraConfig.getInstance().getCameraPoint().x;
         int height = CameraConfig.getInstance().getCameraPoint().y;
-
 
         //modify here
         byte[] rotatedData = new byte[bytes.length];
@@ -60,7 +58,6 @@ public class ConvertUtlis {
      */
     private static PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width, int height, Rect rect) {
 
-
         if ((rect.left == 0 && rect.right == 0) || (rect.top == 0 && rect.bottom == 0))
             return null;
 
@@ -72,15 +69,16 @@ public class ConvertUtlis {
             case ImageFormat.NV21:
                 // This format has never been seen in the wild, but is compatible as we only care
                 // about the Y channel, so allow it.
-            case ImageFormat.NV16:
+            case ImageFormat.NV16: {
                 return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
-                        rect.width(), rect.height());
+                        rect.width(), rect.height(), true);
+            }
             default:
                 // The Samsung Moment incorrectly uses this variant instead of the 'sp' version.
                 // Fortunately, it too has all the Y data up front, so we can read it.
                 if ("yuv420p".equals(previewFormatString)) {
                     return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
-                            rect.width(), rect.height());
+                            rect.width(), rect.height(), true);
                 }
         }
         throw new IllegalArgumentException("Unsupported picture format: " +

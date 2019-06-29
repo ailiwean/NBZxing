@@ -24,6 +24,7 @@ import com.wishzixing.lib.PermissionActivity;
 import com.wishzixing.lib.R;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.AutoFocusConfig;
+import com.wishzixing.lib.config.ParseRectConfig;
 import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.listener.LightCallBack;
 import com.wishzixing.lib.listener.OnGestureListener;
@@ -147,6 +148,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
             }
         });
         mContainer.setOnTouchListener(onGestureListener);
+
     }
 
     //初始化默认Delegate
@@ -201,6 +203,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
     }
 
+    @SuppressLint("InlinedApi")
     @Override
     public void onCreate(Activity activity) {
         get = new WeakReference<>(activity);
@@ -209,6 +212,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         initDefDelegate();
         wishViewDelegate.onCreate(activity);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //   activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         requestPermission();
     }
 
@@ -266,6 +270,11 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         if (v.getId() == lightView.getId()) {
             lightView.toggle();
         }
+    }
+
+    public WishView bindParseView(View view) {
+        ParseRectConfig.getInstance().setParseRectFromView(view);
+        return this;
     }
 
     public WishViewDelegate getDelegate() {

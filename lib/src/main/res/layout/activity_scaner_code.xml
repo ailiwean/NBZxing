@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/capture_containter"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <SurfaceView
         android:id="@+id/surface_preview"
@@ -11,7 +12,6 @@
         android:clipToPadding="true"
         android:fitsSystemWindows="true"
         android:visibility="gone" />
-
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -56,7 +56,7 @@
         android:id="@+id/capture_crop_layout"
         android:layout_width="250dp"
         android:layout_height="250dp"
-        android:layout_centerInParent="true"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/capture"
         android:contentDescription="@string/app_name">
 

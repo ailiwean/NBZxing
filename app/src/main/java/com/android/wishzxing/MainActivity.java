@@ -6,6 +6,8 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.config.AutoFocusConfig;
+import com.wishzixing.lib.config.BeepVibrationConfig;
+import com.wishzixing.lib.config.ParseRectConfig;
 import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.listener.ResultListener;
 import com.wishzixing.lib.util.Utils;

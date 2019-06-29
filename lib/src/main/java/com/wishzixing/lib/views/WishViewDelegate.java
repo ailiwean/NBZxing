@@ -1,13 +1,18 @@
 package com.wishzixing.lib.views;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.AutoFocusConfig;
@@ -93,10 +98,9 @@ public class WishViewDelegate implements WishLife {
             });
         } else {
 
-
             textureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
                 @Override
-                public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                public void onSurfaceTextureAvailable(SurfaceTexture surface, final int width, int height) {
 
                     textureView.post(new Runnable() {
                         @Override
@@ -204,7 +208,6 @@ public class WishViewDelegate implements WishLife {
     }
 
     public void refreshCamera() {
-
 
         if (surfaceView != null)
             CameraManager.get().openDriver(surfaceView.getHolder());

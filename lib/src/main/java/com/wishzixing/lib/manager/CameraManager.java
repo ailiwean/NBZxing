@@ -19,6 +19,7 @@ package com.wishzixing.lib.manager;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.wishzixing.lib.config.CameraConfig;
@@ -184,6 +185,7 @@ public class CameraManager {
         parameters.set("zoom", "1");
         parameters.set("taking-picture-zoom", CameraConfig.getInstance().getTenDesiredZoom());
         parameters.setPreviewSize(CameraConfig.getInstance().getCameraPoint().x, CameraConfig.getInstance().getCameraPoint().y);
+        Log.e("X:" + CameraConfig.getInstance().getCameraPoint().x, "Y:" + CameraConfig.getInstance().getCameraPoint().y);
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);
         startPreview();
