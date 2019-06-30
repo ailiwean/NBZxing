@@ -56,7 +56,7 @@ public class DecodePixAble implements PixsValuesCus {
 
     @Override
     public void stop() {
-
+        scanResult.clear();
     }
 
     private DecodePixAble() {

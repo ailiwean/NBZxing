@@ -60,4 +60,12 @@ public class PixsValuesCusManager {
 
     }
 
+    public void stop() {
+
+        for (PixsValuesCus cus : actionList) {
+            cus.stop();
+        }
+
+    }
+
 }

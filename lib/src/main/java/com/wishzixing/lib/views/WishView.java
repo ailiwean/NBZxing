@@ -214,6 +214,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         initView();
         initDefDelegate();
         initConfig();
+        initAccelerated();
         wishViewDelegate.onCreate(activity);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //   activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -231,6 +232,23 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
                 PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
             }
         });
+    }
+
+    //启用硬件加速
+    private void initAccelerated() {
+
+        get.get().getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+
+        if (surfaceView != null)
+            if (surfaceView.isHardwareAccelerated())
+                surfaceView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        if (textureView != null)
+            if (textureView.isHardwareAccelerated())
+                textureView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
     }
 
     private void requestPermission() {
@@ -251,6 +269,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
                 get.get().unregisterReceiver(this);
             }
         }, intentFilter);
+
     }
 
     @Override

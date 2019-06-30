@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.CameraConfig;
-import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.config.ParseRectConfig;
 import com.wishzixing.lib.config.PointConfig;
 import com.wishzixing.lib.config.ScanConfig;
@@ -139,7 +138,6 @@ public class WishViewDelegate implements WishLife {
                 }
             });
             hasTexture = true;
-
         }
 
 
@@ -211,16 +209,13 @@ public class WishViewDelegate implements WishLife {
         if (textureView != null)
             CameraManager.get().openDriver(textureView.getSurfaceTexture());
 
-        Config.useDefault();
-
         if (surfaceListener != null)
             surfaceListener.onCreate();
-
-        CameraManager.get().initCamera();
     }
 
     @Override
     public void onDestory() {
+        PixsValuesCusManager.getInstance().stop();
         inactivityTimer.shutdown();
     }
 

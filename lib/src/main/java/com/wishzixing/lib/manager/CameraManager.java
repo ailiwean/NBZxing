@@ -19,10 +19,10 @@ package com.wishzixing.lib.manager;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.wishzixing.lib.config.CameraConfig;
+import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.listener.AutoFocusCallback;
 import com.wishzixing.lib.listener.PreviewCallback;
 
@@ -120,6 +120,9 @@ public class CameraManager {
             FlashlightManager.enableFlashlight();
             this.showType = ShowType.SurfaceView;
         }
+
+        Config.useDefault();
+        initCamera();
     }
 
     public void openDriver(SurfaceTexture surfaceTexture) {
@@ -145,6 +148,8 @@ public class CameraManager {
             this.showType = ShowType.TextureView;
         }
 
+        Config.useDefault();
+        initCamera();
     }
 
     /**
@@ -175,21 +180,19 @@ public class CameraManager {
     }
 
     public void initCamera() {
-
         if (camera == null)
             return;
-
         parameters = camera.getParameters();
         parameters.set("flash-value", 10);
         parameters.set("flash-mode", "off");
         parameters.set("zoom", "1");
         parameters.set("taking-picture-zoom", CameraConfig.getInstance().getTenDesiredZoom());
         parameters.setPreviewSize(CameraConfig.getInstance().getCameraPoint().x, CameraConfig.getInstance().getCameraPoint().y);
-        Log.e("X:" + CameraConfig.getInstance().getCameraPoint().x, "Y:" + CameraConfig.getInstance().getCameraPoint().y);
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);
         startPreview();
         requestPreviewFrame();
+        camera.autoFocus(AutoFocusCallback.getInstance());
     }
 
     public ShowType getShowType() {

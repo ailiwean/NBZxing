@@ -80,8 +80,6 @@ public class AutoZoomAble implements PixsValuesCus {
             ZoomUtils.setZoom(ZoomUtils.getZoom() + ZoomUtils.getMaxZoom() / 20);
         }
 
-        Log.e("len:" + len, "showRectLen/2:" + showRectLen / 2);
-
         if (len > showRectLen / 2) {
             ZoomUtils.setZoom(ZoomUtils.getZoom() - ZoomUtils.getMaxZoom() / 20);
         }
@@ -90,7 +88,8 @@ public class AutoZoomAble implements PixsValuesCus {
 
     @Override
     public void stop() {
-
+        handlerThread.interrupt();
+        handler.removeCallbacksAndMessages(null);
     }
 
 }

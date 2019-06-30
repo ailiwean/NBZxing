@@ -28,6 +28,7 @@ public class AutoFocusAble implements PixsValuesCus {
 
     //上次广场强度根据不同的广场强度变换确定是否需要调焦
     private int lastAcDark = 0;
+    private final HandlerThread handlerThread;
 
     private void startAutoFocus() {
         if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.TIME)
@@ -66,14 +67,16 @@ public class AutoFocusAble implements PixsValuesCus {
 
     @Override
     public void stop() {
+        handlerThread.interrupt();
         timeHandler.removeCallbacksAndMessages(null);
+        SensorManager.getInstance().stopListener();
     }
 
     private final long TIMEINTERVAL = 1500L;
     private int model = 0;
 
     private AutoFocusAble() {
-        HandlerThread handlerThread = new HandlerThread("time");
+        handlerThread = new HandlerThread("time");
         handlerThread.start();
         timeHandler = new Handler(handlerThread.getLooper());
     }
@@ -97,7 +100,6 @@ public class AutoFocusAble implements PixsValuesCus {
             return;
 
         Camera camera = CameraManager.get().getCamera();
-        camera.startPreview();
         camera.autoFocus(AutoFocusCallback.getInstance());
 
     }
