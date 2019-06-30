@@ -3,6 +3,7 @@ package com.wishzixing.lib.util;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.common.HybridBinarizer;
@@ -40,7 +41,7 @@ public class ConvertUtlis {
         int tmp = width;
         width = height;
         height = tmp;
-        //width，height都正常
+
         PlanarYUVLuminanceSource source = buildLuminanceSource(rotatedData, width, height, rect);
 
         if (source == null)

@@ -1,10 +1,10 @@
 package com.wishzixing.lib.util;
 
 import android.graphics.PointF;
-import android.util.Log;
 
 import com.google.zxing.ResultPoint;
 import com.wishzixing.lib.config.CameraConfig;
+import com.wishzixing.lib.config.PointConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -119,8 +119,8 @@ public class MathUtils {
             cameraY = tem;
         }
 
-        float ratioX = (float) cameraX / CameraConfig.getInstance().getScreenPoint().x;
-        float ratioY = (float) cameraY / (CameraConfig.getInstance().getScreenPoint().y - WindowUitls.getStatusBarHeight());
+        float ratioX = (float) cameraX / PointConfig.getInstance().getShowPoint().x;
+        float ratioY = (float) cameraY / PointConfig.getInstance().getShowPoint().y;
 
         return new PointF(ratioX, ratioY);
     }

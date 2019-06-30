@@ -18,19 +18,16 @@ import java.util.regex.Pattern;
  */
 public class PointConfig {
 
-    private int screenX;
-    private int screenY;
-
     private Point screenPoint = new Point();
-
+    private Point showPoint = new Point();
     private Point cameraPoint;
+
     private int previewFormat;
     private String previewFormatString;
 
     private PointConfig() {
         WindowManager manager = (WindowManager) Utils.getAppContext().getSystemService(Context.WINDOW_SERVICE);
         manager.getDefaultDisplay().getSize(screenPoint);
-        initCameraPoint();
     }
 
     private static class Holder {
@@ -46,12 +43,19 @@ public class PointConfig {
         return this;
     }
 
-    public PointConfig setScreenXy(int x, int y) {
-        screenPoint = new Point(x, y);
+    public PointConfig setShowPoint(Point point) {
+        this.showPoint = point;
         return this;
     }
 
+    public Point getShowPoint() {
+        return showPoint;
+    }
+
     private void initCameraPoint() {
+
+        if (CameraManager.get() == null)
+            return;
 
         if (CameraManager.get().getCamera() == null)
             return;
@@ -145,6 +149,7 @@ public class PointConfig {
     }
 
     public void go() {
+        initCameraPoint();
         CameraConfig.getInstance().screenPoint = screenPoint;
         CameraConfig.getInstance().cameraPoint = cameraPoint;
         CameraConfig.getInstance().previewFormat = previewFormat;

@@ -1,24 +1,20 @@
 package com.wishzixing.lib.views;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.config.ParseRectConfig;
+import com.wishzixing.lib.config.PointConfig;
 import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.listener.LightCallBack;
@@ -109,8 +105,8 @@ public class WishViewDelegate implements WishLife {
                             refreshCamera();
 
                             //动态调整Texture
-                            int mWidth = textureView.getMeasuredWidth();
-                            int mHeight = textureView.getMeasuredHeight();
+                            int mWidth = PointConfig.getInstance().getShowPoint().x;
+                            int mHeight = PointConfig.getInstance().getShowPoint().y;
 
                             int mPreviewWidth = CameraConfig.getInstance().getCameraPoint().y;
                             int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;

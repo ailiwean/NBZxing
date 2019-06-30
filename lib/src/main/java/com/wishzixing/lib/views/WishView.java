@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Point;
 import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.wishzixing.lib.R;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.ParseRectConfig;
+import com.wishzixing.lib.config.PointConfig;
 import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.listener.LightCallBack;
 import com.wishzixing.lib.listener.OnGestureListener;
@@ -32,6 +34,7 @@ import com.wishzixing.lib.listener.ResultListener;
 import com.wishzixing.lib.listener.SurfaceListener;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.util.PermissionUtils;
+import com.wishzixing.lib.util.WindowUitls;
 import com.wishzixing.lib.util.ZoomUtils;
 
 import java.lang.ref.WeakReference;
@@ -210,10 +213,24 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         PermissionUtils.init(get.get());
         initView();
         initDefDelegate();
+        initConfig();
         wishViewDelegate.onCreate(activity);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //   activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         requestPermission();
+    }
+
+    private void initConfig() {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                View decorView = get.get().getWindow().getDecorView();
+                //为解决某些机型获取屏幕高度异常问题
+                Point screenPoint = new Point(decorView.getMeasuredWidth(), decorView.getMeasuredHeight() + WindowUitls.getStatusBarHeight());
+                PointConfig.getInstance().setScreenPoint(screenPoint);
+                PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
+            }
+        });
     }
 
     private void requestPermission() {

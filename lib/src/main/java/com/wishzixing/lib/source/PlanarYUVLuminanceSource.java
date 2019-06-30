@@ -1,6 +1,8 @@
 
 package com.wishzixing.lib.source;
 
+import android.util.Log;
+
 import com.google.zxing.LuminanceSource;
 
 /**
