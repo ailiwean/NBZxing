@@ -229,7 +229,8 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
                 //为解决某些机型获取屏幕高度异常问题
                 Point screenPoint = new Point(decorView.getMeasuredWidth(), decorView.getMeasuredHeight() + WindowUitls.getStatusBarHeight());
                 PointConfig.getInstance().setScreenPoint(screenPoint);
-                PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
+                //PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
+                ParseRectConfig.getInstance().setPreview(textureView);
             }
         });
     }
