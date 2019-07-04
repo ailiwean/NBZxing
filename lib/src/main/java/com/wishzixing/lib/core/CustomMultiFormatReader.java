@@ -3,6 +3,7 @@ package com.wishzixing.lib.core;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
 import com.google.zxing.Result;
@@ -11,6 +12,8 @@ import com.google.zxing.datamatrix.DataMatrixReader;
 import com.google.zxing.maxicode.MaxiCodeReader;
 import com.google.zxing.oned.MultiFormatOneDReader;
 import com.google.zxing.pdf417.PDF417Reader;
+import com.google.zxing.pdf417.decoder.ec.ErrorCorrection;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.ScanConfig;
 
@@ -90,6 +93,9 @@ public class CustomMultiFormatReader implements Reader {
         @SuppressWarnings("unchecked")
         Collection<BarcodeFormat> formats =
                 hints == null ? null : (Collection<BarcodeFormat>) hints.get(DecodeHintType.POSSIBLE_FORMATS);
+
+
+
         Collection<Reader> readers = new ArrayList<>();
         if (formats != null) {
             boolean addOneDReader =

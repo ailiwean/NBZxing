@@ -92,15 +92,20 @@ public class QRCodeCore implements Reader {
             result.putMetadata(ResultMetadataType.BYTE_SEGMENTS, byteSegments);
         }
         String ecLevel = decoderResult.getECLevel();
-        if (ecLevel != null) {
-            result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL, ecLevel);
-        }
+
+        if (ecLevel == null)
+            return null;
+
+        result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL, ecLevel);
+
         if (decoderResult.hasStructuredAppend()) {
             result.putMetadata(ResultMetadataType.STRUCTURED_APPEND_SEQUENCE,
                     decoderResult.getStructuredAppendSequenceNumber());
+
             result.putMetadata(ResultMetadataType.STRUCTURED_APPEND_PARITY,
                     decoderResult.getStructuredAppendParity());
         }
+
         return result;
     }
 

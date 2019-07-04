@@ -92,8 +92,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
         mCropLayout = findViewById(R.id.capture_crop_layout);
 
-        surfaceView = findViewById(R.id.surface_preview);
-
         textureView = findViewById(R.id.texture_preview);
 
         lightView = findViewById(R.id.lightView);
@@ -230,6 +228,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
                 Point screenPoint = new Point(decorView.getMeasuredWidth(), decorView.getMeasuredHeight() + WindowUitls.getStatusBarHeight());
                 PointConfig.getInstance().setScreenPoint(screenPoint);
                 //PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
+                //设定预览尺寸,即解析框取决于框内所在像素
                 ParseRectConfig.getInstance().setPreview(textureView);
             }
         });
