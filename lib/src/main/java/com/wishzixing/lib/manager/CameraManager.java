@@ -186,7 +186,8 @@ public class CameraManager {
         parameters.set("flash-value", 10);
         parameters.set("flash-mode", "off");
         parameters.set("zoom", "1");
-        parameters.set("taking-picture-zoom", CameraConfig.getInstance().getTenDesiredZoom());
+        //连续对焦
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         parameters.setPreviewSize(CameraConfig.getInstance().getCameraPoint().x, CameraConfig.getInstance().getCameraPoint().y);
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);

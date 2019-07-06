@@ -57,7 +57,7 @@ public class AutoFocusAble implements PixsValuesCus {
             }
         } else if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.Hybride) {
 
-            setPixvaluesAutoFocus(data, camera);
+            //  setPixvaluesAutoFocus(data, camera);
 
             if (!isFrist) {
                 startAutoFocus();

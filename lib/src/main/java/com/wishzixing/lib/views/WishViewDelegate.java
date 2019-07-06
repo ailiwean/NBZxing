@@ -228,7 +228,8 @@ public class WishViewDelegate implements WishLife {
         return CameraManager.get().getCamera();
     }
 
-    public WishViewDelegate setAutoFocusModel(@AutoFocusConfig.Type int type) {
+    public WishViewDelegate setSpareAutoFocus(boolean isUser, @AutoFocusConfig.Type int type) {
+        AutoFocusConfig.getInstance().setUser(isUser);
         AutoFocusConfig.getInstance().setModel(type);
         return this;
     }

@@ -1,5 +1,6 @@
 package com.wishzixing.lib.config;
 
+import android.graphics.Camera;
 import android.support.annotation.IntDef;
 
 /***
@@ -12,6 +13,8 @@ public class AutoFocusConfig {
     private int autoModel = Hybride;
 
     private long timeThreshold = 1000;
+
+    private boolean isUser = false;
 
     private AutoFocusConfig() {
 
@@ -35,9 +38,15 @@ public class AutoFocusConfig {
         return this;
     }
 
+    public AutoFocusConfig setUser(boolean user) {
+        isUser = user;
+        return this;
+    }
+
     public void go() {
         CameraConfig.getInstance().autoFocusModel = this.autoModel;
         CameraConfig.getInstance().timeThreshold = this.timeThreshold;
+        CameraConfig.getInstance().isUserSpareFocus = this.isUser;
     }
 
     public static final int TIME = 1;

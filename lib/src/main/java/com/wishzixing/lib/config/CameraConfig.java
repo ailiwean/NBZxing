@@ -45,6 +45,9 @@ public class CameraConfig {
     //控制调焦的时间阀值
     long timeThreshold;
 
+    //是否启用备用调焦
+    boolean isUserSpareFocus;
+
     private CameraConfig() {
     }
 
@@ -66,6 +69,10 @@ public class CameraConfig {
 
     public long getTimeThreshold() {
         return timeThreshold;
+    }
+
+    public boolean isUserSpareFocus() {
+        return isUserSpareFocus;
     }
 
     public Rect getFramingRect() {

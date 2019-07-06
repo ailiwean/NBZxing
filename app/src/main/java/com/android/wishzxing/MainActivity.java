@@ -6,7 +6,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
-import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.listener.ResultListener;
 import com.wishzixing.lib.util.Utils;
@@ -43,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         params.width = (int) (params.width * 0.8);
         wishView.getCropView().setLayoutParams(params);
-
-        //  wishView.getDelegate().setAutoFocusModel(AutoFocusConfig.Hybride);
-        wishView.getDelegate().setAutoFocusTimeThreshold(1000);
+            
+        //  wishView.getDelegate().setSpareAutoFocus(AutoFocusConfig.Hybride);
+        wishView.getDelegate().setAutoFocusTimeThreshold(2000);
 
     }
 

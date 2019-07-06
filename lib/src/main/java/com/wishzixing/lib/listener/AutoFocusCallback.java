@@ -1,6 +1,7 @@
 package com.wishzixing.lib.listener;
 
 import android.hardware.Camera;
+import android.util.Log;
 
 /***
  *  Created by SWY
@@ -23,7 +24,7 @@ public class AutoFocusCallback implements Camera.AutoFocusCallback {
     private static final long AUTOFOCUS_INTERVAL_MS = 1500L;
 
     public void onAutoFocus(boolean success, Camera camera) {
-
+        Log.e("对焦成功", "对焦成功");
     }
 
 }

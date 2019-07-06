@@ -6,7 +6,6 @@ import android.hardware.Camera;
 import com.wishzixing.lib.able.AccountLigFieAble;
 import com.wishzixing.lib.able.AutoFocusAble;
 import com.wishzixing.lib.able.AutoZoomAble;
-import com.wishzixing.lib.able.DecodePixAble;
 import com.wishzixing.lib.config.CameraConfig;
 
 import java.util.ArrayList;
@@ -22,9 +21,11 @@ public class PixsValuesCusManager {
     List<PixsValuesCus> actionList = new ArrayList<>();
 
     private PixsValuesCusManager() {
-        actionList.add(AutoFocusAble.getInstance());
+        if (CameraConfig.getInstance().isUserSpareFocus())
+            actionList.add(AutoFocusAble.getInstance());
+
         actionList.add(AutoZoomAble.getInstance());
-        actionList.add(DecodePixAble.getInstance());
+        // actionList.add(DecodePixAble.getInstance());
         actionList.add(AccountLigFieAble.getInstance());
     }
 
