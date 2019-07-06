@@ -3,6 +3,7 @@ package com.wishzixing.lib.able;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.CameraConfig;
@@ -24,7 +25,7 @@ public class AutoFocusAble implements PixsValuesCus {
 
     private boolean isFrist = false;
 
-    private long lastFocusTime = 0;
+    private volatile long lastFocusTime = 0;
 
     //上次广场强度根据不同的广场强度变换确定是否需要调焦
     private int lastAcDark = 0;
@@ -35,12 +36,13 @@ public class AutoFocusAble implements PixsValuesCus {
             setTimeAutoFocus();
         if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.SENSOR)
             setSensorAutoFocus();
-        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.Default)
+        if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.Hybride)
             setSensorAutoFocus();
     }
 
     @Override
     public void cusAction(byte[] data, Camera camera, int x, int y) {
+
 
         if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.PIXVALUES) {
 
@@ -53,7 +55,7 @@ public class AutoFocusAble implements PixsValuesCus {
                 startAutoFocus();
                 isFrist = true;
             }
-        } else if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.Default) {
+        } else if (CameraConfig.getInstance().getAutoFocusModel() == AutoFocusConfig.Hybride) {
 
             setPixvaluesAutoFocus(data, camera);
 
@@ -91,7 +93,7 @@ public class AutoFocusAble implements PixsValuesCus {
 
     private void setFocus() {
 
-        if (System.currentTimeMillis() - lastFocusTime < 1000)
+        if (System.currentTimeMillis() - lastFocusTime < CameraConfig.getInstance().getTimeThreshold())
             return;
 
         lastFocusTime = System.currentTimeMillis();

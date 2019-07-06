@@ -19,3 +19,11 @@ P
  lib/src/main/AndroidManifest.xml,3\4\34b73a04583e4db412caca9f0a8cd04986a275da
 l
 <lib/src/main/java/com/wishzixing/lib/PermissionActivity.java,1\6\1681567f39d818089c13c5a6abae177862d3e0e0
+p
+@lib/src/main/java/com/wishzixing/lib/config/ParseRectConfig.java,4\4\44357a4af8baacd687f8a566994b530cbfd6d0f4
+k
+;lib/src/main/java/com/wishzixing/lib/config/ScanConfig.java,3\e\3ec09185711f4c83b9f0856d8af297d8bfb46086
+j
+:lib/src/main/java/com/wishzixing/lib/util/RxBeepUtils.java,d\0\d0c70218d6ed9241038e307f95a8935452846bb0
+l
+<lib/src/main/java/com/wishzixing/lib/able/AutoFocusAble.java,8\0\806013a079ceff79fd29cdce99e54f0c6fb50f43

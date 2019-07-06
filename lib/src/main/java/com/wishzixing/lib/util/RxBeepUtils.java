@@ -100,7 +100,7 @@ public class RxBeepUtils {
         public static void vibrateOnce(Context context, int millisecond) {
             vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createOneShot(millisecond, 50));
+                vibrator.vibrate(VibrationEffect.createOneShot(millisecond, 25));
             } else vibrator.vibrate(millisecond);
         }
 

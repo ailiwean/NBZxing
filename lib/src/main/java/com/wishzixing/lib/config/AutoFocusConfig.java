@@ -9,7 +9,9 @@ import android.support.annotation.IntDef;
  */
 public class AutoFocusConfig {
 
-    private int autoModel = Default;
+    private int autoModel = Hybride;
+
+    private long timeThreshold = 1000;
 
     private AutoFocusConfig() {
 
@@ -28,16 +30,22 @@ public class AutoFocusConfig {
         return this;
     }
 
+    public AutoFocusConfig setTimeThreshold(long timeThreshold) {
+        this.timeThreshold = timeThreshold;
+        return this;
+    }
+
     public void go() {
         CameraConfig.getInstance().autoFocusModel = this.autoModel;
+        CameraConfig.getInstance().timeThreshold = this.timeThreshold;
     }
 
     public static final int TIME = 1;
     public static final int SENSOR = 2;
     public static final int PIXVALUES = 3;
-    public static final int Default = 4;
+    public static final int Hybride = 4;
 
-    @IntDef({TIME, SENSOR, PIXVALUES,Default})
+    @IntDef({TIME, SENSOR, PIXVALUES, Hybride})
     public static @interface Type {
 
     }

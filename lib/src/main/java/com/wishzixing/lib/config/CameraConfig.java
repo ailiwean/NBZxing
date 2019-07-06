@@ -42,6 +42,9 @@ public class CameraConfig {
     //同个二维码只扫描回调一次
     boolean isJustOne;
 
+    //控制调焦的时间阀值
+    long timeThreshold;
+
     private CameraConfig() {
     }
 
@@ -59,6 +62,10 @@ public class CameraConfig {
 
     public Point getCameraPoint() {
         return cameraPoint;
+    }
+
+    public long getTimeThreshold() {
+        return timeThreshold;
     }
 
     public Rect getFramingRect() {

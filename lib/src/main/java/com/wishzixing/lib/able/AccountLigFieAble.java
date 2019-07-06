@@ -40,7 +40,6 @@ public class AccountLigFieAble implements PixsValuesCus {
         return Holder.INSTANCE;
     }
 
-
     private void account(byte[] data, Camera camera) {
 
         int avDark = AccountUtils.getAvDark(data);
@@ -57,10 +56,8 @@ public class AccountLigFieAble implements PixsValuesCus {
     }
 
     private void sendMessage(boolean isBright) {
-
         Message message = Message.obtain(CameraCoordinateHandler.getInstance(), R.id.isbright, isBright);
         message.sendToTarget();
-
     }
 
 }

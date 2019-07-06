@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -24,7 +25,6 @@ import com.google.zxing.Result;
 import com.wishzixing.lib.PermissionActivity;
 import com.wishzixing.lib.R;
 import com.wishzixing.lib.WishLife;
-import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.ParseRectConfig;
 import com.wishzixing.lib.config.PointConfig;
 import com.wishzixing.lib.config.ScanConfig;
@@ -160,7 +160,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         wishViewDelegate = new WishViewDelegate(textureView);
 
         wishViewDelegate.setParseRectFromView(mCropLayout);
-        wishViewDelegate.setAutoFocusModel(AutoFocusConfig.PIXVALUES);
+
         wishViewDelegate.setScanModel(ScanConfig.ALL);
 
         wishViewDelegate.regAccountLigListener(new LightCallBack() {
@@ -309,6 +309,11 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     }
 
     public WishView bindParseView(View view) {
+        if (view.getParent() != null) {
+            ViewGroup vp = (ViewGroup) view.getParent();
+            vp.removeView(view);
+        }
+        addView(view);
         ParseRectConfig.getInstance().setParseRectFromView(view);
         return this;
     }

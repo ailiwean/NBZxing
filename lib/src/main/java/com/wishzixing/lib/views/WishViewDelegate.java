@@ -258,6 +258,11 @@ public class WishViewDelegate implements WishLife {
         return this;
     }
 
+    public WishViewDelegate setAutoFocusTimeThreshold(long time) {
+        AutoFocusConfig.getInstance().setTimeThreshold(time);
+        return this;
+    }
+
     public void postParsePath(String path) {
 
     }
