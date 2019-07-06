@@ -3,7 +3,10 @@ package com.wishzixing.lib.util;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Build;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 
 import java.io.IOException;
@@ -17,36 +20,59 @@ import java.io.IOException;
 public class RxBeepUtils {
 
     private static final float BEEP_VOLUME = 0.50f;
-    private static final int VIBRATE_DURATION = 50;
+    private static final int VIBRATE_DURATION = 10;
+
+    private static boolean playBeep = false;
     private static MediaPlayer mediaPlayer;
 
     public static void playBeep() {
-        try {
+
+        playBeep = true;
+
+        AudioManager audioService = (AudioManager) Utils.getAppContext().getSystemService(Utils.getAppContext().AUDIO_SERVICE);
+        if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
+            playBeep = false;
+        }
+        if (playBeep && mediaPlayer != null) {
+            mediaPlayer.start();
+        } else {
             mediaPlayer = new MediaPlayer();
-            AssetFileDescriptor file = Utils.getAppContext().getAssets().openFd("scan.wav");
-            mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
-            file.close();
-            mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
-            mediaPlayer.prepareAsync();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayer.seekTo(0);
+                }
+            });
+
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
                     mediaPlayer.start();
                 }
             });
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    mediaPlayer = null;
-                }
-            });
-        } catch (IOException e) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
+
+            AssetFileDescriptor file = null;
+            try {
+                file = Utils.getAppContext().getAssets().openFd("scan.wav");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (file == null)
+                return;
+
+            try {
+                mediaPlayer.setDataSource(file.getFileDescriptor(), file.getStartOffset(), file.getLength());
+                file.close();
+                mediaPlayer.setVolume(BEEP_VOLUME, BEEP_VOLUME);
+                mediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                mediaPlayer = null;
+            }
+
         }
+
     }
 
     public static void playVibrate() {
@@ -73,7 +99,9 @@ public class RxBeepUtils {
         @SuppressWarnings("static-access")
         public static void vibrateOnce(Context context, int millisecond) {
             vibrator = (Vibrator) context.getSystemService(context.VIBRATOR_SERVICE);
-            vibrator.vibrate(millisecond);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(millisecond, 50));
+            } else vibrator.vibrate(millisecond);
         }
 
         /**

@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Utils.init(this);
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         wishView.getDelegate().setScanModel(ScanConfig.ALL);
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) wishView.getCropView().getLayoutParams();
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        params.width = (int) (params.width * 0.8);
         wishView.getCropView().setLayoutParams(params);
 
     }

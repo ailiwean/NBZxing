@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.wishzixing.lib.util.PermissionUtils;
+import com.wishzixing.lib.util.RxBeepUtils;
 
 /***
  *  Created by SWY
@@ -22,7 +23,7 @@ public class PermissionActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PermissionUtils.init(this);
-    }
+        }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

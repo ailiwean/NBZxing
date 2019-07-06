@@ -11,10 +11,10 @@ public class ScanConfig {
 
     private int scanModel = ALL;
 
-    private boolean justOneScan = true;
+    private boolean justOneScan = false;
 
     private ScanConfig() {
-            
+
     }
 
     private static class Holder {
