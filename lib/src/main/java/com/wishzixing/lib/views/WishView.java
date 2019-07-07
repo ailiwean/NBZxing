@@ -34,6 +34,7 @@ import com.wishzixing.lib.listener.ResultListener;
 import com.wishzixing.lib.listener.SurfaceListener;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.util.PermissionUtils;
+import com.wishzixing.lib.util.Utils;
 import com.wishzixing.lib.util.WindowUitls;
 import com.wishzixing.lib.util.ZoomUtils;
 
@@ -209,6 +210,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     public void onCreate(Activity activity) {
         get = new WeakReference<>(activity);
         PermissionUtils.init(get.get());
+        Utils.init(get.get());
         initView();
         initDefDelegate();
         initConfig();
@@ -253,7 +255,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
     private void requestPermission() {
 
-        if (PermissionUtils.hasPermission(get.get()))
+        if (PermissionUtils.hasPermission())
             return;
 
         Intent intent = new Intent(get.get(), PermissionActivity.class);

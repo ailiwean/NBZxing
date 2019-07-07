@@ -19,7 +19,7 @@ import java.util.List;
  *  DATE 2019/6/8
  *  通往解码的桥梁
  */
-public class DecodePixAble implements PixsValuesCus {
+public class ZXDecodePixAble implements PixsValuesCus {
 
     List<String> scanResult = new ArrayList<>();
 
@@ -59,14 +59,14 @@ public class DecodePixAble implements PixsValuesCus {
         scanResult.clear();
     }
 
-    private DecodePixAble() {
+    private ZXDecodePixAble() {
     }
 
     private static class Holder {
-        static DecodePixAble INSTANCE = new DecodePixAble();
+        static ZXDecodePixAble INSTANCE = new ZXDecodePixAble();
     }
 
-    public static DecodePixAble getInstance() {
+    public static ZXDecodePixAble getInstance() {
         return Holder.INSTANCE;
     }
 

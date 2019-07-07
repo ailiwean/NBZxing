@@ -25,6 +25,7 @@ import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.listener.AutoFocusCallback;
 import com.wishzixing.lib.listener.PreviewCallback;
+import com.wishzixing.lib.util.PermissionUtils;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -99,6 +100,10 @@ public class CameraManager {
      * @throws IOException Indicates the camera driver failed to open.
      */
     public void openDriver(SurfaceHolder holder) {
+
+        if (!PermissionUtils.hasPermission())
+            return;
+
         if (camera == null) {
             camera = Camera.open();
             if (camera == null) {
@@ -126,6 +131,9 @@ public class CameraManager {
     }
 
     public void openDriver(SurfaceTexture surfaceTexture) {
+
+        if (!PermissionUtils.hasPermission())
+            return;
 
         if (camera == null) {
             camera = Camera.open();

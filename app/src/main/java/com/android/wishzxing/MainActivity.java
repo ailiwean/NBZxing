@@ -2,13 +2,11 @@ package com.android.wishzxing;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.listener.ResultListener;
-import com.wishzixing.lib.util.Utils;
 import com.wishzixing.lib.views.WishView;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Utils.init(this);
+
         wishView = findViewById(R.id.wishView);
         wishView.onCreate(this);
 
@@ -36,15 +34,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        wishView.getDelegate().setScanModel(ScanConfig.ALL);
+//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) wishView.getCropView().getLayoutParams();
+//        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+//        params.width = (int) (params.width * 0.8);
+        // wishView.getCropView().setLayoutParams(params);
 
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) wishView.getCropView().getLayoutParams();
-        params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        params.width = (int) (params.width * 0.8);
-        wishView.getCropView().setLayoutParams(params);
-            
         //  wishView.getDelegate().setSpareAutoFocus(AutoFocusConfig.Hybride);
         wishView.getDelegate().setAutoFocusTimeThreshold(2000);
+
+        wishView.getDelegate().setScanModel(ScanConfig.ALL);
 
     }
 

@@ -1,0 +1,22 @@
+
+Fsquid:S1444u"/Make this "public static cropWidth" field final(ß¶¡Ä
+Ksquid:S1444Š".Make this "public static scanType" field final(ñè¹Óıÿÿÿÿ
+ƒ"squid:ClassVariableVisibilityChecku"UMake cropWidth a static final constant or non-public and provide accessors if needed.(ß¶¡Ä
+Œ"squid:ClassVariableVisibilityCheck™"XMake is_auto_zoom a static final constant or non-public and provide accessors if needed.(¹õÁãüÿÿÿÿ
+Jsquid:S1444„"2Make this "public static screenHeight" field final(ÍË’À
+Asquid:S1444k"+Make this "public static cropX" field final(øÒR
+Lsquid:S1444z"0Make this "public static cropHeight" field final(ÑÅ«ûÿÿÿÿ
+Msquid:S1444"0Make this "public static scanFormat" field final(ğÏ”ûÿÿÿÿ
+Qsquid:S1444”"9Make this "public static is_only_scan_center" field final(şÃ„ç
+Š"squid:ClassVariableVisibilityCheck"WMake screenWidth a static final constant or non-public and provide accessors if needed.(å‹õãşÿÿÿÿ
+Osquid:S1444™"2Make this "public static is_auto_zoom" field final(¹õÁãüÿÿÿÿ
+Š"squid:ClassVariableVisibilityCheck"VMake scanFormat a static final constant or non-public and provide accessors if needed.(ğÏ”ûÿÿÿÿ
+‡"squid:ClassVariableVisibilityCheck„"XMake screenHeight a static final constant or non-public and provide accessors if needed.(ÍË’À
+a"squid:ObjectFinalizeOverridenCheck´"-Do not override the Object.finalize() method.(œäºÒúÿÿÿÿ
+„"squid:ClassVariableVisibilityCheckp"QMake cropY a static final constant or non-public and provide accessors if needed.(ğ¿¿Áùÿÿÿÿ
+Msquid:S1444"1Make this "public static screenWidth" field final(å‹õãşÿÿÿÿ
+‰"squid:ClassVariableVisibilityCheckz"VMake cropHeight a static final constant or non-public and provide accessors if needed.(ÑÅ«ûÿÿÿÿ
+~"squid:ClassVariableVisibilityCheckk"QMake cropX a static final constant or non-public and provide accessors if needed.(øÒR
+ˆ"squid:ClassVariableVisibilityCheckŠ"TMake scanType a static final constant or non-public and provide accessors if needed.(ñè¹Óıÿÿÿÿ
+"squid:ClassVariableVisibilityCheck”"_Make is_only_scan_center a static final constant or non-public and provide accessors if needed.(şÃ„ç
+Gsquid:S1444p"+Make this "public static cropY" field final(ğ¿¿Áùÿÿÿÿ

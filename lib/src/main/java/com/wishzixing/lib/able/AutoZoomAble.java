@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.FormatException;

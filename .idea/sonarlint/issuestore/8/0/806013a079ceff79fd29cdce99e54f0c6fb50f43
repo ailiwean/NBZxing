@@ -1,4 +1,4 @@
 
-?squid:S1170L"!Make this final field static too.(ô¯Ë 8õÒ›¾¼-
-Qsquid:S1172ƒ"-Remove this unused method parameter "camera".(ú÷ú•ýÿÿÿÿ8õÒ›¾¼-
-Lsquid:S1068M")Remove this unused "model" private field.(–Œ×¶ýÿÿÿÿ8õÒ›¾¼-
+Jsquid:S1068")Remove this unused "model" private field.(–Œ×¶ýÿÿÿÿ8Áê§Á¼-
+Nsquid:S1172"-Remove this unused method parameter "camera".(ú÷ú•ýÿÿÿÿ8Áê§Á¼-
+=squid:S1170"!Make this final field static too.(ô¯Ë 8Áê§Á¼-

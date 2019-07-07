@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.wishzixing.lib.util.PermissionUtils;
-import com.wishzixing.lib.util.RxBeepUtils;
 
 /***
  *  Created by SWY
@@ -23,7 +22,7 @@ public class PermissionActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PermissionUtils.init(this);
-        }
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -34,6 +33,7 @@ public class PermissionActivity extends AppCompatActivity {
             } else {
                 //用户不同意，向用户展示该权限作用
                 Toast.makeText(PermissionActivity.this, "未授予权限,某些功能无法使用", Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
         sendBorad();

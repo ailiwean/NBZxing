@@ -1,9 +1,7 @@
-package com.wishzixing.lib.core;
+package com.wishzixing.lib.core.zxing;
 
-import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.EncodeHintType;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
 import com.google.zxing.Result;
@@ -12,8 +10,6 @@ import com.google.zxing.datamatrix.DataMatrixReader;
 import com.google.zxing.maxicode.MaxiCodeReader;
 import com.google.zxing.oned.MultiFormatOneDReader;
 import com.google.zxing.pdf417.PDF417Reader;
-import com.google.zxing.pdf417.decoder.ec.ErrorCorrection;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.ScanConfig;
 
@@ -21,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Vector;
 
 
 /**
@@ -88,69 +83,31 @@ public class CustomMultiFormatReader implements Reader {
      */
     public void setHints(Map<DecodeHintType, ?> hints) {
         this.hints = hints;
-
-        boolean tryHarder = hints != null && hints.containsKey(DecodeHintType.TRY_HARDER);
-        @SuppressWarnings("unchecked")
-        Collection<BarcodeFormat> formats =
-                hints == null ? null : (Collection<BarcodeFormat>) hints.get(DecodeHintType.POSSIBLE_FORMATS);
-
-
-
         Collection<Reader> readers = new ArrayList<>();
-        if (formats != null) {
-            boolean addOneDReader =
-                    formats.contains(BarcodeFormat.UPC_A) ||
-                            formats.contains(BarcodeFormat.UPC_E) ||
-                            formats.contains(BarcodeFormat.EAN_13) ||
-                            formats.contains(BarcodeFormat.EAN_8) ||
-                            formats.contains(BarcodeFormat.CODABAR) ||
-                            formats.contains(BarcodeFormat.CODE_39) ||
-                            formats.contains(BarcodeFormat.CODE_93) ||
-                            formats.contains(BarcodeFormat.CODE_128) ||
-                            formats.contains(BarcodeFormat.ITF) ||
-                            formats.contains(BarcodeFormat.RSS_14) ||
-                            formats.contains(BarcodeFormat.RSS_EXPANDED);
-            // Put 1D readers upfront in "normal" mode
-            if (addOneDReader && !tryHarder) {
-                readers.add(new MultiFormatOneDReader(hints));
-            }
-            if (formats.contains(BarcodeFormat.QR_CODE)) {
-                readers.add(new QRCodeCore());
-            }
-            if (formats.contains(BarcodeFormat.DATA_MATRIX)) {
-                readers.add(new DataMatrixReader());
-            }
-            if (formats.contains(BarcodeFormat.AZTEC)) {
-                readers.add(new AztecReader());
-            }
-            if (formats.contains(BarcodeFormat.PDF_417)) {
-                readers.add(new PDF417Reader());
-            }
-            if (formats.contains(BarcodeFormat.MAXICODE)) {
-                readers.add(new MaxiCodeReader());
-            }
-            // At end in "try harder" mode
-            if (addOneDReader && tryHarder) {
-                readers.add(new MultiFormatOneDReader(hints));
-            }
 
-        }
-
-        if (readers.isEmpty()) {
-            if (!tryHarder) {
-                readers.add(new MultiFormatOneDReader(hints));
-            }
-
+        if (CameraConfig.getInstance().getScanModel() == ScanConfig.ALL) {
+            //一维码
+            readers.add(new MultiFormatOneDReader(hints));
+            //二维码
             readers.add(new QRCodeCore());
             readers.add(new DataMatrixReader());
             readers.add(new AztecReader());
             readers.add(new PDF417Reader());
             readers.add(new MaxiCodeReader());
-
-            if (tryHarder) {
-                readers.add(new MultiFormatOneDReader(hints));
-            }
         }
+
+        if (CameraConfig.getInstance().getScanModel() == ScanConfig.BARCODE) {
+            readers.add(new MultiFormatOneDReader(hints));
+        }
+
+        if (CameraConfig.getInstance().getScanModel() == ScanConfig.QRCODE) {
+            readers.add(new QRCodeCore());
+            readers.add(new DataMatrixReader());
+            readers.add(new AztecReader());
+            readers.add(new PDF417Reader());
+            readers.add(new MaxiCodeReader());
+        }
+
         this.readers = readers.toArray(new Reader[0]);
     }
 
@@ -181,45 +138,8 @@ public class CustomMultiFormatReader implements Reader {
     }
 
     private CustomMultiFormatReader() {
-
         // 解码的参数
         Hashtable<DecodeHintType, Object> hints = new Hashtable<>(2);
-        // 可以解析的编码类型
-        Vector<BarcodeFormat> decodeFormats = new Vector<>();
-        decodeFormats = new Vector<>();
-
-        Vector<BarcodeFormat> PRODUCT_FORMATS = new Vector<>(5);
-        PRODUCT_FORMATS.add(BarcodeFormat.UPC_A);
-        PRODUCT_FORMATS.add(BarcodeFormat.UPC_E);
-        PRODUCT_FORMATS.add(BarcodeFormat.EAN_13);
-        PRODUCT_FORMATS.add(BarcodeFormat.EAN_8);
-        // PRODUCT_FORMATS.add(BarcodeFormat.RSS14);
-        Vector<BarcodeFormat> ONE_D_FORMATS = new Vector<>(PRODUCT_FORMATS.size() + 4);
-        ONE_D_FORMATS.addAll(PRODUCT_FORMATS);
-        ONE_D_FORMATS.add(BarcodeFormat.CODE_39);
-        ONE_D_FORMATS.add(BarcodeFormat.CODE_93);
-        ONE_D_FORMATS.add(BarcodeFormat.CODE_128);
-        ONE_D_FORMATS.add(BarcodeFormat.ITF);
-        Vector<BarcodeFormat> QR_CODE_FORMATS = new Vector<>(1);
-        QR_CODE_FORMATS.add(BarcodeFormat.QR_CODE);
-        Vector<BarcodeFormat> DATA_MATRIX_FORMATS = new Vector<>(1);
-        DATA_MATRIX_FORMATS.add(BarcodeFormat.DATA_MATRIX);
-
-        int scanModel = CameraConfig.getInstance().getScanModel();
-
-        // 这里设置可扫描的类型，我这里选择了都支持
-        if (scanModel == ScanConfig.BARCODE)
-            decodeFormats.addAll(ONE_D_FORMATS);
-
-        if (scanModel == ScanConfig.QRCODE)
-            decodeFormats.addAll(QR_CODE_FORMATS);
-
-        if (scanModel == ScanConfig.ALL) {
-            decodeFormats.addAll(ONE_D_FORMATS);
-            decodeFormats.addAll(QR_CODE_FORMATS);
-            decodeFormats.addAll(DATA_MATRIX_FORMATS);
-        }
-        hints.put(DecodeHintType.POSSIBLE_FORMATS, decodeFormats);
         // 设置继续的字符编码格式为UTF8
         hints.put(DecodeHintType.CHARACTER_SET, "UTF8");
         // 设置解析配置参数

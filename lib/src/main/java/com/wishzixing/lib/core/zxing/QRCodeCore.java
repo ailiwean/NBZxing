@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wishzixing.lib.core;
+package com.wishzixing.lib.core.zxing;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
@@ -67,9 +67,9 @@ public class QRCodeCore implements Reader {
     @Override
     public final Result decode(BinaryBitmap image, Map<DecodeHintType, ?> hints)
             throws NotFoundException, ChecksumException, FormatException {
+
         DecoderResult decoderResult;
         ResultPoint[] points;
-
 
         if (hints != null && hints.containsKey(DecodeHintType.PURE_BARCODE)) {
             BitMatrix bits = extractPureBits(image.getBlackMatrix());
@@ -91,10 +91,8 @@ public class QRCodeCore implements Reader {
         if (byteSegments != null) {
             result.putMetadata(ResultMetadataType.BYTE_SEGMENTS, byteSegments);
         }
-        String ecLevel = decoderResult.getECLevel();
 
-        if (ecLevel == null)
-            return null;
+        String ecLevel = decoderResult.getECLevel();
 
         result.putMetadata(ResultMetadataType.ERROR_CORRECTION_LEVEL, ecLevel);
 

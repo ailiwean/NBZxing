@@ -11,7 +11,7 @@ public class ScanConfig {
 
     private int scanModel = ALL;
 
-    private boolean justOneScan = false;
+    private boolean justOneScan = true;
 
     private ScanConfig() {
 

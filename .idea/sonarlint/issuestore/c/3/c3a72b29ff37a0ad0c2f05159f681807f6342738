@@ -1,0 +1,5 @@
+
+—"squid:ClassVariableVisibilityCheck"_Make previewFormatString a static final constant or non-public and provide accessors if needed.(žƒãŒúÿÿÿÿ8‚¤´Á¼-
+Vsquid:S1068"5Remove this unused "DESIRED_SHARPNESS" private field.(Šññøøÿÿÿÿ8‚¤´Á¼-
+Œ"squid:ClassVariableVisibilityCheck"YMake previewFormat a static final constant or non-public and provide accessors if needed.(ØÚá¥8‚¤´Á¼-
+Ž"squid:ClassVariableVisibilityCheck"VMake isAutoZoom a static final constant or non-public and provide accessors if needed.(®Ÿìäüÿÿÿÿ8‚¤´Á¼-

@@ -61,14 +61,13 @@ public class WishViewDelegate implements WishLife {
         mActivity = activity;
         hasSurface = false;
         inactivityTimer = new InactivityTimerUtils(activity);
-
         YuvUtils.init(activity);
     }
 
     @Override
     public void onResume() {
 
-        if (!PermissionUtils.hasPermission(mActivity))
+        if (!PermissionUtils.hasPermission())
             return;
 
         if (surfaceView != null)
