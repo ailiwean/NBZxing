@@ -53,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        wishView.onStop();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         wishView.onResume();

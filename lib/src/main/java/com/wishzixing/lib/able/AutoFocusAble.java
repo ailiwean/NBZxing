@@ -3,7 +3,6 @@ package com.wishzixing.lib.able;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 
 import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.CameraConfig;
@@ -13,6 +12,7 @@ import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.manager.PixsValuesCus;
 import com.wishzixing.lib.manager.SensorManager;
 import com.wishzixing.lib.util.AccountUtils;
+
 
 /***
  *  Created by SWY

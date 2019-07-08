@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.TextureView;
@@ -93,6 +94,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
         mCropLayout = findViewById(R.id.capture_crop_layout);
 
+        // surfaceView = findViewById(R.id.surface_preview);
         textureView = findViewById(R.id.texture_preview);
 
         lightView = findViewById(R.id.lightView);
@@ -156,7 +158,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     //初始化默认Delegate
     private void initDefDelegate() {
 
-//        wishViewDelegate = new WishViewDelegate(surfaceView);
+        //  wishViewDelegate = new WishViewDelegate(surfaceView);
 
         wishViewDelegate = new WishViewDelegate(textureView);
 
@@ -194,12 +196,19 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
             public void onCreate() {
                 hintView.setText("");
                 scanView.startScanAnima();
+                Log.e("传概念", "出啊关键");
+            }
+
+            @Override
+            public void onNoVisible() {
+                Log.e("暂停", "暂停");
+                hintView.setText("正在加载...");
+                scanView.stopScanAnima();
             }
 
             @Override
             public void onDestory() {
-                hintView.setText("正在加载...");
-                scanView.stopScanAnima();
+
             }
         });
 

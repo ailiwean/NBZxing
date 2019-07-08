@@ -109,25 +109,31 @@ public class WishViewDelegate implements WishLife {
                             int mPreviewWidth = CameraConfig.getInstance().getCameraPoint().y;
                             int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;
 
-                            int xDiff = (int) (((float) mHeight / mPreviewHeight - 1) * mWidth);
-                            ViewGroup.LayoutParams params = textureView.getLayoutParams();
-                            params.width = mWidth + xDiff;
-                            params.height = mHeight;
-                            textureView.setLayoutParams(params);
-                            textureView.setTranslationX(-xDiff / 2);
-
+                            if (mHeight >= mPreviewHeight) {
+                                int xDiff = (int) (((float) mHeight / mPreviewHeight - 1) * mWidth);
+                                ViewGroup.LayoutParams params = textureView.getLayoutParams();
+                                params.width = mWidth + xDiff;
+                                params.height = mHeight;
+                                textureView.setLayoutParams(params);
+                                textureView.setTranslationX(-xDiff / 2);
+                            } else {
+                                ViewGroup.LayoutParams paramsTexture = textureView.getLayoutParams();
+                                paramsTexture.width = mPreviewWidth;
+                                paramsTexture.height = mPreviewHeight;
+                                textureView.setLayoutParams(paramsTexture);
+                            }
                         }
                     });
-
                 }
 
                 @Override
                 public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
                 }
 
                 @Override
                 public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                    if (surfaceListener != null)
+                        surfaceListener.onDestory();
                     return false;
                 }
 
@@ -138,7 +144,6 @@ public class WishViewDelegate implements WishLife {
             });
             hasTexture = true;
         }
-
 
     }
 
@@ -160,6 +165,8 @@ public class WishViewDelegate implements WishLife {
             surfaceHolder.addCallback(new SurfaceHolder.Callback() {
                 @Override
                 public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+                    if (surfaceListener != null)
+                        surfaceListener.onDestory();
                 }
 
                 @Override
@@ -197,7 +204,8 @@ public class WishViewDelegate implements WishLife {
 
     @Override
     public void onStop() {
-
+        if (surfaceListener != null)
+            surfaceListener.onNoVisible();
     }
 
     public void refreshCamera() {

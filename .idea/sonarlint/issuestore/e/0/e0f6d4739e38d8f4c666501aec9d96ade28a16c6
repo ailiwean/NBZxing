@@ -1,3 +1,0 @@
-
-¥%squid:RedundantThrowsDeclarationCheck5"mRemove the declaration of thrown exception 'java.lang.IllegalArgumentException' which is a runtime exception.(¡Î´Ó8Çï„à¼-
-g"squid:ObjectFinalizeOverridenCheck"-Do not override the Object.finalize() method.(œäºÒúÿÿÿÿ8Çï„à¼-

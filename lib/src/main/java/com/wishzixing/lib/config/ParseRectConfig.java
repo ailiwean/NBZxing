@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.wishzixing.lib.util.MathUtils;
 
+
 /***
  *  Created by SWY
  *  DATE 2019/6/8
@@ -130,6 +131,5 @@ public class ParseRectConfig {
 
         CameraConfig.getInstance().parseRect = this.parseRect;
         CameraConfig.getInstance().showRect = this.showRect;
-
     }
 }

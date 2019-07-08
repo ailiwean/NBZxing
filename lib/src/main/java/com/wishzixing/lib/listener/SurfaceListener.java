@@ -9,6 +9,8 @@ public interface SurfaceListener {
 
     void onCreate();
 
+    void onNoVisible();
+
     void onDestory();
 
 }

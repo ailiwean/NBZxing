@@ -7,7 +7,7 @@ import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.wishzixing.lib.config.CameraConfig;
-import com.wishzixing.lib.core.CustomMultiFormatReader;
+import com.wishzixing.lib.core.zxing.CustomMultiFormatReader;
 
 /***
  *  Created by SWY

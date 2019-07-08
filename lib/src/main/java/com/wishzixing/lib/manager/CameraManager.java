@@ -19,6 +19,7 @@ package com.wishzixing.lib.manager;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.wishzixing.lib.config.CameraConfig;
@@ -29,6 +30,7 @@ import com.wishzixing.lib.util.PermissionUtils;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /***
  *  Created by SWY
@@ -105,25 +107,29 @@ public class CameraManager {
             return;
 
         if (camera == null) {
+
             camera = Camera.open();
             if (camera == null) {
                 try {
-
                     throw new IOException();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-            try {
-                camera.setPreviewDisplay(holder);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
             if (!initialized) {
                 initialized = true;
             }
             FlashlightManager.enableFlashlight();
             this.showType = ShowType.SurfaceView;
+        }
+
+        if (camera != null) {
+            try {
+                camera.setPreviewDisplay(holder);
+                Log.e("调用", "调用");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         Config.useDefault();
@@ -144,11 +150,6 @@ public class CameraManager {
                     e.printStackTrace();
                 }
             }
-            try {
-                camera.setPreviewTexture(surfaceTexture);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             if (!initialized) {
                 initialized = true;
             }
@@ -156,6 +157,14 @@ public class CameraManager {
             this.showType = ShowType.TextureView;
         }
 
+        if (camera != null) {
+            try {
+                camera.setPreviewTexture(surfaceTexture);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
         Config.useDefault();
         initCamera();
     }
@@ -197,12 +206,42 @@ public class CameraManager {
         //连续对焦
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
         parameters.setPreviewSize(CameraConfig.getInstance().getCameraPoint().x, CameraConfig.getInstance().getCameraPoint().y);
+        int[] previewFpsRange = selectPreviewFpsRange(camera, 60.0f);
+        parameters.setPreviewFpsRange(previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
+                previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);
+        Log.e("阅览", "阅览");
         startPreview();
         requestPreviewFrame();
-        camera.autoFocus(AutoFocusCallback.getInstance());
     }
+
+    //获取预览帧数
+    private int[] selectPreviewFpsRange(Camera camera, float desiredPreviewFps) {
+        // The camera API uses integers scaled by a factor of 1000 instead of floating-point frame
+        // rates.
+        int desiredPreviewFpsScaled = (int) (desiredPreviewFps * 1000.0f);
+
+        // The method for selecting the best range is to minimize the sum of the differences between
+        // the desired value and the upper and lower bounds of the range.  This may select a range
+        // that the desired value is outside of, but this is often preferred.  For example, if the
+        // desired frame rate is 29.97, the range (30, 30) is probably more desirable than the
+        // range (15, 30).
+        int[] selectedFpsRange = null;
+        int minDiff = Integer.MAX_VALUE;
+        List<int[]> previewFpsRangeList = camera.getParameters().getSupportedPreviewFpsRange();
+        for (int[] range : previewFpsRangeList) {
+            int deltaMin = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
+            int deltaMax = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX];
+            int diff = Math.abs(deltaMin) + Math.abs(deltaMax);
+            if (diff < minDiff) {
+                selectedFpsRange = range;
+                minDiff = diff;
+            }
+        }
+        return selectedFpsRange;
+    }
+
 
     public ShowType getShowType() {
         return showType;
