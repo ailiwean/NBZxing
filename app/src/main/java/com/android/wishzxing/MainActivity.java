@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.google.zxing.Result;
 import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.listener.ResultListener;
+import com.wishzixing.lib.util.MathUtils;
 import com.wishzixing.lib.views.WishView;
 
 public class MainActivity extends AppCompatActivity {

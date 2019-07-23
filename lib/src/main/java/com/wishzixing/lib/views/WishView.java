@@ -193,10 +193,9 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
         wishViewDelegate.regSurfaceListener(new SurfaceListener() {
             @Override
-            public void onCreate() {
+            public void onVisiable() {
                 hintView.setText("");
                 scanView.startScanAnima();
-                Log.e("传概念", "出啊关键");
             }
 
             @Override

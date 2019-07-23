@@ -7,7 +7,7 @@ package com.wishzixing.lib.listener;
  */
 public interface SurfaceListener {
 
-    void onCreate();
+    void onVisiable();
 
     void onNoVisible();
 

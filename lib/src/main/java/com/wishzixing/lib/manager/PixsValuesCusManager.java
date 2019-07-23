@@ -6,7 +6,6 @@ import android.hardware.Camera;
 import com.wishzixing.lib.able.AccountLigFieAble;
 import com.wishzixing.lib.able.AutoFocusAble;
 import com.wishzixing.lib.able.AutoZoomAble;
-import com.wishzixing.lib.able.ZBDecodePixAble;
 import com.wishzixing.lib.able.ZXDecodePixAble;
 import com.wishzixing.lib.config.CameraConfig;
 
@@ -27,8 +26,8 @@ public class PixsValuesCusManager {
             actionList.add(AutoFocusAble.getInstance());
 
         actionList.add(AutoZoomAble.getInstance());
-        // actionList.add(ZXDecodePixAble.getInstance());
-        actionList.add(ZBDecodePixAble.getInstance());
+        actionList.add(ZXDecodePixAble.getInstance());
+        //actionList.add(ZBDecodePixAble.getInstance());
 
         actionList.add(AccountLigFieAble.getInstance());
     }

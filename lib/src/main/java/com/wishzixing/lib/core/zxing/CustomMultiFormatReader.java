@@ -2,6 +2,7 @@ package com.wishzixing.lib.core.zxing;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
 import com.google.zxing.Result;
@@ -15,7 +16,7 @@ import com.wishzixing.lib.config.ScanConfig;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.EnumMap;
 import java.util.Map;
 
 
@@ -82,9 +83,10 @@ public class CustomMultiFormatReader implements Reader {
      * @param hints The set of hints to use for subsequent calls to decode(image)
      */
     public void setHints(Map<DecodeHintType, ?> hints) {
-        this.hints = hints;
-        Collection<Reader> readers = new ArrayList<>();
 
+        this.hints = hints;
+
+        Collection<Reader> readers = new ArrayList<>();
         if (CameraConfig.getInstance().getScanModel() == ScanConfig.ALL) {
             //一维码
             readers.add(new MultiFormatOneDReader(hints));
@@ -108,7 +110,7 @@ public class CustomMultiFormatReader implements Reader {
             readers.add(new MaxiCodeReader());
         }
 
-        this.readers = readers.toArray(new Reader[0]);
+        this.readers = readers.toArray(new Reader[]{});
     }
 
     @Override
@@ -121,6 +123,7 @@ public class CustomMultiFormatReader implements Reader {
     }
 
     private Result decodeInternal(BinaryBitmap image) throws NotFoundException {
+
         if (readers != null) {
             for (Reader reader : readers) {
                 try {
@@ -129,6 +132,7 @@ public class CustomMultiFormatReader implements Reader {
                 }
             }
         }
+        MultiFormatReader reader;
         throw NotFoundException.getNotFoundInstance();
     }
 
@@ -138,10 +142,15 @@ public class CustomMultiFormatReader implements Reader {
     }
 
     private CustomMultiFormatReader() {
-        // 解码的参数
-        Hashtable<DecodeHintType, Object> hints = new Hashtable<>(2);
-        // 设置继续的字符编码格式为UTF8
-        hints.put(DecodeHintType.CHARACTER_SET, "UTF8");
+
+        final Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
+        // 花更多的时间用于寻找图上的编码，优化准确性，但不优化速度
+        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+        // 复杂模式，开启 PURE_BARCODE 模式（带图片 LOGO 的解码方案）
+//        ALL_HINT_MAP.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
+        // 编码字符集
+        hints.put(DecodeHintType.CHARACTER_SET, "utf-8");
+
         // 设置解析配置参数
         setHints(hints);
     }

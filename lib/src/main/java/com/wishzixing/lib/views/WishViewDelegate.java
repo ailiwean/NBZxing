@@ -110,7 +110,7 @@ public class WishViewDelegate implements WishLife {
                             int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;
 
                             if (mHeight >= mPreviewHeight) {
-                                int xDiff = (int) (((float) mHeight / mPreviewHeight - 1) * mWidth);
+                                int xDiff = (int) (((float) mHeight / mPreviewHeight - 1) * mPreviewWidth);
                                 ViewGroup.LayoutParams params = textureView.getLayoutParams();
                                 params.width = mWidth + xDiff;
                                 params.height = mHeight;
@@ -217,7 +217,7 @@ public class WishViewDelegate implements WishLife {
             CameraManager.get().openDriver(textureView.getSurfaceTexture());
 
         if (surfaceListener != null)
-            surfaceListener.onCreate();
+            surfaceListener.onVisiable();
     }
 
     @Override
