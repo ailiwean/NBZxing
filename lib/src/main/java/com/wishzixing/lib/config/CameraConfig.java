@@ -64,6 +64,9 @@ public class CameraConfig {
     }
 
     public Point getCameraPoint() {
+        if (cameraPoint == null)
+            return new Point(0,0);
+
         return cameraPoint;
     }
 

@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import com.google.zxing.ResultPoint;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.PointConfig;
+import com.wishzixing.lib.manager.CameraManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

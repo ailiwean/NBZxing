@@ -60,6 +60,9 @@ public class PointConfig {
         if (CameraManager.get().getCamera() == null)
             return;
 
+        if (cameraPoint != null)
+            return;
+
         Camera camera = CameraManager.get().getCamera();
         Camera.Parameters parameters = camera.getParameters();
         Point screenResolutionForCamera = new Point();
@@ -70,7 +73,6 @@ public class PointConfig {
             screenResolutionForCamera.x = screenPoint.y;
             screenResolutionForCamera.y = screenPoint.x;
         }
-        Log.e("ScrenX:" + screenPoint.x, "ScreenY:" + screenPoint.y);
 
         cameraPoint = getCameraResolution(parameters, screenResolutionForCamera);
     }
@@ -82,9 +84,6 @@ public class PointConfig {
         if (previewSizeValueString == null) {
             previewSizeValueString = parameters.get("preview-size-value");
         }
-
-        Log.e("preViewSizeValueString:", previewSizeValueString);
-
         previewFormat = parameters.getPreviewFormat();
         previewFormatString = parameters.get("preview-format");
 

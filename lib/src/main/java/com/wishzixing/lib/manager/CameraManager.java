@@ -16,11 +16,10 @@
 
 package com.wishzixing.lib.manager;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.util.Log;
-import android.view.SurfaceHolder;
+import android.view.TextureView;
 
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.Config;
@@ -41,7 +40,7 @@ public class CameraManager {
 
     private static CameraManager cameraManager;
 
-    private WeakReference<Context> weakReference;
+    private WeakReference<Activity> weakReference;
     /**
      * Preview frames are delivered here, which we pass on to the registered handler. Make sure to
      * clear the handler so it will only receive one message.
@@ -55,17 +54,15 @@ public class CameraManager {
     private boolean initialized;
     private volatile boolean previewing;
     private Camera.Parameters parameters;
+    TextureView textureView;
 
-    private ShowType showType;
-
-    public enum ShowType {
-        SurfaceView,
-        TextureView
+    private void initPreView(TextureView textureView) {
+        this.textureView = textureView;
     }
 
-    private CameraManager(Context context) {
+    private CameraManager(Activity activity) {
 
-        this.weakReference = new WeakReference<>(context);
+        this.weakReference = new WeakReference<>(activity);
         // Camera.setOneShotPreviewCallback() has a race condition in Cupcake, so we use the older
         // Camera.setPreviewCallback() on 1.5 and earlier. For Donut and later, we need to use
         // the more efficient one shot callback, as the older one can swamp the system and cause it
@@ -78,11 +75,11 @@ public class CameraManager {
     /**
      * Initializes this static object with the Context of the calling Activity.
      *
-     * @param context The Activity which wants to use the camera.
+     * @param activity The Activity which wants to use the camera.
      */
-    public static void init(Context context) {
+    public static void init(Activity activity) {
         if (cameraManager == null) {
-            cameraManager = new CameraManager(context);
+            cameraManager = new CameraManager(activity);
         }
     }
 
@@ -95,71 +92,54 @@ public class CameraManager {
         return cameraManager;
     }
 
-    /**
-     * Opens the camera driver and initializes the hardware parameters.
-     *
-     * @param holder The surface object which the camera will draw preview frames into.
-     * @throws IOException Indicates the camera driver failed to open.
-     */
-    public void openDriver(SurfaceHolder holder) {
+    public void openDriver(TextureView textureView) {
+
+        initPreView(textureView);
 
         if (!PermissionUtils.hasPermission())
             return;
 
-        if (camera == null) {
+        if (camera != null)
+            return;
 
-            camera = Camera.open();
-            if (camera == null) {
-                try {
-                    throw new IOException();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        ThreadManager.getInstance().addTask(new Runnable() {
+            @Override
+            public void run() {
+
+                if (camera == null) {
+
+                    camera = Camera.open();
+
+                    if (camera == null) {
+                        try {
+                            throw new IOException();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (!initialized) {
+                        initialized = true;
+                    }
+                    FlashlightManager.enableFlashlight();
+                    preViewSurface();
                 }
             }
-            if (!initialized) {
-                initialized = true;
-            }
-            FlashlightManager.enableFlashlight();
-            this.showType = ShowType.SurfaceView;
-        }
-
-        if (camera != null) {
-            try {
-                camera.setPreviewDisplay(holder);
-                Log.e("调用", "调用");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Config.useDefault();
-        initCamera();
+        });
     }
 
-    public void openDriver(SurfaceTexture surfaceTexture) {
-
-        if (!PermissionUtils.hasPermission())
-            return;
+    public void preViewSurface() {
 
         if (camera == null) {
-            camera = Camera.open();
-            if (camera == null) {
-                try {
-                    throw new IOException();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (!initialized) {
-                initialized = true;
-            }
-            FlashlightManager.enableFlashlight();
-            this.showType = ShowType.TextureView;
+            openDriver(textureView);
+            return;
         }
 
         if (camera != null) {
             try {
-                camera.setPreviewTexture(surfaceTexture);
+
+                if (textureView != null && textureView.getSurfaceTexture() != null)
+                    camera.setPreviewTexture(textureView.getSurfaceTexture());
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -197,8 +177,10 @@ public class CameraManager {
     }
 
     public void initCamera() {
+
         if (camera == null)
             return;
+
         parameters = camera.getParameters();
         parameters.set("flash-value", 10);
         parameters.set("flash-mode", "off");
@@ -211,7 +193,6 @@ public class CameraManager {
                 previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
         camera.setDisplayOrientation(90);
         camera.setParameters(parameters);
-        Log.e("阅览", "阅览");
         startPreview();
         requestPreviewFrame();
     }
@@ -242,13 +223,8 @@ public class CameraManager {
         return selectedFpsRange;
     }
 
-
-    public ShowType getShowType() {
-        return showType;
-    }
-
     /***
-     * 相机重新预览并执行能力
+     * 相机取景字节回调
      */
     public void requestPreviewFrame() {
         if (camera != null) {
@@ -262,14 +238,6 @@ public class CameraManager {
 
     public Camera getCamera() {
         return camera;
-    }
-
-    public boolean isPreviewing() {
-        return previewing;
-    }
-
-    public void setPreviewing(boolean previewing) {
-        this.previewing = previewing;
     }
 
     public PreviewCallback getPreviewCallback() {

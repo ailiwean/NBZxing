@@ -3,7 +3,6 @@ package com.wishzixing.lib.views;
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
@@ -47,20 +46,17 @@ public class WishViewDelegate implements WishLife {
 
     private SurfaceListener surfaceListener;
 
-    public WishViewDelegate(SurfaceView surfaceView) {
-        this.surfaceView = surfaceView;
-    }
-
     public WishViewDelegate(TextureView textureView) {
         this.textureView = textureView;
     }
-
+        
     @Override
     public void onCreate(Activity activity) {
         CameraManager.init(activity);
         mActivity = activity;
         hasSurface = false;
         inactivityTimer = new InactivityTimerUtils(activity);
+        CameraManager.get().openDriver(textureView);
         YuvUtils.init(activity);
     }
 
@@ -70,11 +66,13 @@ public class WishViewDelegate implements WishLife {
         if (!PermissionUtils.hasPermission())
             return;
 
-        if (surfaceView != null)
-            initSurface();
-
         if (textureView != null)
             initTexture();
+
+    }
+
+    @Override
+    public void onPause() {
 
     }
 
@@ -147,83 +145,26 @@ public class WishViewDelegate implements WishLife {
 
     }
 
-    private void initSurface() {
-
-        SurfaceHolder surfaceHolder = surfaceView.getHolder();
-        if (hasSurface) {
-            //Camera初始化
-            surfaceView.post(new Runnable() {
-                @Override
-                public void run() {
-
-                    refreshCamera();
-
-                }
-            });
-        } else {
-
-            surfaceHolder.addCallback(new SurfaceHolder.Callback() {
-                @Override
-                public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                    if (surfaceListener != null)
-                        surfaceListener.onDestory();
-                }
-
-                @Override
-                public void surfaceCreated(SurfaceHolder holder) {
-
-                    if (!hasSurface) {
-                        hasSurface = true;
-                        //延迟初始化相机，提升加载速度
-                        surfaceView.post(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                refreshCamera();
-
-                            }
-                        });
-                    }
-                }
-
-                @Override
-                public void surfaceDestroyed(SurfaceHolder holder) {
-                    hasSurface = false;
-                    if (surfaceListener != null)
-                        surfaceListener.onDestory();
-                }
-            });
-        }
-
-    }
-
-    @Override
-    public void onPause() {
-        CameraManager.get().closeDriver();
-    }
-
     @Override
     public void onStop() {
         if (surfaceListener != null)
             surfaceListener.onNoVisible();
     }
 
-    public void refreshCamera() {
+    void refreshCamera() {
 
-        if (surfaceView != null)
-            CameraManager.get().openDriver(surfaceView.getHolder());
-
-        if (textureView != null)
-            CameraManager.get().openDriver(textureView.getSurfaceTexture());
+        CameraManager.get().preViewSurface();
 
         if (surfaceListener != null)
             surfaceListener.onVisiable();
+
     }
 
     @Override
     public void onDestory() {
         PixsValuesCusManager.getInstance().stop();
         inactivityTimer.shutdown();
+        CameraManager.get().closeDriver();
     }
 
     //增加新的像素解析能力

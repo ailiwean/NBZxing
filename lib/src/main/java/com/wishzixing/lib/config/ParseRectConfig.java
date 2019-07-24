@@ -60,6 +60,9 @@ public class ParseRectConfig {
      */
     private void relaScreen() {
 
+        if (parseView == null)
+            return;
+
         PointF ratio = MathUtils.getRatio();
 
         float ratioX = ratio.x;
@@ -85,6 +88,9 @@ public class ParseRectConfig {
      * 根据扫描框以及TextureView位置确定扫描区域
      */
     private void relaPreView() {
+
+        if (parseView == null)
+            return;
 
         int preViewHeight = preView.getMeasuredHeight();
         int preViewWidth = preView.getMeasuredWidth();

@@ -2,7 +2,6 @@ package com.wishzixing.lib.core.zxing;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
 import com.google.zxing.Result;
@@ -123,7 +122,6 @@ public class CustomMultiFormatReader implements Reader {
     }
 
     private Result decodeInternal(BinaryBitmap image) throws NotFoundException {
-
         if (readers != null) {
             for (Reader reader : readers) {
                 try {
@@ -132,7 +130,6 @@ public class CustomMultiFormatReader implements Reader {
                 }
             }
         }
-        MultiFormatReader reader;
         throw NotFoundException.getNotFoundInstance();
     }
 
