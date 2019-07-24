@@ -38,8 +38,6 @@ public class WishViewDelegate implements WishLife {
 
     Activity mActivity;
 
-    private boolean hasSurface = false;
-
     private boolean hasTexture = false;
 
     InactivityTimerUtils inactivityTimer;
@@ -49,12 +47,11 @@ public class WishViewDelegate implements WishLife {
     public WishViewDelegate(TextureView textureView) {
         this.textureView = textureView;
     }
-        
+
     @Override
     public void onCreate(Activity activity) {
         CameraManager.init(activity);
         mActivity = activity;
-        hasSurface = false;
         inactivityTimer = new InactivityTimerUtils(activity);
         CameraManager.get().openDriver(textureView);
         YuvUtils.init(activity);
@@ -71,11 +68,6 @@ public class WishViewDelegate implements WishLife {
 
     }
 
-    @Override
-    public void onPause() {
-
-    }
-
     private void initTexture() {
 
         if (hasTexture) {
@@ -83,9 +75,7 @@ public class WishViewDelegate implements WishLife {
             textureView.post(new Runnable() {
                 @Override
                 public void run() {
-
                     refreshCamera();
-
                 }
             });
         } else {
@@ -142,29 +132,32 @@ public class WishViewDelegate implements WishLife {
             });
             hasTexture = true;
         }
-
     }
 
     @Override
     public void onStop() {
         if (surfaceListener != null)
             surfaceListener.onNoVisible();
-    }
-
-    void refreshCamera() {
-
-        CameraManager.get().preViewSurface();
-
-        if (surfaceListener != null)
-            surfaceListener.onVisiable();
-
+        CameraManager.get().closeDriver();
     }
 
     @Override
-    public void onDestory() {
+    public void onRestart() {
+        CameraManager.get().openDriver(textureView);
+    }
+
+    @Override
+    public void onBackPressed() {
         PixsValuesCusManager.getInstance().stop();
         inactivityTimer.shutdown();
-        CameraManager.get().closeDriver();
+        hasTexture = false;
+    }
+
+    void refreshCamera() {
+        CameraManager.get().preViewSurface();
+        if (surfaceListener != null)
+            surfaceListener.onVisiable();
+
     }
 
     //增加新的像素解析能力

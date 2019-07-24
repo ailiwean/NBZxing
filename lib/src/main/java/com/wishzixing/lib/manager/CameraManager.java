@@ -117,6 +117,7 @@ public class CameraManager {
                             e.printStackTrace();
                         }
                     }
+                    camera.lock();
                     if (!initialized) {
                         initialized = true;
                     }
@@ -125,12 +126,12 @@ public class CameraManager {
                 }
             }
         });
+
     }
 
     public void preViewSurface() {
 
         if (camera == null) {
-            openDriver(textureView);
             return;
         }
 
@@ -161,6 +162,7 @@ public class CameraManager {
             camera_.stopPreview();
             previewing = false;
             camera_.setPreviewCallback(null);
+            camera_.unlock();
             camera_.release();
         }
     }
@@ -191,8 +193,10 @@ public class CameraManager {
         int[] previewFpsRange = selectPreviewFpsRange(camera, 60.0f);
         parameters.setPreviewFpsRange(previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
                 previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
-        camera.setDisplayOrientation(90);
-        camera.setParameters(parameters);
+        if (camera != null)
+            camera.setDisplayOrientation(90);
+        if (camera != null)
+            camera.setParameters(parameters);
         startPreview();
         requestPreviewFrame();
     }

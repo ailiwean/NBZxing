@@ -13,10 +13,10 @@ public interface WishLife {
 
     void onResume();
 
-    void onPause();
-
     void onStop();
 
-    void onDestory();
+    void onRestart();
+
+    void onBackPressed();
 
 }

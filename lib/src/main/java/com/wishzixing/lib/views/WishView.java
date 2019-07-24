@@ -236,8 +236,8 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
                 View decorView = get.get().getWindow().getDecorView();
                 //为解决某些机型获取屏幕高度异常问题
                 Point screenPoint = new Point(decorView.getMeasuredWidth(), decorView.getMeasuredHeight() + WindowUitls.getStatusBarHeight());
-                PointConfig.getInstance().setScreenPoint(screenPoint);
-                //PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
+                //PointConfig.getInstance().setScreenPoint(screenPoint);
+                PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
                 //设定预览尺寸,即解析框取决于框内所在像素
                 ParseRectConfig.getInstance().setPreview(textureView);
             }
@@ -287,10 +287,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         wishViewDelegate.onResume();
     }
 
-    @Override
-    public void onPause() {
-        wishViewDelegate.onPause();
-    }
 
     @Override
     public void onStop() {
@@ -298,8 +294,13 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     }
 
     @Override
-    public void onDestory() {
-        wishViewDelegate.onDestory();
+    public void onRestart() {
+        wishViewDelegate.onRestart();
+    }
+
+    @Override
+    public void onBackPressed() {
+        wishViewDelegate.onBackPressed();
     }
 
     @Override

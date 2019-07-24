@@ -45,4 +45,5 @@ public class PermissionActivity extends AppCompatActivity {
         intent.setAction("REFRESH");
         sendBroadcast(intent);
     }
+
 }

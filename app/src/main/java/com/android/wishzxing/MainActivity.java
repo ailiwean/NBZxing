@@ -7,7 +7,6 @@ import android.widget.Toast;
 import com.google.zxing.Result;
 import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.listener.ResultListener;
-import com.wishzixing.lib.util.MathUtils;
 import com.wishzixing.lib.views.WishView;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,12 +47,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        wishView.onPause();
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
         wishView.onStop();
@@ -66,9 +59,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        wishView.onDestory();
+    protected void onRestart() {
+        super.onRestart();
+        wishView.onRestart();
     }
 
+    @Override
+    public void onBackPressed() {
+        wishView.onBackPressed();
+        super.onBackPressed();
+    }
 }
