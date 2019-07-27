@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Point;
-import android.hardware.Camera;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.TextureView;
@@ -28,12 +26,11 @@ import com.wishzixing.lib.R;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.ParseRectConfig;
 import com.wishzixing.lib.config.PointConfig;
-import com.wishzixing.lib.config.ScanConfig;
+import com.wishzixing.lib.config.ScanTypeConfig;
 import com.wishzixing.lib.listener.LightCallBack;
 import com.wishzixing.lib.listener.OnGestureListener;
 import com.wishzixing.lib.listener.ResultListener;
 import com.wishzixing.lib.listener.SurfaceListener;
-import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.util.PermissionUtils;
 import com.wishzixing.lib.util.Utils;
 import com.wishzixing.lib.util.WindowUitls;
@@ -119,36 +116,29 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
                 ZoomUtils.zoomToggle();
             }
         });
+
         onGestureListener.regOnDoubleFingerCallback(new OnGestureListener.DoubleFingerCallback() {
-            int change = 0;
+
+            int defZoom;
 
             @Override
             public void onStepFingerChange(float total, float value) {
-                change += Math.abs(value);
 
-                //变化量大于50进行调焦
-                if (change > 50) {
-                    final Camera camera = CameraManager.get().getCamera();
-                    if (camera == null)
-                        return;
-                    final Camera.Parameters p = camera.getParameters();
-                    //防止画面切换闪退
-                    if (p == null)
-                        return;
-                    int zoom = (int) (p.getZoom() + (p.getMaxZoom() * total / 800f));
-                    if (zoom > p.getMaxZoom())
-                        zoom = p.getMaxZoom();
-                    if (zoom <= 0)
-                        zoom = 1;
-                    ZoomUtils.animalZoom(zoom);
-                    change = 0;
-                }
+                if(defZoom == 0)
+                    defZoom = ZoomUtils.getZoom();
 
+                int zoom = (int) (defZoom + total/10);
+                if (zoom > ZoomUtils.getMaxZoom())
+                    zoom = ZoomUtils.getMaxZoom();
+                if (zoom <= 0)
+                    zoom = 1;
+
+                ZoomUtils.setZoom(zoom);
             }
 
             @Override
             public void onStepEnd() {
-                change = 0;
+                defZoom = 0;
             }
         });
         mContainer.setOnTouchListener(onGestureListener);
@@ -164,7 +154,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
         wishViewDelegate.setParseRectFromView(mCropLayout);
 
-        wishViewDelegate.setScanModel(ScanConfig.ALL);
+        wishViewDelegate.setScanModel(ScanTypeConfig.ALL, null);
 
         wishViewDelegate.regAccountLigListener(new LightCallBack() {
             @Override
@@ -336,7 +326,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     }
 
     //获取默认剪裁解析View
-    public RelativeLayout getCropView() {
+    public RelativeLayout getCropParseView() {
         return mCropLayout;
     }
 

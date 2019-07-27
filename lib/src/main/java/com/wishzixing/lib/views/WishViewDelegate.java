@@ -7,12 +7,14 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.zxing.DecodeHintType;
 import com.wishzixing.lib.WishLife;
 import com.wishzixing.lib.config.AutoFocusConfig;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.ParseRectConfig;
 import com.wishzixing.lib.config.PointConfig;
-import com.wishzixing.lib.config.ScanConfig;
+import com.wishzixing.lib.config.ScanTypeConfig;
+import com.wishzixing.lib.core.zxing.CustomMultiFormatReader;
 import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.listener.LightCallBack;
 import com.wishzixing.lib.listener.ResultListener;
@@ -23,6 +25,8 @@ import com.wishzixing.lib.manager.PixsValuesCusManager;
 import com.wishzixing.lib.util.InactivityTimerUtils;
 import com.wishzixing.lib.util.PermissionUtils;
 import com.wishzixing.lib.util.YuvUtils;
+
+import java.util.Map;
 
 /***
  *  Created by SWY
@@ -198,8 +202,8 @@ public class WishViewDelegate implements WishLife {
         return this;
     }
 
-    public WishViewDelegate setScanModel(@ScanConfig.Type int type) {
-        ScanConfig.getInstance().setScanModel(type);
+    public WishViewDelegate setScanModel(ScanTypeConfig type, Map<DecodeHintType, Object> hintMap) {
+        CustomMultiFormatReader.getInstance().setType(type, hintMap);
         return this;
     }
 

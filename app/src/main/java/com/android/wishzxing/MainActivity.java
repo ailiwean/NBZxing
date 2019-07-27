@@ -2,10 +2,10 @@ package com.android.wishzxing;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
-import com.wishzixing.lib.config.ScanConfig;
 import com.wishzixing.lib.listener.ResultListener;
 import com.wishzixing.lib.views.WishView;
 
@@ -34,15 +34,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) wishView.getCropView().getLayoutParams();
+//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) wishView.getCropParseView().getLayoutParams();
 //        params.addRule(RelativeLayout.CENTER_IN_PARENT);
 //        params.width = (int) (params.width * 0.8);
-        // wishView.getCropView().setLayoutParams(params);
+        // wishView.getCropParseView().setLayoutParams(params);
 
         //  wishView.getDelegate().setSpareAutoFocus(AutoFocusConfig.Hybride);
         wishView.getDelegate().setAutoFocusTimeThreshold(2000);
 
-        wishView.getDelegate().setScanModel(ScanConfig.ALL);
+        wishView.getCropParseView().setTranslationY(-200);
+
 
     }
 

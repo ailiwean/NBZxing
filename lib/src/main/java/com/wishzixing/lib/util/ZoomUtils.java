@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.wishzixing.lib.manager.CameraManager;
+import com.wishzixing.lib.manager.ThreadManager;
 
 /***
  *  Created by SWY
@@ -67,54 +68,7 @@ public class ZoomUtils {
     }
 
     public static void animalZoom(final int target) {
-
-
-        final Camera camera = CameraManager.get().getCamera();
-
-        if (camera == null)
-            return;
-
-        final Camera.Parameters p = camera.getParameters();
-        //防止画面切换闪退
-        if (p == null)
-            return;
-
-        if (!p.isZoomSupported())
-            return;
-
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-
-                if (valueAnimator != null && valueAnimator.isRunning())
-                    valueAnimator.cancel();
-                valueAnimator = ValueAnimator.ofInt(p.getZoom(), target);
-                valueAnimator.setDuration(DURCATION);
-                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-
-                        final Camera camera = CameraManager.get().getCamera();
-
-                        if (camera == null)
-                            return;
-
-                        final Camera.Parameters p = camera.getParameters();
-                        //防止画面切换闪退
-                        if (p == null)
-                            return;
-
-                        p.setZoom((Integer) animation.getAnimatedValue());
-                        camera.setParameters(p);
-
-                    }
-                });
-                valueAnimator.start();
-
-            }
-        });
-
-
+        animalZoom(target, DURCATION);
     }
 
     public static void animalZoom(final int target, final long milles) {
@@ -145,15 +99,12 @@ public class ZoomUtils {
                     public void onAnimationUpdate(ValueAnimator animation) {
 
                         final Camera camera = CameraManager.get().getCamera();
-
                         if (camera == null)
                             return;
-
                         final Camera.Parameters p = camera.getParameters();
                         //防止画面切换闪退
                         if (p == null)
                             return;
-
                         p.setZoom((Integer) animation.getAnimatedValue());
                         camera.setParameters(p);
 
@@ -169,15 +120,12 @@ public class ZoomUtils {
     public static void setZoom(int zoom) {
 
         final Camera camera = CameraManager.get().getCamera();
-
         if (camera == null)
             return;
-
         final Camera.Parameters p = camera.getParameters();
         //防止画面切换闪退
         if (p == null)
             return;
-
         if (!p.isZoomSupported())
             return;
 

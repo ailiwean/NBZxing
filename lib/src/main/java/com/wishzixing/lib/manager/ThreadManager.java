@@ -1,7 +1,5 @@
 package com.wishzixing.lib.manager;
 
-import android.util.Log;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -16,8 +14,6 @@ public class ThreadManager {
     ThreadPoolExecutor executor;
 
     private ThreadManager() {
-        
-
         executor = new ThreadPoolExecutor(2, 5, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
         //任务拒绝策略
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardOldestPolicy());
@@ -36,6 +32,7 @@ public class ThreadManager {
         float maxMemory = (float) (Runtime.getRuntime().maxMemory() * 1.0 / (1024 * 1024));
         //当前分配的总内存
         float totalMemory = (float) (Runtime.getRuntime().totalMemory() * 1.0 / (1024 * 1024));
+
         if (totalMemory < maxMemory * 0.8) {
             executor.execute(runnable);
         }

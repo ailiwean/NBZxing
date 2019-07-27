@@ -3,7 +3,6 @@ package com.wishzixing.lib.core.zxing;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
 import com.google.zxing.ReaderException;
@@ -14,12 +13,11 @@ import com.google.zxing.maxicode.MaxiCodeReader;
 import com.google.zxing.oned.MultiFormatOneDReader;
 import com.google.zxing.pdf417.PDF417Reader;
 import com.google.zxing.qrcode.QRCodeReader;
-import com.wishzixing.lib.config.CameraConfig;
-import com.wishzixing.lib.config.ScanConfig;
+import com.wishzixing.lib.config.QRTypeConfig;
+import com.wishzixing.lib.config.ScanTypeConfig;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.Map;
 
 
@@ -30,8 +28,9 @@ import java.util.Map;
  */
 public class CustomMultiFormatReader implements Reader {
 
-    private Map<DecodeHintType,?> hints;
+    private Map<DecodeHintType, ?> hints;
     private Reader[] readers;
+    private ScanTypeConfig mBarcodeType;
 
     /**
      * This version of decode honors the intent of Reader.decode(BinaryBitmap) in that it
@@ -57,7 +56,7 @@ public class CustomMultiFormatReader implements Reader {
      * @throws NotFoundException Any errors which occurred
      */
     @Override
-    public Result decode(BinaryBitmap image, Map<DecodeHintType,?> hints) throws NotFoundException {
+    public Result decode(BinaryBitmap image, Map<DecodeHintType, ?> hints) throws NotFoundException {
         setHints(hints);
         return decodeInternal(image);
     }
@@ -85,9 +84,7 @@ public class CustomMultiFormatReader implements Reader {
      *
      * @param hints The set of hints to use for subsequent calls to decode(image)
      */
-    public void setHints(Map<DecodeHintType,?> hints) {
-        this.hints = hints;
-
+    public void setHints(Map<DecodeHintType, ?> hints) {
         boolean tryHarder = hints != null && hints.containsKey(DecodeHintType.TRY_HARDER);
         @SuppressWarnings("unchecked")
         Collection<BarcodeFormat> formats =
@@ -164,10 +161,48 @@ public class CustomMultiFormatReader implements Reader {
                     return reader.decode(image, hints);
                 } catch (ReaderException re) {
                     // continue
+                } catch (Exception e) {
+
                 }
             }
         }
         throw NotFoundException.getNotFoundInstance();
+    }
+
+    /**
+     * 设置识别的格式
+     *
+     * @param barcodeType 识别的格式
+     * @param hintMap     barcodeType 为 BarcodeType.CUSTOM 时，必须指定该值
+     */
+    public void setType(ScanTypeConfig barcodeType, Map<DecodeHintType, Object> hintMap) {
+        mBarcodeType = barcodeType;
+        hints = hintMap;
+        if (barcodeType == ScanTypeConfig.CUSTOM && (hintMap == null || hintMap.isEmpty())) {
+            throw new RuntimeException("barcodeType 为 BarcodeType.CUSTOM 时 hintMap 不能为空");
+        }
+        setupReader();
+    }
+
+    protected void setupReader() {
+
+        if (mBarcodeType == ScanTypeConfig.ONE_DIMENSION) {
+            setHints(QRTypeConfig.ONE_DIMENSION_HINT_MAP);
+        } else if (mBarcodeType == ScanTypeConfig.TWO_DIMENSION) {
+            setHints(QRTypeConfig.TWO_DIMENSION_HINT_MAP);
+        } else if (mBarcodeType == ScanTypeConfig.ONLY_QR_CODE) {
+            setHints(QRTypeConfig.QR_CODE_HINT_MAP);
+        } else if (mBarcodeType == ScanTypeConfig.ONLY_CODE_128) {
+            setHints(QRTypeConfig.CODE_128_HINT_MAP);
+        } else if (mBarcodeType == ScanTypeConfig.ONLY_EAN_13) {
+            setHints(QRTypeConfig.EAN_13_HINT_MAP);
+        } else if (mBarcodeType == ScanTypeConfig.HIGH_FREQUENCY) {
+            setHints(QRTypeConfig.HIGH_FREQUENCY_HINT_MAP);
+        } else if (mBarcodeType == ScanTypeConfig.CUSTOM) {
+            setHints(hints);
+        } else {
+            setHints(QRTypeConfig.ALL_HINT_MAP);
+        }
     }
 
     //获取解析的核心类
@@ -178,4 +213,9 @@ public class CustomMultiFormatReader implements Reader {
     private static class Holder {
         static CustomMultiFormatReader INSTANCE = new CustomMultiFormatReader();
     }
+
+    private CustomMultiFormatReader() {
+        setType(ScanTypeConfig.ALL, null);
+    }
+
 }

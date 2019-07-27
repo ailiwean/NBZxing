@@ -225,10 +225,11 @@ public class CameraManager {
         int[] previewFpsRange = selectPreviewFpsRange(camera, 60.0f);
         parameters.setPreviewFpsRange(previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
                 previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
-        if (camera != null)
-            camera.setDisplayOrientation(90);
-        if (camera != null)
+        camera.setDisplayOrientation(90);
+        try {
             camera.setParameters(parameters);
+        } catch (Exception e) {
+        }
         startPreview();
         requestPreviewFrame();
     }

@@ -10,7 +10,6 @@ public class Config {
     public static void useDefault() {
         AutoFocusConfig.getInstance().go();
         PointConfig.getInstance().go();
-        ScanConfig.getInstance().go();
         ParseRectConfig.getInstance().go();
         ZoomConfig.getInstance().go();
         BeepVibrationConfig.getInstance().go();
