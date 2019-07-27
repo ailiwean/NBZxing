@@ -1,15 +1,19 @@
 package com.wishzixing.lib.core.zxing;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
+import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.aztec.AztecReader;
 import com.google.zxing.datamatrix.DataMatrixReader;
 import com.google.zxing.maxicode.MaxiCodeReader;
 import com.google.zxing.oned.MultiFormatOneDReader;
 import com.google.zxing.pdf417.PDF417Reader;
+import com.google.zxing.qrcode.QRCodeReader;
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.ScanConfig;
 
@@ -26,7 +30,7 @@ import java.util.Map;
  */
 public class CustomMultiFormatReader implements Reader {
 
-    private Map<DecodeHintType, ?> hints;
+    private Map<DecodeHintType,?> hints;
     private Reader[] readers;
 
     /**
@@ -53,7 +57,7 @@ public class CustomMultiFormatReader implements Reader {
      * @throws NotFoundException Any errors which occurred
      */
     @Override
-    public Result decode(BinaryBitmap image, Map<DecodeHintType, ?> hints) throws NotFoundException {
+    public Result decode(BinaryBitmap image, Map<DecodeHintType,?> hints) throws NotFoundException {
         setHints(hints);
         return decodeInternal(image);
     }
@@ -81,35 +85,67 @@ public class CustomMultiFormatReader implements Reader {
      *
      * @param hints The set of hints to use for subsequent calls to decode(image)
      */
-    public void setHints(Map<DecodeHintType, ?> hints) {
-
+    public void setHints(Map<DecodeHintType,?> hints) {
         this.hints = hints;
 
+        boolean tryHarder = hints != null && hints.containsKey(DecodeHintType.TRY_HARDER);
+        @SuppressWarnings("unchecked")
+        Collection<BarcodeFormat> formats =
+                hints == null ? null : (Collection<BarcodeFormat>) hints.get(DecodeHintType.POSSIBLE_FORMATS);
         Collection<Reader> readers = new ArrayList<>();
-        if (CameraConfig.getInstance().getScanModel() == ScanConfig.ALL) {
-            //一维码
-            readers.add(new MultiFormatOneDReader(hints));
-            //二维码
-            readers.add(new QRCodeCore());
+        if (formats != null) {
+            boolean addOneDReader =
+                    formats.contains(BarcodeFormat.UPC_A) ||
+                            formats.contains(BarcodeFormat.UPC_E) ||
+                            formats.contains(BarcodeFormat.EAN_13) ||
+                            formats.contains(BarcodeFormat.EAN_8) ||
+                            formats.contains(BarcodeFormat.CODABAR) ||
+                            formats.contains(BarcodeFormat.CODE_39) ||
+                            formats.contains(BarcodeFormat.CODE_93) ||
+                            formats.contains(BarcodeFormat.CODE_128) ||
+                            formats.contains(BarcodeFormat.ITF) ||
+                            formats.contains(BarcodeFormat.RSS_14) ||
+                            formats.contains(BarcodeFormat.RSS_EXPANDED);
+            // Put 1D readers upfront in "normal" mode
+            if (addOneDReader && !tryHarder) {
+                readers.add(new MultiFormatOneDReader(hints));
+            }
+            if (formats.contains(BarcodeFormat.QR_CODE)) {
+                readers.add(new QRCodeReader());
+            }
+            if (formats.contains(BarcodeFormat.DATA_MATRIX)) {
+                readers.add(new DataMatrixReader());
+            }
+            if (formats.contains(BarcodeFormat.AZTEC)) {
+                readers.add(new AztecReader());
+            }
+            if (formats.contains(BarcodeFormat.PDF_417)) {
+                readers.add(new PDF417Reader());
+            }
+            if (formats.contains(BarcodeFormat.MAXICODE)) {
+                readers.add(new MaxiCodeReader());
+            }
+            // At end in "try harder" mode
+            if (addOneDReader && tryHarder) {
+                readers.add(new MultiFormatOneDReader(hints));
+            }
+        }
+        if (readers.isEmpty()) {
+            if (!tryHarder) {
+                readers.add(new MultiFormatOneDReader(hints));
+            }
+
+            readers.add(new QRCodeReader());
             readers.add(new DataMatrixReader());
             readers.add(new AztecReader());
             readers.add(new PDF417Reader());
             readers.add(new MaxiCodeReader());
-        }
 
-        if (CameraConfig.getInstance().getScanModel() == ScanConfig.BARCODE) {
-            readers.add(new MultiFormatOneDReader(hints));
+            if (tryHarder) {
+                readers.add(new MultiFormatOneDReader(hints));
+            }
         }
-
-        if (CameraConfig.getInstance().getScanModel() == ScanConfig.QRCODE) {
-            readers.add(new QRCodeCore());
-            readers.add(new DataMatrixReader());
-            readers.add(new AztecReader());
-            readers.add(new PDF417Reader());
-            readers.add(new MaxiCodeReader());
-        }
-
-        this.readers = readers.toArray(new Reader[]{});
+        this.readers = readers.toArray(new Reader[readers.size()]);
     }
 
     @Override
@@ -126,7 +162,8 @@ public class CustomMultiFormatReader implements Reader {
             for (Reader reader : readers) {
                 try {
                     return reader.decode(image, hints);
-                } catch (Exception ignored) {
+                } catch (ReaderException re) {
+                    // continue
                 }
             }
         }
@@ -136,20 +173,6 @@ public class CustomMultiFormatReader implements Reader {
     //获取解析的核心类
     public static CustomMultiFormatReader getInstance() {
         return Holder.INSTANCE;
-    }
-
-    private CustomMultiFormatReader() {
-
-        final Map<DecodeHintType, Object> hints = new EnumMap<>(DecodeHintType.class);
-        // 花更多的时间用于寻找图上的编码，优化准确性，但不优化速度
-        hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
-        // 复杂模式，开启 PURE_BARCODE 模式（带图片 LOGO 的解码方案）
-//        ALL_HINT_MAP.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
-        // 编码字符集
-        hints.put(DecodeHintType.CHARACTER_SET, "utf-8");
-
-        // 设置解析配置参数
-        setHints(hints);
     }
 
     private static class Holder {

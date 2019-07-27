@@ -3,7 +3,6 @@ package com.wishzixing.lib.views;
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +31,6 @@ import com.wishzixing.lib.util.YuvUtils;
  */
 public class WishViewDelegate implements WishLife {
 
-    SurfaceView surfaceView;
-
     TextureView textureView;
 
     Activity mActivity;
@@ -43,6 +40,8 @@ public class WishViewDelegate implements WishLife {
     InactivityTimerUtils inactivityTimer;
 
     private SurfaceListener surfaceListener;
+
+    private boolean isAdjust = false;
 
     public WishViewDelegate(TextureView textureView) {
         this.textureView = textureView;
@@ -54,6 +53,28 @@ public class WishViewDelegate implements WishLife {
         mActivity = activity;
         inactivityTimer = new InactivityTimerUtils(activity);
         CameraManager.get().openDriver(textureView);
+        CameraManager.get().registerSurfaceListener(new SurfaceListener() {
+            @Override
+            public void onVisiable() {
+
+                if (!isAdjust) {
+                    adjustSize();
+                    isAdjust = true;
+                }
+
+                if (WishViewDelegate.this.surfaceListener != null)
+                    WishViewDelegate.this.surfaceListener.onVisiable();
+            }
+
+            @Override
+            public void onNoVisible() {
+            }
+
+            @Override
+            public void onDestory() {
+
+            }
+        });
         YuvUtils.init(activity);
     }
 
@@ -70,8 +91,8 @@ public class WishViewDelegate implements WishLife {
 
     private void initTexture() {
 
-        if (hasTexture) {
 
+        if (hasTexture) {
             textureView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -90,26 +111,6 @@ public class WishViewDelegate implements WishLife {
 
                             refreshCamera();
 
-                            //动态调整Texture
-                            int mWidth = PointConfig.getInstance().getShowPoint().x;
-                            int mHeight = PointConfig.getInstance().getShowPoint().y;
-
-                            int mPreviewWidth = CameraConfig.getInstance().getCameraPoint().y;
-                            int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;
-
-                            if (mHeight >= mPreviewHeight) {
-                                int xDiff = (int) (((float) mHeight / mPreviewHeight - 1) * mPreviewWidth);
-                                ViewGroup.LayoutParams params = textureView.getLayoutParams();
-                                params.width = mWidth + xDiff;
-                                params.height = mHeight;
-                                textureView.setLayoutParams(params);
-                                textureView.setTranslationX(-xDiff / 2);
-                            } else {
-                                ViewGroup.LayoutParams paramsTexture = textureView.getLayoutParams();
-                                paramsTexture.width = mPreviewWidth;
-                                paramsTexture.height = mPreviewHeight;
-                                textureView.setLayoutParams(paramsTexture);
-                            }
                         }
                     });
                 }
@@ -134,11 +135,36 @@ public class WishViewDelegate implements WishLife {
         }
     }
 
+
+    private void adjustSize() {
+
+        //动态调整Texture
+        int mWidth = PointConfig.getInstance().getShowPoint().x;
+        int mHeight = PointConfig.getInstance().getShowPoint().y;
+
+        int mPreviewWidth = CameraConfig.getInstance().getCameraPoint().y;
+        int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;
+
+        if (mHeight >= mPreviewHeight) {
+            int xDiff = (int) (((float) mHeight / mPreviewHeight - 1) * mPreviewWidth);
+            ViewGroup.LayoutParams params = textureView.getLayoutParams();
+            params.width = mWidth + xDiff;
+            params.height = mHeight;
+            textureView.setLayoutParams(params);
+            textureView.setTranslationX(-xDiff / 2);
+        } else {
+            ViewGroup.LayoutParams paramsTexture = textureView.getLayoutParams();
+            paramsTexture.width = mPreviewWidth;
+            paramsTexture.height = mPreviewHeight;
+            textureView.setLayoutParams(paramsTexture);
+        }
+    }
+
     @Override
     public void onStop() {
+        CameraManager.get().closeDriver();
         if (surfaceListener != null)
             surfaceListener.onNoVisible();
-        CameraManager.get().closeDriver();
     }
 
     @Override
@@ -155,9 +181,6 @@ public class WishViewDelegate implements WishLife {
 
     void refreshCamera() {
         CameraManager.get().preViewSurface();
-        if (surfaceListener != null)
-            surfaceListener.onVisiable();
-
     }
 
     //增加新的像素解析能力

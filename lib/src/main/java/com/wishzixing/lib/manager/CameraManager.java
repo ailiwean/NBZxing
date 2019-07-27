@@ -25,6 +25,7 @@ import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.Config;
 import com.wishzixing.lib.listener.AutoFocusCallback;
 import com.wishzixing.lib.listener.PreviewCallback;
+import com.wishzixing.lib.listener.SurfaceListener;
 import com.wishzixing.lib.util.PermissionUtils;
 
 import java.io.IOException;
@@ -41,6 +42,9 @@ public class CameraManager {
     private static CameraManager cameraManager;
 
     private WeakReference<Activity> weakReference;
+
+    private SurfaceListener surfaceListener;
+
     /**
      * Preview frames are delivered here, which we pass on to the registered handler. Make sure to
      * clear the handler so it will only receive one message.
@@ -53,6 +57,7 @@ public class CameraManager {
     private volatile Camera camera;
     private boolean initialized;
     private volatile boolean previewing;
+    private volatile boolean isOpenningCamera = false;
     private Camera.Parameters parameters;
     TextureView textureView;
 
@@ -78,9 +83,7 @@ public class CameraManager {
      * @param activity The Activity which wants to use the camera.
      */
     public static void init(Activity activity) {
-        if (cameraManager == null) {
-            cameraManager = new CameraManager(activity);
-        }
+        cameraManager = new CameraManager(activity);
     }
 
     /**
@@ -94,6 +97,10 @@ public class CameraManager {
 
     public void openDriver(TextureView textureView) {
 
+        //是否打开相机中，正在打开相机时不允许多线程操作
+        if (isOpenningCamera)
+            return;
+
         initPreView(textureView);
 
         if (!PermissionUtils.hasPermission())
@@ -101,6 +108,8 @@ public class CameraManager {
 
         if (camera != null)
             return;
+
+        isOpenningCamera = true;
 
         ThreadManager.getInstance().addTask(new Runnable() {
             @Override
@@ -110,6 +119,8 @@ public class CameraManager {
 
                     camera = Camera.open();
 
+                    isOpenningCamera = false;
+
                     if (camera == null) {
                         try {
                             throw new IOException();
@@ -117,7 +128,9 @@ public class CameraManager {
                             e.printStackTrace();
                         }
                     }
+
                     camera.lock();
+
                     if (!initialized) {
                         initialized = true;
                     }
@@ -132,23 +145,42 @@ public class CameraManager {
     public void preViewSurface() {
 
         if (camera == null) {
+            openDriver(textureView);
             return;
         }
 
-        if (camera != null) {
-            try {
+        if (textureView == null || textureView.getSurfaceTexture() == null)
+            return;
 
-                if (textureView != null && textureView.getSurfaceTexture() != null)
-                    camera.setPreviewTexture(textureView.getSurfaceTexture());
+        if (previewing)
+            return;
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
+        //一些配置参数需要用到camera对象
         Config.useDefault();
+
         initCamera();
+
+        if (surfaceListener != null && weakReference.get() != null) {
+            weakReference.get().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    surfaceListener.onVisiable();
+                }
+            });
+        }
+
+        try {
+            camera.setPreviewTexture(textureView.getSurfaceTexture());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
+
+    public void registerSurfaceListener(SurfaceListener surfaceListener) {
+        this.surfaceListener = surfaceListener;
+    }
+
 
     /**
      * Closes the camera driver if still in use.
@@ -158,11 +190,11 @@ public class CameraManager {
             FlashlightManager.disableFlashlight();
             //提前置空防止其他对象访问失效Camera
             Camera camera_ = camera;
+            camera_.unlock();
             camera = null;
             camera_.stopPreview();
             previewing = false;
             camera_.setPreviewCallback(null);
-            camera_.unlock();
             camera_.release();
         }
     }

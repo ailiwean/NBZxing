@@ -200,7 +200,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
 
             @Override
             public void onNoVisible() {
-                Log.e("暂停", "暂停");
                 hintView.setText("正在加载...");
                 scanView.stopScanAnima();
             }
@@ -230,13 +229,13 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     }
 
     private void initConfig() {
-        post(new Runnable() {
+        textureView.post(new Runnable() {
             @Override
             public void run() {
                 View decorView = get.get().getWindow().getDecorView();
                 //为解决某些机型获取屏幕高度异常问题
                 Point screenPoint = new Point(decorView.getMeasuredWidth(), decorView.getMeasuredHeight() + WindowUitls.getStatusBarHeight());
-                //PointConfig.getInstance().setScreenPoint(screenPoint);
+                PointConfig.getInstance().setScreenPoint(screenPoint);
                 PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
                 //设定预览尺寸,即解析框取决于框内所在像素
                 ParseRectConfig.getInstance().setPreview(textureView);
@@ -275,7 +274,7 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         get.get().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                getDelegate().refreshCamera();
+                onResume();
                 get.get().unregisterReceiver(this);
             }
         }, intentFilter);
