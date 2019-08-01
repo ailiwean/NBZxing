@@ -40,10 +40,7 @@ public class MainActivity extends AppCompatActivity {
         // wishView.getCropParseView().setLayoutParams(params);
 
         //  wishView.getDelegate().setSpareAutoFocus(AutoFocusConfig.Hybride);
-        wishView.getDelegate().setAutoFocusTimeThreshold(2000);
-
-        wishView.getCropParseView().setTranslationY(-200);
-
+        //wishView.getDelegate().setAutoFocusTimeThreshold(2000);
 
     }
 

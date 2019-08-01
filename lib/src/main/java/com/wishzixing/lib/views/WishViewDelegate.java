@@ -22,6 +22,7 @@ import com.wishzixing.lib.listener.SurfaceListener;
 import com.wishzixing.lib.manager.CameraManager;
 import com.wishzixing.lib.manager.PixsValuesCus;
 import com.wishzixing.lib.manager.PixsValuesCusManager;
+import com.wishzixing.lib.util.ClearUtils;
 import com.wishzixing.lib.util.InactivityTimerUtils;
 import com.wishzixing.lib.util.PermissionUtils;
 import com.wishzixing.lib.util.YuvUtils;
@@ -178,9 +179,9 @@ public class WishViewDelegate implements WishLife {
 
     @Override
     public void onBackPressed() {
-        PixsValuesCusManager.getInstance().stop();
         inactivityTimer.shutdown();
         hasTexture = false;
+        ClearUtils.clear();
     }
 
     void refreshCamera() {

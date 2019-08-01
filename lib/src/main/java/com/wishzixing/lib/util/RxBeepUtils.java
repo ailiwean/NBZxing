@@ -29,9 +29,6 @@ public class RxBeepUtils {
 
         playBeep = true;
 
-        if (playBeep)
-            return;
-
         AudioManager audioService = (AudioManager) Utils.getAppContext().getSystemService(Utils.getAppContext().AUDIO_SERVICE);
         if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
             playBeep = false;

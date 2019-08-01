@@ -51,8 +51,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
      */
     private RelativeLayout mCropLayout = null;
 
-    private SurfaceView surfaceView;
-
     private TextureView textureView;
 
     private LightView lightView;
@@ -148,8 +146,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
     //初始化默认Delegate
     private void initDefDelegate() {
 
-        //  wishViewDelegate = new WishViewDelegate(surfaceView);
-
         wishViewDelegate = new WishViewDelegate(textureView);
 
         wishViewDelegate.setParseRectFromView(mCropLayout);
@@ -239,10 +235,6 @@ public class WishView extends FrameLayout implements WishLife, View.OnClickListe
         get.get().getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
-
-        if (surfaceView != null)
-            if (surfaceView.isHardwareAccelerated())
-                surfaceView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         if (textureView != null)
             if (textureView.isHardwareAccelerated())

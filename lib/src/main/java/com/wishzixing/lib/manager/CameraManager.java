@@ -19,10 +19,12 @@ package com.wishzixing.lib.manager;
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.TextureView;
 
 import com.wishzixing.lib.config.CameraConfig;
 import com.wishzixing.lib.config.Config;
+import com.wishzixing.lib.handler.CameraCoordinateHandler;
 import com.wishzixing.lib.listener.AutoFocusCallback;
 import com.wishzixing.lib.listener.PreviewCallback;
 import com.wishzixing.lib.listener.SurfaceListener;
@@ -66,7 +68,6 @@ public class CameraManager {
     }
 
     private CameraManager(Activity activity) {
-
         this.weakReference = new WeakReference<>(activity);
         // Camera.setOneShotPreviewCallback() has a race condition in Cupcake, so we use the older
         // Camera.setPreviewCallback() on 1.5 and earlier. For Donut and later, we need to use
@@ -75,6 +76,8 @@ public class CameraManager {
         //useOneShotPreviewCallback = Integer.parseInt(Build.VERSION.SDK) > Build.VERSION_CODES.CUPCAKE;
         previewCallback = new PreviewCallback();
         autoFocusCallback = AutoFocusCallback.getInstance();
+        //开启回调
+        CameraCoordinateHandler.getInstance().start();
     }
 
     /**
