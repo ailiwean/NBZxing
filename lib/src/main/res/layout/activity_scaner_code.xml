@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.wishzixing.lib.views.ScanView
+            <com.NBZxing.lib.views.ScanView
                 android:id="@+id/scanView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -79,7 +79,7 @@
             android:layout_alignParentBottom="true"
             android:visibility="visible">
 
-            <com.wishzixing.lib.views.LightView
+            <com.NBZxing.lib.views.LightView
                 android:id="@+id/lightView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

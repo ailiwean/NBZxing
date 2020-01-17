@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wishzixing.lib">
+    package="com.NBZxing.lib">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.BODY_SENSORS" />
@@ -8,9 +8,7 @@
 
     <application>
 
-        <activity
-            android:name=".PermissionActivity"
-            android:theme="@style/Transparent" />
+        <activity android:name=".PermissionActivity" />
 
     </application>
 

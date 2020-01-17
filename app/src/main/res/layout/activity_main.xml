@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.wishzixing.lib.views.WishView
+    <com.NBZxing.lib.views.NBView
         android:id="@+id/wishView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
