@@ -32,7 +32,7 @@ public class SensorManager implements SensorEventListener {
     private boolean threshold = false;
 
     private SensorManager() {
-        mSensorManager = (android.hardware.SensorManager) Utils.getAppContext().getSystemService(Activity.SENSOR_SERVICE);
+        mSensorManager = (android.hardware.SensorManager) Utils.getContext().getSystemService(Activity.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);// TYPE_GRAVITY
     }
 

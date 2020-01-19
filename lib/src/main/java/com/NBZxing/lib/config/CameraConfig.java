@@ -59,10 +59,6 @@ public class CameraConfig {
         return Holer.INSTANCE;
     }
 
-    public Point getScreenPoint() {
-        return screenPoint;
-    }
-
     public Point getCameraPoint() {
         if (cameraPoint == null)
             return new Point(0,0);

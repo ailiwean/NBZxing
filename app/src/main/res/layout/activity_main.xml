@@ -5,9 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.NBZxing.lib.views.NBView
-        android:id="@+id/wishView"
+    <TextureView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/texture_view"
+        />
 
 </android.support.constraint.ConstraintLayout>

@@ -119,10 +119,11 @@ public class MathUtils {
             cameraY = tem;
         }
 
-        float ratioX = (float) cameraX / PointConfig.getInstance().getShowPoint().x;
-        float ratioY = (float) cameraY / PointConfig.getInstance().getShowPoint().y;
+//        float ratioX = (float) cameraX / PointConfig.getInstance().getShowPoint().x;
+//        float ratioY = (float) cameraY / PointConfig.getInstance().getShowPoint().y;
 
-        return new PointF(ratioX, ratioY);
+//        return new PointF(ratioX, ratioY);
+        return null;
     }
 
     public static class Point implements Comparable<Point> {

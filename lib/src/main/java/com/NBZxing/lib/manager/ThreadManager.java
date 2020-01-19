@@ -1,6 +1,7 @@
 package com.NBZxing.lib.manager;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -11,12 +12,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadManager {
 
+    private static final String TAG = "ThreadPool";
+    private static final int CORE_POOL_SIZE = 3;
+    private static final int MAX_POOL_SIZE = 8;
+    private static final int KEEP_ALIVE_TIME = 10; // 10 seconds
+
     ThreadPoolExecutor executor;
 
     private ThreadManager() {
-        executor = new ThreadPoolExecutor(2, 5, 60L, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(50));
         //任务拒绝策略
-        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.DiscardOldestPolicy());
+        RejectedExecutionHandler handler = new ThreadPoolExecutor.DiscardOldestPolicy();
+        executor = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIVE_TIME,
+                TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(), handler);
     }
 
     private static class Holder {
@@ -28,14 +35,7 @@ public class ThreadManager {
     }
 
     public void addTask(final Runnable runnable) {
-
-        float maxMemory = (float) (Runtime.getRuntime().maxMemory() * 1.0 / (1024 * 1024));
-        //当前分配的总内存
-        float totalMemory = (float) (Runtime.getRuntime().totalMemory() * 1.0 / (1024 * 1024));
-
-        if (totalMemory < maxMemory * 0.8) {
-            executor.execute(runnable);
-        }
+        executor.execute(runnable);
     }
 
     public void close() {

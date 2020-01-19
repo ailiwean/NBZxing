@@ -19,14 +19,6 @@ public class AutoFocusConfig {
 
     }
 
-    private static class Holder {
-        static AutoFocusConfig INSTANCE = new AutoFocusConfig();
-    }
-
-    public static AutoFocusConfig getInstance() {
-        return Holder.INSTANCE;
-    }
-
     public AutoFocusConfig setModel(@Type int type) {
         this.autoModel = type;
         return this;

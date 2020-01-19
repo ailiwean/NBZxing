@@ -143,26 +143,26 @@ public class WishViewDelegate implements WishLife {
 
     private void adjustSize() {
 
-        //动态调整Texture
-        int mWidth = PointConfig.getInstance().getShowPoint().x;
-        int mHeight = PointConfig.getInstance().getShowPoint().y;
-
-        int mPreviewWidth = CameraConfig.getInstance().getCameraPoint().y;
-        int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;
-
-        if (mHeight >= mPreviewHeight) {
-            int xDiff = (int) (((float) mHeight / mPreviewHeight - 1) * mPreviewWidth);
-            ViewGroup.LayoutParams params = textureView.getLayoutParams();
-            params.width = mWidth + xDiff;
-            params.height = mHeight;
-            textureView.setLayoutParams(params);
-            textureView.setTranslationX(-xDiff / 2);
-        } else {
-            ViewGroup.LayoutParams paramsTexture = textureView.getLayoutParams();
-            paramsTexture.width = mPreviewWidth;
-            paramsTexture.height = mPreviewHeight;
-            textureView.setLayoutParams(paramsTexture);
-        }
+//        //动态调整Texture
+//        int mWidth = PointConfig.getInstance().getShowPoint().x;
+//        int mHeight = PointConfig.getInstance().getShowPoint().y;
+//
+//        int mPreviewWidth = CameraConfig.getInstance().getCameraPoint().y;
+//        int mPreviewHeight = CameraConfig.getInstance().getCameraPoint().x;
+//
+//        if (mHeight >= mPreviewHeight) {
+//            int xDiff = (int) (((float) mHeight / mPreviewHeight - 1) * mPreviewWidth);
+//            ViewGroup.LayoutParams params = textureView.getLayoutParams();
+//            params.width = mWidth + xDiff;
+//            params.height = mHeight;
+//            textureView.setLayoutParams(params);
+//            textureView.setTranslationX(-xDiff / 2);
+//        } else {
+//            ViewGroup.LayoutParams paramsTexture = textureView.getLayoutParams();
+//            paramsTexture.width = mPreviewWidth;
+//            paramsTexture.height = mPreviewHeight;
+//            textureView.setLayoutParams(paramsTexture);
+//        }
     }
 
     @Override
@@ -198,8 +198,8 @@ public class WishViewDelegate implements WishLife {
     }
 
     public WishViewDelegate setSpareAutoFocus(boolean isUser, @AutoFocusConfig.Type int type) {
-        AutoFocusConfig.getInstance().setUser(isUser);
-        AutoFocusConfig.getInstance().setModel(type);
+//        AutoFocusConfig.getInstance().setUser(isUser);
+//        AutoFocusConfig.getInstance().setModel(type);
         return this;
     }
 
@@ -229,7 +229,7 @@ public class WishViewDelegate implements WishLife {
     }
 
     public WishViewDelegate setAutoFocusTimeThreshold(long time) {
-        AutoFocusConfig.getInstance().setTimeThreshold(time);
+        //  AutoFocusConfig.getInstance().setTimeThreshold(time);
         return this;
     }
 

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  *  DATE 2019/6/8
  *
  */
-public class PointConfig {
+public class PointConfig implements Config {
 
     private Point screenPoint = new Point();
     private Point showPoint = new Point();
@@ -25,16 +25,8 @@ public class PointConfig {
     private String previewFormatString;
 
     private PointConfig() {
-        WindowManager manager = (WindowManager) Utils.getAppContext().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager manager = (WindowManager) Utils.getContext().getSystemService(Context.WINDOW_SERVICE);
         manager.getDefaultDisplay().getSize(screenPoint);
-    }
-
-    private static class Holder {
-        static PointConfig INSTANCE = new PointConfig();
-    }
-
-    public static PointConfig getInstance() {
-        return Holder.INSTANCE;
     }
 
     public PointConfig setScreenPoint(Point point) {
@@ -144,6 +136,10 @@ public class PointConfig {
             return new Point(bestX, bestY);
         }
         return null;
+    }
+
+    public void config(Camera camera) {
+
     }
 
     public void go() {

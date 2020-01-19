@@ -35,8 +35,6 @@ import com.NBZxing.lib.util.Utils;
 import com.NBZxing.lib.util.WindowUitls;
 import com.NBZxing.lib.util.ZoomUtils;
 
-import java.lang.ref.WeakReference;
-
 /***
  *  Created by SWY
  *  DATE 2019/6/1
@@ -44,7 +42,9 @@ import java.lang.ref.WeakReference;
  */
 public class NBView extends FrameLayout implements WishLife, View.OnClickListener {
 
-    WeakReference<Activity> get;
+
+    Activity mActivity;
+
     /**
      * 扫描框根布局
      */
@@ -106,7 +106,7 @@ public class NBView extends FrameLayout implements WishLife, View.OnClickListene
         tvAlbum.setOnClickListener(this);
         title = findViewById(R.id.rl_title);
 
-        OnGestureListener onGestureListener = new OnGestureListener(get.get());
+        OnGestureListener onGestureListener = new OnGestureListener(Utils.getContext());
         onGestureListener.regOnDoubleClickCallback(new OnGestureListener.DoubleClickCallback() {
             @Override
             public void onDoubleClick() {
@@ -200,13 +200,11 @@ public class NBView extends FrameLayout implements WishLife, View.OnClickListene
     @SuppressLint("InlinedApi")
     @Override
     public void onCreate(Activity activity) {
-        get = new WeakReference<>(activity);
-        PermissionUtils.init(get.get());
-        Utils.init(get.get());
+        Utils.init(activity);
+        PermissionUtils.init(activity);
         initView();
         initDefDelegate();
         initConfig();
-        initAccelerated();
         wishViewDelegate.onCreate(activity);
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //   activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -217,28 +215,14 @@ public class NBView extends FrameLayout implements WishLife, View.OnClickListene
         textureView.post(new Runnable() {
             @Override
             public void run() {
-                View decorView = get.get().getWindow().getDecorView();
                 //为解决某些机型获取屏幕高度异常问题
-                Point screenPoint = new Point(decorView.getMeasuredWidth(), decorView.getMeasuredHeight() + WindowUitls.getStatusBarHeight());
-                PointConfig.getInstance().setScreenPoint(screenPoint);
-                PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
+                // Point screenPoint = new Point(decorView.getMeasuredWidth(), decorView.getMeasuredHeight());
+                // PointConfig.getInstance().setScreenPoint(screenPoint);
+                // PointConfig.getInstance().setShowPoint(new Point(getMeasuredWidth(), getMeasuredHeight()));
                 //设定预览尺寸,即解析框取决于框内所在像素
                 ParseRectConfig.getInstance().setPreview(textureView);
             }
         });
-    }
-
-    //启用硬件加速
-    private void initAccelerated() {
-
-        get.get().getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
-                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
-
-        if (textureView != null)
-            if (textureView.isHardwareAccelerated())
-                textureView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
     }
 
     private void requestPermission() {
@@ -246,17 +230,17 @@ public class NBView extends FrameLayout implements WishLife, View.OnClickListene
         if (PermissionUtils.hasPermission())
             return;
 
-        Intent intent = new Intent(get.get(), PermissionActivity.class);
-        get.get().startActivity(intent);
-        get.get().overridePendingTransition(0, 0);
+        Intent intent = new Intent(getContext(), PermissionActivity.class);
+        mActivity.startActivity(intent);
+        mActivity.overridePendingTransition(0, 0);
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("REFRESH");
-        get.get().registerReceiver(new BroadcastReceiver() {
+        mActivity.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 onResume();
-                get.get().unregisterReceiver(this);
+                mActivity.unregisterReceiver(this);
             }
         }, intentFilter);
 
@@ -287,7 +271,7 @@ public class NBView extends FrameLayout implements WishLife, View.OnClickListene
     public void onClick(View v) {
 
         if (v.getId() == R.id.back) {
-            get.get().finish();
+//            get.get().finish();
         }
 
         if (v.getId() == R.id.openAlbum) {

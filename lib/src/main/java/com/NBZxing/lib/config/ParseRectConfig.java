@@ -95,7 +95,7 @@ public class ParseRectConfig {
         int preViewHeight = preView.getMeasuredHeight();
         int preViewWidth = preView.getMeasuredWidth();
 
-        PointConfig.getInstance().setShowPoint(new Point(preViewWidth, preViewHeight));
+        //     PointConfig.getInstance().setShowPoint(new Point(preViewWidth, preViewHeight));
 
         PointF pointF = MathUtils.getRatio();
 

@@ -1,5 +1,6 @@
 package com.NBZxing.lib;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.NBZxing.lib.util.PermissionUtils;
+import com.NBZxing.lib.util.Utils;
 
 /***
  *  Created by SWY
@@ -17,6 +19,12 @@ import com.NBZxing.lib.util.PermissionUtils;
  */
 public class PermissionActivity extends AppCompatActivity {
 
+
+    public static void request() {
+        Context context = Utils.getContext();
+        Intent intent = new Intent(context, PermissionActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

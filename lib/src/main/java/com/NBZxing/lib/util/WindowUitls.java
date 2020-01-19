@@ -15,7 +15,7 @@ public class WindowUitls {
      * @return
      */
     public static int getStatusBarHeight() {
-        Resources resources = Utils.getAppContext().getResources();
+        Resources resources = Utils.getContext().getResources();
         int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
         int height = resources.getDimensionPixelSize(resourceId);
         return height;

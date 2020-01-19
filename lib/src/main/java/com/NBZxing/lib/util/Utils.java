@@ -1,25 +1,24 @@
 package com.NBZxing.lib.util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+
+import java.lang.ref.WeakReference;
 
 /**
  * @author Cuizhen
  */
 public class Utils {
 
-    @SuppressLint("StaticFieldLeak")
-    private static Context context = null;
+    private static WeakReference<Context> weakReference = null;
 
     public static void init(Context context) {
-        Utils.context = context;
-//        WaterMarkUtils.init(R.drawable-xhdpi.mark);
+        weakReference = new WeakReference<>(context);
     }
 
-    public static Context getAppContext() {
-        if (context == null) {
-            throw new RuntimeException("未在Application中初始化");
+    public static Context getContext() {
+        if (weakReference.get() == null) {
+            throw new RuntimeException("未初始化");
         }
-        return context;
+        return weakReference.get();
     }
 }

@@ -12,12 +12,12 @@ public class ZBarScannerUtils {
 //    private ZBarScannerUtils() {
 //        mImageScanner = new ImageScanner();
 //
-//        mImageScanner.setConfig(0, Config.X_DENSITY, 3);
-//        mImageScanner.setConfig(0, Config.Y_DENSITY, 3);
-//        mImageScanner.setConfig(Symbol.NONE, Config.ENABLE, 0);
+//        mImageScanner.setConfig(0, UserConfig.X_DENSITY, 3);
+//        mImageScanner.setConfig(0, UserConfig.Y_DENSITY, 3);
+//        mImageScanner.setConfig(Symbol.NONE, UserConfig.ENABLE, 0);
 //
 //        for (BarcodeFormat format : BarcodeFormat.ALL_FORMAT_LIST) {
-//            mImageScanner.setConfig(format.getId(), Config.ENABLE, 1);
+//            mImageScanner.setConfig(format.getId(), UserConfig.ENABLE, 1);
 //        }
 //
 //    }

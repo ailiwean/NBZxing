@@ -24,7 +24,7 @@ public class PermissionUtils {
 
 
     public static boolean hasPermission() {
-        return ContextCompat.checkSelfPermission(Utils.getAppContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(Utils.getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
 }

@@ -29,7 +29,7 @@ public class RxBeepUtils {
 
         playBeep = true;
 
-        AudioManager audioService = (AudioManager) Utils.getAppContext().getSystemService(Utils.getAppContext().AUDIO_SERVICE);
+        AudioManager audioService = (AudioManager) Utils.getContext().getSystemService(Utils.getContext().AUDIO_SERVICE);
         if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
             playBeep = false;
         }
@@ -54,7 +54,7 @@ public class RxBeepUtils {
 
             AssetFileDescriptor file = null;
             try {
-                file = Utils.getAppContext().getAssets().openFd("scan.wav");
+                file = Utils.getContext().getAssets().openFd("scan.wav");
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -76,7 +76,7 @@ public class RxBeepUtils {
     }
 
     public static void playVibrate() {
-        RxVibrateTool.vibrateOnce(Utils.getAppContext(), VIBRATE_DURATION);
+        RxVibrateTool.vibrateOnce(Utils.getContext(), VIBRATE_DURATION);
     }
 
     /**

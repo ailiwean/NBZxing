@@ -22,7 +22,7 @@ import android.hardware.Camera;
 import android.view.TextureView;
 
 import com.NBZxing.lib.config.CameraConfig;
-import com.NBZxing.lib.config.Config;
+import com.NBZxing.lib.config.UserConfig;
 import com.NBZxing.lib.handler.CameraCoordinateHandler;
 import com.NBZxing.lib.listener.AutoFocusCallback;
 import com.NBZxing.lib.listener.PreviewCallback;
@@ -158,7 +158,7 @@ public class CameraManager {
             return;
 
         //一些配置参数需要用到camera对象
-        Config.useDefault();
+        UserConfig.useDefault();
 
         initCamera();
 
