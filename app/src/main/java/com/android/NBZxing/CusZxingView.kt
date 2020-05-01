@@ -1,4 +1,4 @@
-package com.android.NBZXing
+package com.android.NBZxing
 
 import android.content.Context
 import android.util.AttributeSet
@@ -13,7 +13,7 @@ import com.ailiwean.core.view.ZxingCameraView
  * @Author:         SWY
  * @CreateDate:     2020/4/30 4:06 PM
  */
-class CusZxing @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : ZxingCameraView(context, attributeSet, def) {
+class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : ZxingCameraView(context, attributeSet, def) {
 
     override fun resultBack(content: String) {
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show()

@@ -1,10 +1,12 @@
 package com.ailiwean.core.zxing;
 
+import com.ailiwean.core.Config;
 import com.ailiwean.core.zxing.QRTypeConfig;
 import com.ailiwean.core.zxing.ScanTypeConfig;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
+import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
 import com.google.zxing.ReaderException;
@@ -88,6 +90,8 @@ public class CustomMultiFormatReader implements Reader {
      * @param hints The set of hints to use for subsequent calls to decode(image)
      */
     public void setHints(Map<DecodeHintType, ?> hints) {
+        this.hints = hints;
+
         boolean tryHarder = hints != null && hints.containsKey(DecodeHintType.TRY_HARDER);
         @SuppressWarnings("unchecked")
         Collection<BarcodeFormat> formats =
@@ -210,15 +214,10 @@ public class CustomMultiFormatReader implements Reader {
 
     //获取解析的核心类
     public static CustomMultiFormatReader getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    private static class Holder {
-        static CustomMultiFormatReader INSTANCE = new CustomMultiFormatReader();
+        return new CustomMultiFormatReader();
     }
 
     private CustomMultiFormatReader() {
-        setType(ScanTypeConfig.ONLY_QR_CODE, null);
+        setType(Config.scanTypeConfig, null);
     }
-
 }

@@ -3,6 +3,7 @@ package com.ailiwean.core;
 import android.content.Context;
 
 import com.ailiwean.core.zxing.ScanRect;
+import com.ailiwean.core.zxing.ScanTypeConfig;
 
 import java.math.BigDecimal;
 
@@ -14,6 +15,9 @@ import java.math.BigDecimal;
  * @CreateDate: 2020/4/23 11:53 AM
  */
 public class Config {
+
+    //扫码类型
+    public static ScanTypeConfig scanTypeConfig = ScanTypeConfig.HIGH_FREQUENCY;
 
     //扫码区域
     public static ScanRect scanRect = new ScanRect();

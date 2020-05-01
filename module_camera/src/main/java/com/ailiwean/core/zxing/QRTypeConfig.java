@@ -32,7 +32,7 @@ public class QRTypeConfig {
         allFormatList.add(BarcodeFormat.UPC_A);
         allFormatList.add(BarcodeFormat.UPC_E);
         allFormatList.add(BarcodeFormat.UPC_EAN_EXTENSION);
-
+        
         // 可能的编码格式
         ALL_HINT_MAP.put(DecodeHintType.POSSIBLE_FORMATS, allFormatList);
         // 花更多的时间用于寻找图上的编码，优化准确性，但不优化速度

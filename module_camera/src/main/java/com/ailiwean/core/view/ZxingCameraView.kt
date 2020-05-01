@@ -8,7 +8,6 @@ import android.graphics.PointF
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ import com.ailiwean.core.Utils
 import com.ailiwean.core.able.AbleManager
 import com.ailiwean.core.helper.VibrateHelper
 import com.ailiwean.core.helper.ScanHelper
+import com.ailiwean.core.zxing.ScanTypeConfig
 import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
 import com.google.android.cameraview.CameraView
@@ -124,6 +124,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     fun initConfig() {
         qr_loc.visibility = View.GONE
         scan_bar.startAnim()
+        initScanType()
         ableCollect = AbleManager.getInstance(handleZX)
         handleZX.init()
         //闪光灯按钮初始化
@@ -156,6 +157,14 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     @SuppressLint("WrongViewCast")
     fun getView(): View {
         return findViewById(R.id.base_floor)
+    }
+
+    private fun initScanType() {
+        scanTypeConfig = getScanType()
+    }
+
+    open fun getScanType(): ScanTypeConfig {
+        return ScanTypeConfig.HIGH_FREQUENCY
     }
 
 }

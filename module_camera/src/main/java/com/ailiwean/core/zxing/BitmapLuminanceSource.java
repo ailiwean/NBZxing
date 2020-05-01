@@ -23,7 +23,7 @@ public class BitmapLuminanceSource extends LuminanceSource {
         int[] data = new int[bitmap.getWidth() * bitmap.getHeight()];
         this.bitmapPixels = new byte[bitmap.getWidth() * bitmap.getHeight()];
         bitmap.getPixels(data, 0, getWidth(), 0, 0, getWidth(), getHeight());
-
+      
         // 将int数组转换为byte数组，也就是取像素值中蓝色值部分作为辨析内容
         for (int i = 0; i < data.length; i++) {
             this.bitmapPixels[i] = (byte) data[i];

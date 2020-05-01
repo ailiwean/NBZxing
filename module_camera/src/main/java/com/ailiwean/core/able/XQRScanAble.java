@@ -40,7 +40,6 @@ public class XQRScanAble extends PixsValuesAble {
         result = reader.decode(binaryBitmap);
         if (result != null) {
             Message.obtain(handler, Config.SCAN_RESULT, result).sendToTarget();
-            this.result = result;
             binaryBitmap = null;
         }
     }
