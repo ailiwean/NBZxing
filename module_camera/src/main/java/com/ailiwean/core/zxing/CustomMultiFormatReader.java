@@ -218,7 +218,7 @@ public class CustomMultiFormatReader implements Reader {
     }
 
     private CustomMultiFormatReader() {
-        setType(ScanTypeConfig.ONE_DIMENSION, null);
+        setType(ScanTypeConfig.ONLY_QR_CODE, null);
     }
 
 }

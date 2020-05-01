@@ -1,6 +1,7 @@
 package com.ailiwean.core.able;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.ailiwean.core.WorkThreadServer;
 
@@ -33,7 +34,6 @@ public class AbleManager extends PixsValuesAble {
     public void cusAction(byte[] data, int dataWidth, int dataHeight) {
         for (PixsValuesAble able : ableList) {
             WorkThreadServer.getInstance()
-                    .getBgHandle(able)
                     .post(() -> able.cusAction(data, dataWidth, dataHeight));
         }
     }

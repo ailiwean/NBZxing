@@ -160,7 +160,11 @@ public class CameraHelper {
      * ImageReader中读取YUV
      */
     public static byte[] readYuv(ImageReader reader) {
-        Image image = reader.acquireLatestImage();
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+            return null;
+        }
+        Image image = null;
+        image = reader.acquireLatestImage();
         if (image == null)
             return null;
         byte[] data = getByteFromImage(image);
@@ -169,6 +173,9 @@ public class CameraHelper {
     }
 
     private static byte[] getByteFromImage(Image image) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+            return null;
+        }
         int w = image.getWidth(), h = image.getHeight();
         int i420Size = w * h * 3 / 2;
 

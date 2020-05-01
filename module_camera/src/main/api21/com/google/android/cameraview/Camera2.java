@@ -46,7 +46,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 @SuppressWarnings("MissingPermission")
-@TargetApi(21)
+@androidx.annotation.RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 class Camera2 extends CameraViewImpl {
 
     private static final String TAG = "Camera2";
@@ -511,7 +511,7 @@ class Camera2 extends CameraViewImpl {
         Size prelargest = mPreviewSizes.sizes(mAspectRatio).last();
         mYuvReader = ImageReader.newInstance(prelargest.getWidth(), prelargest.getHeight(),
                 ImageFormat.YUV_420_888, /* maxImages */ 2);
-        mYuvReader.setOnImageAvailableListener(mOnYuvAvailableListener, null);
+        mYuvReader.setOnImageAvailableListener(mOnYuvAvailableListener, WorkThreadServer.getInstance().getBgHandle());
     }
 
     /***

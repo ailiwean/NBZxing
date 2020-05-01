@@ -8,10 +8,12 @@ import android.graphics.PointF
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ailiwean.core.Config
+import com.ailiwean.core.Config.*
 import com.ailiwean.core.Utils
 import com.ailiwean.core.able.AbleManager
 import com.ailiwean.core.helper.VibrateHelper
@@ -47,7 +49,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
 
     private val handleZX = HandleZX {
         when (it.what) {
-            Config.SCAN_RESULT -> {
+            SCAN_RESULT -> {
                 scanSucHelper()
                 if (it.obj is Result) {
                     showQRLoc(ScanHelper.rotatePoint((it.obj as Result).resultPoints)
@@ -55,11 +57,11 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
                     )
                 }
             }
-            Config.LIGHT_CHANGE -> {
+            LIGHT_CHANGE -> {
                 lightView.setBright(it.obj.toString().toBoolean())
             }
 
-            Config.AUTO_ZOOM -> {
+            AUTO_ZOOM -> {
                 setZoom(it.obj.toString().toFloat())
             }
         }
@@ -74,12 +76,13 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
 
     override fun onCameraClose(camera: CameraView) {
         super.onCameraClose(camera)
+        ableCollect.release()
     }
 
     override fun onPreviewByte(camera: CameraView, data: ByteArray) {
         super.onPreviewByte(camera, data)
-        val dataWidht = Config.scanRect.dataX
-        val dataHeight = Config.scanRect.dataY
+        val dataWidht = scanRect.dataX
+        val dataHeight = scanRect.dataY
         ableCollect.cusAction(data, dataWidht, dataHeight)
     }
 
@@ -122,6 +125,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         qr_loc.visibility = View.GONE
         scan_bar.startAnim()
         ableCollect = AbleManager.getInstance(handleZX)
+        handleZX.init()
         //闪光灯按钮初始化
         lightView.inital()
     }
@@ -132,11 +136,20 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     abstract fun resultBack(content: String)
 
     class HandleZX constructor(val callback: (Message) -> Unit) : Handler() {
+        var hasResult = false
         override fun handleMessage(msg: Message?) {
             super.handleMessage(msg)
+            if (hasResult)
+                return
             msg?.apply {
+                if (msg.what == SCAN_RESULT)
+                    hasResult = true
                 callback(msg)
             }
+        }
+
+        fun init() {
+            hasResult = false
         }
     }
 

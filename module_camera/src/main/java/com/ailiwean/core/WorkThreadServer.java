@@ -5,6 +5,11 @@ import android.os.HandlerThread;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Package: com.ailiwean.core
@@ -15,10 +20,11 @@ import java.util.Map;
  */
 public class WorkThreadServer {
 
-    private static String DEFAULT = "CommonThread";
+    private HandlerThread handlerThread;
 
-    private HashMap<String, HandlerThread> handlerThreadHashMap = new HashMap<>();
-    private HashMap<String, Handler> handlerHashMap = new HashMap<>();
+    private Handler handler;
+
+    private ThreadPoolExecutor executor;
 
     private WorkThreadServer() {
     }
@@ -28,30 +34,36 @@ public class WorkThreadServer {
     }
 
     public static WorkThreadServer getInstance() {
+        if (Holder.INSTANCE.executor == null) {
+            Holder.INSTANCE.executor = new ThreadPoolExecutor(
+                    2, 5, 1, TimeUnit.SECONDS,
+                    new ArrayBlockingQueue<>(20, true), new ThreadPoolExecutor.DiscardOldestPolicy());
+        }
+        if (Holder.INSTANCE.handlerThread == null) {
+            Holder.INSTANCE.handlerThread = new HandlerThread("Default");
+            Holder.INSTANCE.handlerThread.start();
+            Holder.INSTANCE.handler = new Handler(Holder.INSTANCE.handlerThread.getLooper());
+        }
         return Holder.INSTANCE;
     }
 
     public Handler getBgHandle() {
-        return getBgHandle(DEFAULT);
+        return handler;
     }
 
-    public Handler getBgHandle(Object o) {
-        if (handlerHashMap.get(o.toString()) == null) {
-            HandlerThread handlerThread = new HandlerThread(o.toString());
-            handlerThread.start();
-            handlerThreadHashMap.put(o.toString(), handlerThread);
-            Handler handler = new Handler(handlerThread.getLooper());
-            handlerHashMap.put(o.toString(), handler);
-            return handler;
-        }
-        return handlerHashMap.get(o.toString());
+    public void post(Runnable runnable) {
+        if (executor != null)
+            executor.execute(runnable);
     }
 
     public void quit() {
-        for (Map.Entry<String, HandlerThread> stringHandlerThreadEntry : handlerThreadHashMap.entrySet()) {
-            stringHandlerThreadEntry.getValue().quit();
+        if (handler != null) {
+            handlerThread.quit();
+            handlerThread = null;
         }
-        handlerThreadHashMap.clear();
-        handlerHashMap.clear();
+        if (executor != null) {
+            executor.shutdownNow();
+            executor = null;
+        }
     }
 }

@@ -19,7 +19,6 @@ package com.google.android.cameraview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Parcel;
@@ -34,7 +33,6 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 import com.ailiwean.core.Config;
-import com.ailiwean.core.zxing.ScanRect;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
