@@ -1,3 +1,7 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">NBZxing</string>
+=======
+    <string name="app_name">nbzxing</string>
+>>>>>>> backTexture
 </resources>

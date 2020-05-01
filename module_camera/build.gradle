@@ -1,0 +1,65 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.ailiwean'
+
+android {
+    compileSdkVersion 28
+    resourcePrefix "camera_"
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/base'
+        main.java.srcDirs += 'src/main/api14'
+        main.java.srcDirs += 'src/main/api21'
+        main.java.srcDirs += 'src/main/api23'
+
+        main.jniLibs.srcDirs = ['libs']
+    }
+
+}
+
+dependencies {
+    api "androidx.appcompat:appcompat:1.1.0"
+    api 'androidx.legacy:legacy-support-v4:1.0.0'
+    api "com.github.bumptech.glide:glide:4.11.0"
+    api 'com.google.zxing:core:3.3.3'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+// 打包源码
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError  false
+    source = android.sourceSets.main.java.sourceFiles
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.compile
+}
+
+// 制作文档(Javadoc)
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}

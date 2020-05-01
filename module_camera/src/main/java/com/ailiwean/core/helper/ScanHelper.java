@@ -1,0 +1,132 @@
+package com.ailiwean.core.helper;
+
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.Rect;
+
+import com.ailiwean.core.Config;
+import com.ailiwean.core.zxing.PlanarYUVLuminanceSource;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ResultPoint;
+import com.google.zxing.common.HybridBinarizer;
+
+/**
+ * @Package: com.ailiwean.core.helper
+ * @ClassName: ZxingHelper
+ * @Description: Zxing相关数据转换
+ * @Author: SWY
+ * @CreateDate: 2020/4/23 10:23 AM
+ */
+public class ScanHelper {
+
+
+    /***
+     * 字节转BinaryBitmap
+     */
+    public static BinaryBitmap byteToBinaryBitmap(byte[] bytes, int dataWidth, int dataHeight) {
+        getScanByteRect(dataWidth, dataHeight);
+        PlanarYUVLuminanceSource source = buildLuminanceSource(bytes, dataWidth, dataHeight,
+                Config.scanRect.getScanR());
+        return new BinaryBitmap(new HybridBinarizer(source));
+    }
+
+    /***
+     * 旋转矩形 -90
+     * @param rect
+     * @return
+     */
+    private static Rect rotateRect(Rect rect) {
+        Rect rect1 = new Rect();
+        rect1.left = rect.top;
+        rect1.top = rect.left;
+        rect1.right = rect.bottom;
+        rect1.bottom = rect.right;
+        return rect1;
+    }
+
+    /***
+     * 二维码坐标转换屏幕坐标
+     * @param point
+     * @return
+     */
+    public static PointF rotatePoint(ResultPoint[] point) {
+
+        if (point == null || point.length == 0)
+            return new PointF(0, 0);
+
+        PointF avargPoint = new PointF();
+        for (ResultPoint item : point) {
+            avargPoint.x += item.getX();
+            avargPoint.y += item.getY();
+        }
+        avargPoint.x /= point.length;
+        avargPoint.y /= point.length;
+        float preX = Config.scanRect.getPreX();
+        float preY = Config.scanRect.getPreY();
+        float aspX = preX / (float) Config.scanRect.getScanR().height();
+        float aspY = preY / (float) Config.scanRect.getScanR().width();
+        return new PointF(preX - aspX * avargPoint.y, preY - aspY * avargPoint.x);
+    }
+
+    /**
+     * A factory method to build the appropriate LuminanceSource object based on the format
+     * of the preview buffers, as described by Camera.Parameters.
+     *
+     * @param data A preview frame.
+     * @return A PlanarYUVLuminanceSource instance.
+     */
+    private static PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width,
+                                                                 int height, Rect rect) {
+        if ((rect.left == 0 && rect.right == 0) || (rect.top == 0 && rect.bottom == 0)) {
+            try {
+                throw new Exception("扫码解析区域异常");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
+                rect.width(), rect.height(), true);
+    }
+
+    /***
+     * 获取显示区域对应的相机源数据解码区域
+     * @return
+     */
+    public static Rect getScanByteRect(int dataWidth, int dataHeight) {
+        if (Config.scanRect.getScanR() == null) {
+            Config.scanRect.setScanR(new Rect());
+            Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().left * dataHeight);
+            Config.scanRect.getScanR().top = (int) (Config.scanRect.getRect().top * dataWidth);
+            Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().right * dataHeight);
+            Config.scanRect.getScanR().bottom = (int) (Config.scanRect.getRect().bottom * dataWidth);
+            Config.scanRect.setScanR(rotateRect(Config.scanRect.getScanR()));
+        }
+        return Config.scanRect.getScanR();
+    }
+
+
+    /***
+     * 计算探测器获取二维码大小
+     */
+    public static int getQrLenght(ResultPoint[] point) {
+        //计算中心点坐标
+        PointF avargPoint = new PointF();
+        for (ResultPoint item : point) {
+            avargPoint.x += item.getX();
+            avargPoint.y += item.getY();
+        }
+        avargPoint.x /= point.length;
+        avargPoint.y /= point.length;
+        //根据中心点到一点举例计算二维码边长
+        int sideA = (int) (avargPoint.x - point[0].getX());
+        int sideB = (int) (avargPoint.y - point[0].getY());
+
+        //数据长度转显示长度
+        float preX = Config.scanRect.getPreX();
+        float aspX = preX / (float) Config.scanRect.getScanR().height();
+
+        return (int) (Math.sqrt(sideA * sideA + sideB * sideB) / Math.sqrt(2) * 2 * aspX);
+    }
+
+}

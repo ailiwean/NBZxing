@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+<<<<<<< HEAD
     package="com.android.NBZxing">
+=======
+    package="com.android.nbzxing">
+>>>>>>> backTexture
 
     <uses-permission android:name="android.permission.CAMERA" />
 
@@ -13,6 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
+<<<<<<< HEAD
+=======
+        <activity android:name="com.android.NBZXing.MainActivity">
+>>>>>>> backTexture
 
         <activity android:name=".MainActivity">
             <intent-filter>
