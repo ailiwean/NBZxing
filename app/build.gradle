@@ -26,6 +26,6 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':module_camera')
+       implementation project(path: ':module_camera')
     //implementation 'com.github.ailiwean:NBZxing:0.0.1'
 }
