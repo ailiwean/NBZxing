@@ -1,12 +1,7 @@
-<<<<<<< HEAD:module_camera/src/main/java/com/NBZxing/lib/util/AccountUtils.java
-package com.NBZxing.lib.util;
 
-import com.NBZxing.lib.config.CameraConfig;
-=======
 package com.ailiwean.core.helper;
 
 import android.hardware.Camera;
->>>>>>> backTexture:module_camera/src/main/java/com/ailiwean/core/helper/LightHelper.java
 
 /**
  * @Package: com.ailiwean.core.helper

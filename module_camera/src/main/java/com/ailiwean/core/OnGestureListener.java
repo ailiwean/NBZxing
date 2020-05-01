@@ -1,8 +1,4 @@
-<<<<<<< HEAD:module_camera/src/main/java/com/NBZxing/lib/listener/OnGestureListener.java
-package com.NBZxing.lib.listener;
-=======
 package com.ailiwean.core;
->>>>>>> backTexture:module_camera/src/main/java/com/ailiwean/core/OnGestureListener.java
 
 import android.content.Context;
 import android.graphics.PointF;

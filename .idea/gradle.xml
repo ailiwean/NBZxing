@@ -4,12 +4,7 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-<<<<<<< HEAD
-        <option name="disableWrapperSourceDistributionNotification" value="true" />
-=======
-        <option name="delegatedBuild" value="false" />
         <option name="testRunner" value="PLATFORM" />
->>>>>>> backTexture
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
@@ -20,7 +15,6 @@
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
-        <option name="testRunner" value="PLATFORM" />
       </GradleProjectSettings>
     </option>
   </component>

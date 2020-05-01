@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-<<<<<<< HEAD:module_camera/src/main/java/com/NBZxing/lib/core/zxing/QRCodeCore.java
-package com.NBZxing.lib.core.zxing;
-=======
 package com.ailiwean.core.zxing;
->>>>>>> backTexture:module_camera/src/main/java/com/ailiwean/core/zxing/QRCodeCore.java
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;

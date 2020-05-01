@@ -1,9 +1,5 @@
 
-<<<<<<< HEAD:module_camera/src/main/java/com/NBZxing/lib/source/PlanarYUVLuminanceSource.java
-package com.NBZxing.lib.source;
-=======
 package com.ailiwean.core.zxing;
->>>>>>> backTexture:module_camera/src/main/java/com/ailiwean/core/zxing/PlanarYUVLuminanceSource.java
 
 import com.google.zxing.LuminanceSource;
 

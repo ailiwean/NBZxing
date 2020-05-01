@@ -1,10 +1,11 @@
-package com.android.NBZXing;
+package com.android.NBZxing;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.nbzxing.R;
+import com.android.NBZXing.CusZxing;
+import com.android.NBZxing.R;
 
 public class MainActivity extends AppCompatActivity {
     @Override

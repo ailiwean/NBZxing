@@ -1,9 +1,7 @@
-<<<<<<< HEAD:module_camera/src/main/java/com/NBZxing/lib/core/zxing/CustomMultiFormatReader.java
-package com.NBZxing.lib.core.zxing;
-=======
 package com.ailiwean.core.zxing;
->>>>>>> backTexture:module_camera/src/main/java/com/ailiwean/core/zxing/CustomMultiFormatReader.java
 
+import com.ailiwean.core.zxing.QRTypeConfig;
+import com.ailiwean.core.zxing.ScanTypeConfig;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -17,11 +15,6 @@ import com.google.zxing.maxicode.MaxiCodeReader;
 import com.google.zxing.oned.MultiFormatOneDReader;
 import com.google.zxing.pdf417.PDF417Reader;
 import com.google.zxing.qrcode.QRCodeReader;
-<<<<<<< HEAD:module_camera/src/main/java/com/NBZxing/lib/core/zxing/CustomMultiFormatReader.java
-import com.NBZxing.lib.config.QRTypeConfig;
-import com.NBZxing.lib.config.ScanTypeConfig;
-=======
->>>>>>> backTexture:module_camera/src/main/java/com/ailiwean/core/zxing/CustomMultiFormatReader.java
 
 import java.util.ArrayList;
 import java.util.Collection;

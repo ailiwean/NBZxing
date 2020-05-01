@@ -1,8 +1,4 @@
-<<<<<<< HEAD:module_camera/src/main/java/com/NBZxing/lib/views/LightView.java
-package com.NBZxing.lib.views;
-=======
 package com.ailiwean.core.view;
->>>>>>> backTexture:module_camera/src/main/java/com/ailiwean/core/view/LightView.java
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -12,12 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-<<<<<<< HEAD:module_camera/src/main/java/com/NBZxing/lib/views/LightView.java
-import com.NBZxing.lib.R;
-import com.NBZxing.lib.util.LightControlUtils;
-=======
 import com.google.android.cameraview.R;
->>>>>>> backTexture:module_camera/src/main/java/com/ailiwean/core/view/LightView.java
 
 /***
  *  Created by SWY

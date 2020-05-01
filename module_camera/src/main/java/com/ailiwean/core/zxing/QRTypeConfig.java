@@ -1,8 +1,4 @@
-<<<<<<< HEAD:module_camera/src/main/java/com/NBZxing/lib/config/QRTypeConfig.java
-package com.NBZxing.lib.config;
-=======
 package com.ailiwean.core.zxing;
->>>>>>> backTexture:module_camera/src/main/java/com/ailiwean/core/zxing/QRTypeConfig.java
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;

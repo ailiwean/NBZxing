@@ -4,15 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<<<<<<< HEAD
-    <TextureView
-=======
     <com.android.NBZXing.CusZxing
         android:id="@+id/cusZxing"
->>>>>>> backTexture
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/texture_view"
-        />
+        android:layout_height="match_parent" />
 
 </FrameLayout>
