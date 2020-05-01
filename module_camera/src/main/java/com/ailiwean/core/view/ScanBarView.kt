@@ -1,22 +1,12 @@
 package com.ailiwean.core.view
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
-import android.support.v4.media.session.PlaybackStateCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation.RESTART
-import android.view.animation.AnimationSet
-import android.view.animation.LinearInterpolator
-import android.view.animation.TranslateAnimation
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.Toast
 import com.ailiwean.core.Utils
 import com.google.android.cameraview.R
 
@@ -30,7 +20,6 @@ import com.google.android.cameraview.R
 class ScanBarView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : FrameLayout(context, attributeSet, def) {
 
     private val ALPHA_LENGHT = 100f
-    private val ALPHA_TIME = 300L
 
 
     val barView: ImageView by lazy {

@@ -31,7 +31,6 @@ android {
 
 dependencies {
     api "androidx.appcompat:appcompat:1.1.0"
-    api 'androidx.legacy:legacy-support-v4:1.0.0'
     api "com.github.bumptech.glide:glide:4.11.0"
     api 'com.google.zxing:core:3.3.3'
 }
