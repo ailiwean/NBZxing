@@ -11,8 +11,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ailiwean.core.Config
 import com.ailiwean.core.Config.*
+import com.ailiwean.core.Result
 import com.ailiwean.core.Utils
 import com.ailiwean.core.able.AbleManager
 import com.ailiwean.core.helper.VibrateHelper
@@ -22,7 +22,6 @@ import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
 import com.google.android.cameraview.CameraView
 import com.google.android.cameraview.R
-import com.google.zxing.Result
 import kotlinx.android.synthetic.main.base_zxing_layout.view.*
 
 /**
@@ -52,8 +51,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
             SCAN_RESULT -> {
                 scanSucHelper()
                 if (it.obj is Result) {
-                    showQRLoc(ScanHelper.rotatePoint((it.obj as Result).resultPoints)
-                            , it.obj.toString()
+                    showQRLoc((it.obj as Result).pointF, it.obj.toString()
                     )
                 }
             }

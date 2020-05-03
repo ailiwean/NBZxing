@@ -20,6 +20,7 @@ public class ScanRect {
 
     RectF r;
     Rect scanR;
+    Rect scanRR;
 
     /***
      * 实际预览区域/总预览区域
@@ -40,6 +41,16 @@ public class ScanRect {
 
     public ScanRect setScanR(Rect scanR) {
         this.scanR = scanR;
+        return this;
+    }
+
+
+    public Rect getScanRR() {
+        return scanRR;
+    }
+
+    public ScanRect setScanRR(Rect scanRR) {
+        this.scanRR = scanRR;
         return this;
     }
 

@@ -24,15 +24,17 @@ public class XQRScanZoomAble extends XQRScanAble {
 
     long zoomTime = 0;
 
-    public XQRScanZoomAble(Handler handler) {
-        super(handler);
+    XQRScanZoomAble(Handler handler) {
+        this(handler, false);
+    }
+
+    XQRScanZoomAble(Handler handler, boolean isRotate) {
+        super(handler, isRotate);
     }
 
     @Override
     public void cusAction(byte[] data, int dataWidth, int dataHeight) {
         super.cusAction(data, dataWidth, dataHeight);
-        if (binaryBitmap == null)
-            return;
         DetectorResult decoderResult = null;
         ResultPoint[] points;
         try {

@@ -19,14 +19,12 @@ import com.google.zxing.common.HybridBinarizer;
  */
 public class ScanHelper {
 
-
     /***
      * 字节转BinaryBitmap
      */
     public static BinaryBitmap byteToBinaryBitmap(byte[] bytes, int dataWidth, int dataHeight) {
-        getScanByteRect(dataWidth, dataHeight);
-        PlanarYUVLuminanceSource source = buildLuminanceSource(bytes, dataWidth, dataHeight,
-                Config.scanRect.getScanR());
+        Rect rect = getScanByteRect(dataWidth, dataHeight);
+        PlanarYUVLuminanceSource source = buildLuminanceSource(bytes, dataWidth, dataHeight, rect);
         return new BinaryBitmap(new HybridBinarizer(source));
     }
 
@@ -68,6 +66,31 @@ public class ScanHelper {
         return new PointF(preX - aspX * avargPoint.y, preY - aspY * avargPoint.x);
     }
 
+
+    /***
+     * 二维码坐标转换屏幕坐标
+     * @param point
+     * @return
+     */
+    public static PointF rotatePointR(ResultPoint[] point) {
+
+        if (point == null || point.length == 0)
+            return new PointF(0, 0);
+
+        PointF avargPoint = new PointF();
+        for (ResultPoint item : point) {
+            avargPoint.x += item.getX();
+            avargPoint.y += item.getY();
+        }
+        avargPoint.x /= point.length;
+        avargPoint.y /= point.length;
+        float preX = Config.scanRect.getPreX();
+        float preY = Config.scanRect.getPreY();
+        float aspX = preX / (float) Config.scanRect.getScanRR().width();
+        float aspY = preY / (float) Config.scanRect.getScanRR().height();
+        return new PointF(preX - aspX * avargPoint.y, preY - aspY * avargPoint.x);
+    }
+
     /**
      * A factory method to build the appropriate LuminanceSource object based on the format
      * of the preview buffers, as described by Camera.Parameters.
@@ -94,17 +117,29 @@ public class ScanHelper {
      * @return
      */
     public static Rect getScanByteRect(int dataWidth, int dataHeight) {
-        if (Config.scanRect.getScanR() == null) {
-            Config.scanRect.setScanR(new Rect());
-            Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().left * dataHeight);
-            Config.scanRect.getScanR().top = (int) (Config.scanRect.getRect().top * dataWidth);
-            Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().right * dataHeight);
-            Config.scanRect.getScanR().bottom = (int) (Config.scanRect.getRect().bottom * dataWidth);
-            Config.scanRect.setScanR(rotateRect(Config.scanRect.getScanR()));
+        if (dataWidth > dataHeight) {
+            if (Config.scanRect.getScanR() == null) {
+                Config.scanRect.setScanR(new Rect());
+                Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().left * dataHeight);
+                Config.scanRect.getScanR().top = (int) (Config.scanRect.getRect().top * dataWidth);
+                Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().right * dataHeight);
+                Config.scanRect.getScanR().bottom = (int) (Config.scanRect.getRect().bottom * dataWidth);
+                Config.scanRect.setScanR(rotateRect(Config.scanRect.getScanR()));
+            }
+            return Config.scanRect.getScanR();
+        } else {
+            if (Config.scanRect.getScanRR() == null) {
+                Config.scanRect.setScanRR(new Rect());
+                Config.scanRect.getScanRR().left = (int) (Config.scanRect.getRect().left * dataWidth);
+                Config.scanRect.getScanRR().top = (int) (Config.scanRect.getRect().top * dataHeight);
+                Config.scanRect.getScanRR().right = (int) (Config.scanRect.getRect().right * dataWidth);
+                Config.scanRect.getScanRR().bottom = (int) (Config.scanRect.getRect().bottom * dataHeight);
+                Config.scanRect.setScanRR(Config.scanRect.getScanRR());
+            }
+            return Config.scanRect.getScanRR();
         }
-        return Config.scanRect.getScanR();
-    }
 
+    }
 
     /***
      * 计算探测器获取二维码大小

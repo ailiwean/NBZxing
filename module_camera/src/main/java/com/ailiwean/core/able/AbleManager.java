@@ -1,12 +1,11 @@
 package com.ailiwean.core.able;
 
 import android.os.Handler;
-import android.util.Log;
 
 import com.ailiwean.core.WorkThreadServer;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @Package: com.ailiwean.core.able
@@ -17,12 +16,13 @@ import java.util.List;
  */
 public class AbleManager extends PixsValuesAble {
 
-    List<PixsValuesAble> ableList = new ArrayList<>();
+    private List<PixsValuesAble> ableList = new CopyOnWriteArrayList<>();
 
     private AbleManager(Handler handler) {
         super(handler);
         //ableList.add(new XQRScanAble(handler));
         ableList.add(new XQRScanZoomAble(handler));
+        ableList.add(new XQRScanAbleRotate(handler));
         ableList.add(new LighSolveAble(handler));
     }
 
