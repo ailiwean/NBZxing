@@ -2,8 +2,11 @@
  一个稳定完善的扫码库，几行代码既可接入，完美适配各种分辨率，无拉伸。
 
 ### 依赖
+
+[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://jitpack.io/#ailiwean/NBZxing)
+
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.3'
+	        implementation 'com.github.ailiwean:NBZxing:0.0.4'
 
 ```
 
@@ -14,9 +17,9 @@
 ```
 class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : ZxingCameraView(context, attributeSet, def) {
 	
-	/***
-	* 扫码结果回调
-	*/
+    /***
+     * 扫码结果回调
+     */
     override fun resultBack(content: String) {
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
     }
@@ -52,6 +55,7 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
                 .synchLifeStart(this);
 ```
 
+
 -------
 
 #### 下载体验
@@ -59,6 +63,10 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
  - 安装密码 ： 1234
  - 没有动态申请权限， 记得手动打开哦
 
+
+##### 联系我
+微信： 17391961576
+QQ:  1581209979
 
 
 
