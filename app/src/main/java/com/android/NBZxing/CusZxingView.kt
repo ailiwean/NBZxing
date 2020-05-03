@@ -17,7 +17,7 @@ import com.ailiwean.core.zxing.ScanTypeConfig
 class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : ZxingCameraView(context, attributeSet, def) {
 
     override fun resultBack(content: String) {
-        Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
+        // Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
     }
 
     /***

@@ -17,6 +17,8 @@ public class Result {
 
     PointF pointF;
 
+    boolean isRotate;
+
     public String getText() {
         return text;
     }
@@ -32,6 +34,16 @@ public class Result {
 
     public Result setPointF(PointF pointF) {
         this.pointF = pointF;
+        return this;
+    }
+
+
+    public boolean isRotate() {
+        return isRotate;
+    }
+
+    public Result setRotate(boolean rotate) {
+        isRotate = rotate;
         return this;
     }
 

@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.ailiwean.core.Config.*
 import com.ailiwean.core.Result
 import com.ailiwean.core.Utils
@@ -51,8 +52,8 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
             SCAN_RESULT -> {
                 scanSucHelper()
                 if (it.obj is Result) {
-                    showQRLoc((it.obj as Result).pointF, it.obj.toString()
-                    )
+                    showQRLoc((it.obj as Result).pointF, it.obj.toString())
+                    Toast.makeText(context, (it.obj as Result).isRotate.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
             LIGHT_CHANGE -> {

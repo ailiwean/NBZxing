@@ -2,11 +2,9 @@ package com.ailiwean.core.able;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
-import com.google.zxing.BinaryBitmap;
 import com.google.zxing.FormatException;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.ResultPoint;

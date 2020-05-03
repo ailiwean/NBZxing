@@ -1,8 +1,8 @@
 package com.ailiwean.core.helper;
 
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.zxing.PlanarYUVLuminanceSource;
@@ -52,10 +52,13 @@ public class ScanHelper {
         if (point == null || point.length == 0)
             return new PointF(0, 0);
 
+        if (Config.scanRect.getScanR() == null)
+            return new PointF(0, 0);
+
         PointF avargPoint = new PointF();
         for (ResultPoint item : point) {
-            avargPoint.x += item.getX();
-            avargPoint.y += item.getY();
+            avargPoint.x += Math.abs(item.getX());
+            avargPoint.y += Math.abs(item.getY());
         }
         avargPoint.x /= point.length;
         avargPoint.y /= point.length;
@@ -63,9 +66,8 @@ public class ScanHelper {
         float preY = Config.scanRect.getPreY();
         float aspX = preX / (float) Config.scanRect.getScanR().height();
         float aspY = preY / (float) Config.scanRect.getScanR().width();
-        return new PointF(preX - aspX * avargPoint.y, preY - aspY * avargPoint.x);
+        return new PointF(preX - aspX * avargPoint.y, aspY * avargPoint.x);
     }
-
 
     /***
      * 二维码坐标转换屏幕坐标
@@ -77,10 +79,13 @@ public class ScanHelper {
         if (point == null || point.length == 0)
             return new PointF(0, 0);
 
+        if (Config.scanRect.getScanRR() == null)
+            return new PointF(0, 0);
+
         PointF avargPoint = new PointF();
         for (ResultPoint item : point) {
-            avargPoint.x += item.getX();
-            avargPoint.y += item.getY();
+            avargPoint.x += Math.abs(item.getX());
+            avargPoint.y += Math.abs(item.getY());
         }
         avargPoint.x /= point.length;
         avargPoint.y /= point.length;
@@ -88,8 +93,9 @@ public class ScanHelper {
         float preY = Config.scanRect.getPreY();
         float aspX = preX / (float) Config.scanRect.getScanRR().width();
         float aspY = preY / (float) Config.scanRect.getScanRR().height();
-        return new PointF(preX - aspX * avargPoint.y, preY - aspY * avargPoint.x);
+        return new PointF(aspX * avargPoint.x, aspY * avargPoint.y);
     }
+
 
     /**
      * A factory method to build the appropriate LuminanceSource object based on the format
@@ -109,7 +115,7 @@ public class ScanHelper {
             return null;
         }
         return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
-                rect.width(), rect.height(), true);
+                rect.width(), rect.height(), false);
     }
 
     /***
@@ -118,24 +124,21 @@ public class ScanHelper {
      */
     public static Rect getScanByteRect(int dataWidth, int dataHeight) {
         if (dataWidth > dataHeight) {
-            if (Config.scanRect.getScanR() == null) {
+            if (Config.scanRect.getScanR() == null)
                 Config.scanRect.setScanR(new Rect());
-                Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().left * dataHeight);
-                Config.scanRect.getScanR().top = (int) (Config.scanRect.getRect().top * dataWidth);
-                Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().right * dataHeight);
-                Config.scanRect.getScanR().bottom = (int) (Config.scanRect.getRect().bottom * dataWidth);
-                Config.scanRect.setScanR(rotateRect(Config.scanRect.getScanR()));
-            }
+            Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().left * dataHeight);
+            Config.scanRect.getScanR().top = (int) (Config.scanRect.getRect().top * dataWidth);
+            Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().right * dataHeight);
+            Config.scanRect.getScanR().bottom = (int) (Config.scanRect.getRect().bottom * dataWidth);
+            Config.scanRect.setScanR(rotateRect(Config.scanRect.getScanR()));
             return Config.scanRect.getScanR();
         } else {
-            if (Config.scanRect.getScanRR() == null) {
+            if (Config.scanRect.getScanRR() == null)
                 Config.scanRect.setScanRR(new Rect());
-                Config.scanRect.getScanRR().left = (int) (Config.scanRect.getRect().left * dataWidth);
-                Config.scanRect.getScanRR().top = (int) (Config.scanRect.getRect().top * dataHeight);
-                Config.scanRect.getScanRR().right = (int) (Config.scanRect.getRect().right * dataWidth);
-                Config.scanRect.getScanRR().bottom = (int) (Config.scanRect.getRect().bottom * dataHeight);
-                Config.scanRect.setScanRR(Config.scanRect.getScanRR());
-            }
+            Config.scanRect.getScanRR().left = (int) (Config.scanRect.getRect().left * dataWidth);
+            Config.scanRect.getScanRR().top = (int) (Config.scanRect.getRect().top * dataHeight);
+            Config.scanRect.getScanRR().right = (int) (Config.scanRect.getRect().right * dataWidth);
+            Config.scanRect.getScanRR().bottom = (int) (Config.scanRect.getRect().bottom * dataHeight);
             return Config.scanRect.getScanRR();
         }
     }
@@ -144,6 +147,10 @@ public class ScanHelper {
      * 计算探测器获取二维码大小
      */
     public static int getQrLenght(ResultPoint[] point) {
+
+        if (Config.scanRect.getScanR() == null)
+            return 0;
+
         //计算中心点坐标
         PointF avargPoint = new PointF();
         for (ResultPoint item : point) {

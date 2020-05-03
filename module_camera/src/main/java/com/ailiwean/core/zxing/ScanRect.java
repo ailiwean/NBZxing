@@ -12,15 +12,16 @@ import android.graphics.RectF;
  */
 public class ScanRect {
 
-    int dataX;
-    int dataY;
+    private int dataX;
+    private int dataY;
 
-    int preX;
-    int preY;
+    private int preX;
+    private int preY;
 
-    RectF r;
-    Rect scanR;
-    Rect scanRR;
+    private RectF r = new RectF();
+    private Rect scanR = new Rect();
+    private Rect scanRR = new Rect();
+
 
     /***
      * 实际预览区域/总预览区域
@@ -43,7 +44,6 @@ public class ScanRect {
         this.scanR = scanR;
         return this;
     }
-
 
     public Rect getScanRR() {
         return scanRR;
