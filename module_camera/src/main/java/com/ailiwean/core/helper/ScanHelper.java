@@ -138,7 +138,6 @@ public class ScanHelper {
             }
             return Config.scanRect.getScanRR();
         }
-
     }
 
     /***

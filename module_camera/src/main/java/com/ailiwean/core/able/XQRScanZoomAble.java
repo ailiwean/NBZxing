@@ -25,11 +25,7 @@ public class XQRScanZoomAble extends XQRScanAble {
     long zoomTime = 0;
 
     XQRScanZoomAble(Handler handler) {
-        this(handler, false);
-    }
-
-    XQRScanZoomAble(Handler handler, boolean isRotate) {
-        super(handler, isRotate);
+        super(handler);
     }
 
     @Override
