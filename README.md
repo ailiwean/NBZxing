@@ -1,14 +1,64 @@
-﻿![logo](https://github.com/ailiwean/wish-zxing/blob/master/img/156148478686838.png?raw=true)
-#  wish-scan
- 一个强大的扫码库，有着与支付宝扫码方面100%的功能, 持续更新。  感兴趣可以继续往下阅览或者留个star,谢谢！
-#### 封装逻辑图
-![逻辑图](https://github.com/ailiwean/wish-zxing/blob/master/img/luoji.png?raw=true)
-好吧，看起来有点杂乱其实代码还是挺清楚的[手动滑稽]。 主要几大功能如下:
+#  NBZxing
+ 一个稳定完善的扫码库，几行代码既可接入，完美适配各种分辨率，无拉伸。
 
- -  **调焦全家桶(定时,传感器,光场变化值）**
- - **直接通过一个View确定扫码区域**
- - **光场值变化动态提醒是否需要打开手电筒**
- -  **手势操作双击或双指滑动拉近相机**
- -  **自动放大缩小二维码**
- -  **TextureView解决预览拉伸**
- 
+### 依赖
+```
+	        implementation 'com.github.ailiwean:NBZxing:0.0.3'
+
+```
+
+两步搞定
+
+ **step1.  自定义一个View继承ZxingCameraView**
+			
+```
+class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : ZxingCameraView(context, attributeSet, def) {
+	
+	/***
+	* 扫码结果回调
+	*/
+    override fun resultBack(content: String) {
+        Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
+    }
+
+    /***
+     * 可扩展顶层View
+     */
+    override fun provideFloorView(): View? {
+        return null
+    }
+
+    /***
+     * 返回扫码类型
+     * 1 ScanTypeConfig.HIGH_FREQUENCY 高频率格式(默认)
+     * 2 ScanTypeConfig.ALL  所有格式
+     * 3 ScanTypeConfig.ONLY_QR_CODE 仅QR_CODE格式
+     * 4 ScanTypeConfig.TWO_DIMENSION 所有二维码格式
+     * 5 ScanTypeConfig.ONE_DIMENSION 所有一维码格式
+     */
+    override fun getScanType(): ScanTypeConfig {
+        return ScanTypeConfig.HIGH_FREQUENCY
+    }
+
+}
+```
+
+ **step2.  同步AppComActivity生命周期**
+
+在onCreate方法中调用
+
+```
+   this.<CusZxingView>findViewById(R.id.cusZxing)
+                .synchLifeStart(this);
+```
+
+-------
+
+#### 下载体验
+![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly93d3cucGd5ZXIuY29tL2FwcC9xcmNvZGUvaWlabg?x-oss-process=image/format,png)
+ - 安装密码 ： 1234
+ - 没有动态申请权限， 记得手动打开哦
+
+
+
+
