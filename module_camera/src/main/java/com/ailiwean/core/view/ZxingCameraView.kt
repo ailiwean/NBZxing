@@ -53,7 +53,6 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
                 scanSucHelper()
                 if (it.obj is Result) {
                     showQRLoc((it.obj as Result).pointF, it.obj.toString())
-                    Toast.makeText(context, (it.obj as Result).isRotate.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
             LIGHT_CHANGE -> {
