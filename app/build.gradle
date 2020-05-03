@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
-       implementation project(path: ':module_camera')
-    //implementation 'com.github.ailiwean:NBZxing:0.0.1'
+    api "androidx.appcompat:appcompat:1.1.0"
+    implementation 'com.github.ailiwean:NBZxing:0.0.3'
+    api 'com.google.zxing:core:3.3.3'
 }

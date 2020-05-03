@@ -27,14 +27,28 @@ public class XQRScanAble extends PixsValuesAble {
     private Result result;
     BinaryBitmap binaryBitmap;
 
+    private boolean isRotate;
+
     public XQRScanAble(Handler handler) {
         super(handler);
+    }
+
+
+    public XQRScanAble(Handler handler, boolean isRotate) {
+        super(handler);
+        this.isRotate = isRotate;
     }
 
     @Override
     public void cusAction(byte[] data, int dataWidth, int dataHeight) {
         if (result != null)
             return;
+
+        if (isRotate) {
+            
+        }
+
+
         //先生产扫码需要的BinaryBitmap
         binaryBitmap = ScanHelper.byteToBinaryBitmap(data, dataWidth, dataHeight);
         result = reader.decode(binaryBitmap);
