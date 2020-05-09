@@ -24,6 +24,7 @@ import com.google.android.cameraview.BaseCameraView
 import com.google.android.cameraview.CameraView
 import com.google.android.cameraview.R
 import kotlinx.android.synthetic.main.base_zxing_layout.view.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * @Package:        com.google.android.cameraview
@@ -135,20 +136,20 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     abstract fun resultBack(content: String)
 
     class HandleZX constructor(val callback: (Message) -> Unit) : Handler() {
-        var hasResult = false
+        var hasResult = AtomicBoolean(false)
         override fun handleMessage(msg: Message?) {
             super.handleMessage(msg)
-            if (hasResult)
+            if (hasResult.get())
                 return
             msg?.apply {
                 if (msg.what == SCAN_RESULT)
-                    hasResult = true
+                    hasResult.set(true)
                 callback(msg)
             }
         }
 
         fun init() {
-            hasResult = false
+            hasResult.set(false)
         }
     }
 
