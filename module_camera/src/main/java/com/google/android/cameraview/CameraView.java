@@ -21,16 +21,17 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.RectF;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.AttributeSet;
+import android.widget.FrameLayout;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
-
-import android.util.AttributeSet;
-import android.widget.FrameLayout;
 
 import com.ailiwean.core.Config;
 
@@ -50,6 +51,7 @@ public class CameraView extends FrameLayout {
      * The camera device faces the same direction as the device's screen.
      */
     public static final int FACING_FRONT = Constants.FACING_FRONT;
+    private PreviewImpl preview;
 
     /**
      * Direction the camera faces relative to device screen.
@@ -91,6 +93,8 @@ public class CameraView extends FrameLayout {
     public @interface Flash {
     }
 
+    protected Handler hand = new Handler(Looper.getMainLooper());
+
     CameraViewImpl mImpl;
 
     private final CallbackBridge mCallbacks;
@@ -116,7 +120,7 @@ public class CameraView extends FrameLayout {
             return;
         }
         // Internal setup
-        final PreviewImpl preview = createPreviewImpl(context);
+        preview = createPreviewImpl(context);
         mCallbacks = new CallbackBridge();
         if (Build.VERSION.SDK_INT < 21) {
             mImpl = new Camera1(mCallbacks, preview);
@@ -291,7 +295,7 @@ public class CameraView extends FrameLayout {
             //store the state ,and restore this state after fall back o Camera1
             Parcelable state = onSaveInstanceState();
             // Camera2 uses legacy hardware layer; fall back to Camera1
-            mImpl = new Camera1(mCallbacks, createPreviewImpl(getContext()));
+            mImpl = new Camera1(mCallbacks, preview);
             onRestoreInstanceState(state);
             mImpl.start();
         }
@@ -387,10 +391,9 @@ public class CameraView extends FrameLayout {
      * @param ratio The {@link AspectRatio} to be set.
      */
     public void setAspectRatio(@NonNull AspectRatio ratio) {
-        mImpl.setAspectRatio(ratio);
-//        if (mImpl.setAspectRatio(ratio)) {
-//            requestLayout();
-//        }
+        if (mImpl.setAspectRatio(ratio)) {
+            hand.post(this::requestLayout);
+        }
     }
 
     /**
@@ -542,8 +545,8 @@ public class CameraView extends FrameLayout {
             out.writeInt(flash);
         }
 
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.ClassLoaderCreator<SavedState>() {
+        public static final Creator<SavedState> CREATOR
+                = new ClassLoaderCreator<SavedState>() {
 
             @Override
             public SavedState createFromParcel(Parcel in) {

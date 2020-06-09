@@ -23,8 +23,6 @@ import com.ailiwean.core.WorkThreadServer
 abstract class BaseCameraView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
         CameraView(context, attributeSet, def) {
 
-    val hand = Handler()
-
     init {
         Utils.init(context)
         autoFocus = true
