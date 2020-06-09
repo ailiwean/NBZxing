@@ -85,16 +85,15 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         ableCollect.cusAction(data, dataWidht, dataHeight)
     }
 
-
     /***
      * 扫码成功后的一些动作
      */
     fun scanSucHelper() {
-        ableCollect.release()
-        stop()
         VibrateHelper.playVibrate()
         VibrateHelper.playBeep()
+        ableCollect.release()
         scan_bar.stopAnim()
+        stop()
     }
 
     /***
@@ -164,6 +163,12 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
 
     open fun getScanType(): ScanTypeConfig {
         return ScanTypeConfig.HIGH_FREQUENCY
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        ableCollect.release()
+        scan_bar.stopAnim()
     }
 
 }
