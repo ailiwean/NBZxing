@@ -122,13 +122,16 @@ public class CameraView extends FrameLayout {
         // Internal setup
         preview = createPreviewImpl(context);
         mCallbacks = new CallbackBridge();
-        if (Build.VERSION.SDK_INT < 21) {
-            mImpl = new Camera1(mCallbacks, preview);
-        } else if (Build.VERSION.SDK_INT < 23) {
-            mImpl = new Camera2(mCallbacks, preview, context);
-        } else {
-            mImpl = new Camera2Api23(mCallbacks, preview, context);
-        }
+//        if (Build.VERSION.SDK_INT < 21) {
+//            mImpl = new Camera1(mCallbacks, preview);
+//        } else if (Build.VERSION.SDK_INT < 23) {
+//            mImpl = new Camera2(mCallbacks, preview, context);
+//        } else {
+//            mImpl = new Camera2Api23(mCallbacks, preview, context);
+//        }
+
+        mImpl = new Camera1(mCallbacks, preview);
+
         // Attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView, defStyleAttr,
                 R.style.Widget_CameraView);
@@ -237,13 +240,6 @@ public class CameraView extends FrameLayout {
                     MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(width * ratio.getY() / ratio.getX(),
                             MeasureSpec.EXACTLY));
-
-            r.left = 0;
-            r.right = 1;
-            r.top = ((((float) width * (float) ratio.getY() / (float) ratio.getX() - (float) height)) / 2) /
-                    ((float) width * (float) ratio.getY() / (float) ratio.getX());
-            r.bottom = 1 - r.top;
-            Config.scanRect.setRect(r);
         }
         //当实际略高时，调整宽度保证与输出比例相同
         else {
@@ -252,16 +248,43 @@ public class CameraView extends FrameLayout {
                             MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
 
+        }
+        scanConfig();
+    }
+
+    private static float scanRatio = 0.8f;
+
+    private void scanConfig() {
+
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        AspectRatio ratio = getAspectRatio();
+        if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {
+            ratio = ratio.inverse();
+        }
+        //当显示的宽高比，与相机输出的宽高比不同时
+        //当实际略宽时, 调整高度保证与输出比例相同
+        if (height < width * ratio.getY() / ratio.getX()) {
+            r.left = 0 + (1.0f - scanRatio) / 2;
+            r.right = 1 - (1.0f - scanRatio) / 2;
+            r.top = ((((float) width * (float) ratio.getY() / (float) ratio.getX() - (float) height)) / 2) /
+                    ((float) width * (float) ratio.getY() / (float) ratio.getX()) + (1.0f - scanRatio) / 2;
+            r.bottom = 1 - r.top - (1.0f - scanRatio) / 2;
+            Config.scanRect.setRect(r);
+        }
+        //当实际略高时，调整宽度保证与输出比例相同
+        else {
             r.left = (((float) height * (float) ratio.getX() / (float) ratio.getY() - (float) width) / 2) /
-                    ((float) height * (float) ratio.getX() / (float) ratio.getY());
-            r.right = 1 - r.left;
-            r.top = 0;
-            r.bottom = 1;
+                    ((float) height * (float) ratio.getX() / (float) ratio.getY()) + (1.0f - scanRatio) / 2;
+            r.right = 1 - r.left - (1.0f - scanRatio) / 2;
+            r.top = 0 + (1.0f - scanRatio) / 2;
+            r.bottom = 1 - (1.0f - scanRatio) / 2;
             Config.scanRect.setRect(r);
         }
         Config.scanRect.setPreX(width);
         Config.scanRect.setPreY(height);
     }
+
 
     @Override
     protected Parcelable onSaveInstanceState() {
