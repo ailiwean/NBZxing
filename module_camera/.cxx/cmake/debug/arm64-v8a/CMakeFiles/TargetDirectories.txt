@@ -1,0 +1,14 @@
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/CMakeFiles/install/local.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/CMakeFiles/list_install_components.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/CMakeFiles/install.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/CMakeFiles/install/strip.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/CMakeFiles/czxing.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/zxing/CMakeFiles/edit_cache.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/zxing/CMakeFiles/list_install_components.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/zxing/CMakeFiles/install.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/zxing/CMakeFiles/install/strip.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/zxing/CMakeFiles/install/local.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/zxing/CMakeFiles/rebuild_cache.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/arm64-v8a/zxing/CMakeFiles/ZXingCore.dir

@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.ailiwean'
+group = 'com.github.ailiwean'
 
 android {
     compileSdkVersion 28
@@ -14,6 +14,15 @@ android {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
         }
+
+        externalNativeBuild {
+            cmake {
+//                cppFlags "-std=c++11 -frtti -fexceptions -pthread"
+//                cppFlags "-std=c++11 -pthread"
+                abiFilters "armeabi-v7a", "arm64-v8a"
+            }
+        }
+
     }
     sourceSets {
         main.java.srcDirs += 'src/main/base'
@@ -23,6 +32,14 @@ android {
 
         main.jniLibs.srcDirs = ['libs']
     }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+//            version "3.10.2"
+        }
+    }
+
 
 }
 
@@ -43,7 +60,7 @@ task sourcesJar(type: Jar) {
 }
 
 task javadoc(type: Javadoc) {
-    failOnError  false
+    failOnError false
     source = android.sourceSets.main.java.sourceFiles
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     classpath += configurations.compile
