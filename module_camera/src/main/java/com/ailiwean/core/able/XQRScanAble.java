@@ -2,21 +2,12 @@ package com.ailiwean.core.able;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
 import com.ailiwean.core.zxing.CustomMultiFormatReader;
 import com.google.zxing.BinaryBitmap;
-import com.google.zxing.FormatException;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.NotFoundException;
 import com.google.zxing.Result;
-import com.google.zxing.ResultPoint;
-import com.google.zxing.oned.OneDReader;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**

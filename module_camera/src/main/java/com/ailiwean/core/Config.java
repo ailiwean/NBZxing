@@ -1,11 +1,7 @@
 package com.ailiwean.core;
 
-import android.content.Context;
-
 import com.ailiwean.core.zxing.ScanRect;
 import com.ailiwean.core.zxing.ScanTypeConfig;
-
-import java.math.BigDecimal;
 
 /**
  * @Package: com.ailiwean.core
@@ -16,6 +12,9 @@ import java.math.BigDecimal;
  */
 public class Config {
 
+    //扫码区域比率 相对于屏幕，若值为1，则对应整个View区域
+    public static float scanRatio = 0.9f;
+    
     //扫码类型
     public static ScanTypeConfig scanTypeConfig = ScanTypeConfig.HIGH_FREQUENCY;
 

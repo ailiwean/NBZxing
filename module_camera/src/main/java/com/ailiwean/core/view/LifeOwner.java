@@ -17,6 +17,9 @@ public interface LifeOwner extends LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     void onResume();
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    void onStop();
+
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     void onDestroy();

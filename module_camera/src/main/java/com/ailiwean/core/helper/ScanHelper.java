@@ -2,7 +2,6 @@ package com.ailiwean.core.helper;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.zxing.PlanarYUVLuminanceSource;
@@ -64,9 +63,11 @@ public class ScanHelper {
         avargPoint.y /= point.length;
         float preX = Config.scanRect.getPreX();
         float preY = Config.scanRect.getPreY();
-        float aspX = preX / (float) Config.scanRect.getScanR().height();
-        float aspY = preY / (float) Config.scanRect.getScanR().width();
-        return new PointF(preX - aspX * avargPoint.y, aspY * avargPoint.x);
+        float aspX = preX * Config.scanRatio / (float) Config.scanRect.getScanR().height();
+        float aspY = preY * Config.scanRatio / (float) Config.scanRect.getScanR().width();
+        float extraX = preX * (1 - Config.scanRatio) / 2;
+        float extraY = preY * (1 - Config.scanRatio) / 2;
+        return new PointF(preX - aspX * avargPoint.y - extraX, aspY * avargPoint.x + extraY);
     }
 
     /***
@@ -91,9 +92,11 @@ public class ScanHelper {
         avargPoint.y /= point.length;
         float preX = Config.scanRect.getPreX();
         float preY = Config.scanRect.getPreY();
-        float aspX = preX / (float) Config.scanRect.getScanRR().width();
-        float aspY = preY / (float) Config.scanRect.getScanRR().height();
-        return new PointF(aspX * avargPoint.x, aspY * avargPoint.y);
+        float aspX = preX * Config.scanRatio / (float) Config.scanRect.getScanRR().width();
+        float aspY = preY * Config.scanRatio / (float) Config.scanRect.getScanRR().height();
+        float extraX = preX * (1 - Config.scanRatio) / 2;
+        float extraY = preY * (1 - Config.scanRatio) / 2;
+        return new PointF(aspX * avargPoint.x + extraX, aspY * avargPoint.y + extraY);
     }
 
 
@@ -124,21 +127,23 @@ public class ScanHelper {
      */
     public static Rect getScanByteRect(int dataWidth, int dataHeight) {
         if (dataWidth > dataHeight) {
-            if (Config.scanRect.getScanR() == null)
+            if (Config.scanRect.getScanR() == null) {
                 Config.scanRect.setScanR(new Rect());
-            Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().left * dataHeight);
-            Config.scanRect.getScanR().top = (int) (Config.scanRect.getRect().top * dataWidth);
-            Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().right * dataHeight);
-            Config.scanRect.getScanR().bottom = (int) (Config.scanRect.getRect().bottom * dataWidth);
-            Config.scanRect.setScanR(rotateRect(Config.scanRect.getScanR()));
+                Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().left * dataHeight);
+                Config.scanRect.getScanR().top = (int) (Config.scanRect.getRect().top * dataWidth);
+                Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().right * dataHeight);
+                Config.scanRect.getScanR().bottom = (int) (Config.scanRect.getRect().bottom * dataWidth);
+                Config.scanRect.setScanR(rotateRect(Config.scanRect.getScanR()));
+            }
             return Config.scanRect.getScanR();
         } else {
-            if (Config.scanRect.getScanRR() == null)
+            if (Config.scanRect.getScanRR() == null) {
                 Config.scanRect.setScanRR(new Rect());
-            Config.scanRect.getScanRR().left = (int) (Config.scanRect.getRect().left * dataWidth);
-            Config.scanRect.getScanRR().top = (int) (Config.scanRect.getRect().top * dataHeight);
-            Config.scanRect.getScanRR().right = (int) (Config.scanRect.getRect().right * dataWidth);
-            Config.scanRect.getScanRR().bottom = (int) (Config.scanRect.getRect().bottom * dataHeight);
+                Config.scanRect.getScanRR().left = (int) (Config.scanRect.getRect().left * dataWidth);
+                Config.scanRect.getScanRR().top = (int) (Config.scanRect.getRect().top * dataHeight);
+                Config.scanRect.getScanRR().right = (int) (Config.scanRect.getRect().right * dataWidth);
+                Config.scanRect.getScanRR().bottom = (int) (Config.scanRect.getRect().bottom * dataHeight);
+            }
             return Config.scanRect.getScanRR();
         }
     }

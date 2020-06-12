@@ -21,7 +21,7 @@ import com.ailiwean.core.WorkThreadServer
  * @CreateDate:     2020/4/19 12:02 AM
  */
 abstract class BaseCameraView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
-        CameraView(context, attributeSet, def) {
+        CameraView(context, attributeSet, def), LifeOwner {
 
     init {
         Utils.init(context)
@@ -104,12 +104,18 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
             }
 
             override fun onPause() {
+
+            }
+
+            override fun onStop() {
                 stop()
             }
 
             override fun onDestroy() {
+
             }
         })
+        appCompatActivity.lifecycle.addObserver(this)
     }
 
     /***
@@ -131,6 +137,22 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
      */
     fun lightOperator(isOpen: Boolean) {
         mImpl.lightOperator(isOpen)
+    }
+
+    override fun onCreate() {
+    }
+
+    override fun onResume() {
+    }
+
+    override fun onPause() {
+    }
+
+    override fun onStop() {
+
+    }
+
+    override fun onDestroy() {
     }
 
 }

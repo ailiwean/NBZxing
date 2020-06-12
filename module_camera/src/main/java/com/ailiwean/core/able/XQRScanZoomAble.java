@@ -29,6 +29,8 @@ public class XQRScanZoomAble extends XQRScanAble {
     @Override
     public void cusAction(byte[] data, int dataWidth, int dataHeight) {
         super.cusAction(data, dataWidth, dataHeight);
+        if (result != null)
+            return;
         DetectorResult decoderResult = null;
         ResultPoint[] points;
         try {

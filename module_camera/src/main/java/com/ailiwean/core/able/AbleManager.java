@@ -4,6 +4,7 @@ import android.os.Handler;
 
 import com.ailiwean.core.WorkThreadServer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -16,7 +17,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class AbleManager extends PixsValuesAble {
 
-    private List<PixsValuesAble> ableList = new CopyOnWriteArrayList<>();
+    private List<PixsValuesAble> ableList = new ArrayList<>();
 
     private AbleManager(Handler handler) {
         super(handler);

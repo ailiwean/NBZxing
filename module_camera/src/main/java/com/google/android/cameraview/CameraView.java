@@ -20,12 +20,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.RectF;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import androidx.annotation.IntDef;
@@ -252,8 +252,6 @@ public class CameraView extends FrameLayout {
         scanConfig();
     }
 
-    private static float scanRatio = 0.8f;
-
     private void scanConfig() {
 
         int width = getMeasuredWidth();
@@ -262,6 +260,7 @@ public class CameraView extends FrameLayout {
         if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {
             ratio = ratio.inverse();
         }
+        float scanRatio = Config.scanRatio;
         //当显示的宽高比，与相机输出的宽高比不同时
         //当实际略宽时, 调整高度保证与输出比例相同
         if (height < width * ratio.getY() / ratio.getX()) {
@@ -314,6 +313,9 @@ public class CameraView extends FrameLayout {
      * Open a camera device and start showing camera preview. This is typically called from
      */
     public void start() {
+
+        Log.e("currentThread", Thread.currentThread().getName());
+
         if (!isCameraOpened() && !mImpl.start()) {
             //store the state ,and restore this state after fall back o Camera1
             Parcelable state = onSaveInstanceState();

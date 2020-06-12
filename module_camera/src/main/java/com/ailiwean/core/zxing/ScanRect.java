@@ -19,8 +19,8 @@ public class ScanRect {
     private int preY;
 
     private RectF r = new RectF();
-    private Rect scanR = new Rect();
-    private Rect scanRR = new Rect();
+    private Rect scanR = null;
+    private Rect scanRR = null;
 
 
     /***

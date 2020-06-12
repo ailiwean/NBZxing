@@ -11,20 +11,17 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.ailiwean.core.Config.*
 import com.ailiwean.core.Result
 import com.ailiwean.core.Utils
 import com.ailiwean.core.able.AbleManager
 import com.ailiwean.core.helper.VibrateHelper
-import com.ailiwean.core.helper.ScanHelper
 import com.ailiwean.core.zxing.ScanTypeConfig
 import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
 import com.google.android.cameraview.CameraView
 import com.google.android.cameraview.R
 import kotlinx.android.synthetic.main.base_zxing_layout.view.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * @Package:        com.google.android.cameraview
@@ -68,16 +65,6 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
 
     private lateinit var ableCollect: AbleManager
 
-    override fun onCameraOpen(camera: CameraView) {
-        super.onCameraOpen(camera)
-        initConfig()
-    }
-
-    override fun onCameraClose(camera: CameraView) {
-        super.onCameraClose(camera)
-        ableCollect.release()
-    }
-
     override fun onPreviewByte(camera: CameraView, data: ByteArray) {
         super.onPreviewByte(camera, data)
         val dataWidht = scanRect.dataX
@@ -85,15 +72,29 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         ableCollect.cusAction(data, dataWidht, dataHeight)
     }
 
+
     /***
      * 扫码成功后的一些动作
      */
     fun scanSucHelper() {
+        stop()
+        scan_bar.stopAnim()
         VibrateHelper.playVibrate()
         VibrateHelper.playBeep()
-        ableCollect.release()
+    }
+
+    override fun onResume() {
+        initConfig()
+    }
+
+    override fun onPause() {
+        super.onPause()
         scan_bar.stopAnim()
-        stop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ableCollect.release()
     }
 
     /***
@@ -120,13 +121,11 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
      * 相机启动数据初始化
      */
     fun initConfig() {
-        qr_loc.visibility = View.GONE
-        scan_bar.startAnim()
-        initScanType()
         ableCollect = AbleManager.getInstance(handleZX)
+        scan_bar.startAnim()
+        qr_loc.visibility = View.GONE
+        initScanType()
         handleZX.init()
-        //闪光灯按钮初始化
-        lightView.inital()
     }
 
     /***
@@ -135,20 +134,20 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     abstract fun resultBack(content: String)
 
     class HandleZX constructor(val callback: (Message) -> Unit) : Handler() {
-        var hasResult = AtomicBoolean(false)
+        var hasResult = false
         override fun handleMessage(msg: Message?) {
             super.handleMessage(msg)
-            if (hasResult.get())
+            if (hasResult)
                 return
             msg?.apply {
                 if (msg.what == SCAN_RESULT)
-                    hasResult.set(true)
+                    hasResult = true
                 callback(msg)
             }
         }
 
         fun init() {
-            hasResult.set(false)
+            hasResult = false
         }
     }
 
@@ -163,12 +162,6 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
 
     open fun getScanType(): ScanTypeConfig {
         return ScanTypeConfig.HIGH_FREQUENCY
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        ableCollect.release()
-        scan_bar.stopAnim()
     }
 
 }

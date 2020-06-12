@@ -3,8 +3,6 @@ package com.ailiwean.core;
 import android.content.Context;
 import android.util.TypedValue;
 
-import com.bumptech.glide.util.Util;
-
 import java.lang.ref.WeakReference;
 
 /**

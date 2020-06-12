@@ -27,7 +27,7 @@ public class CameraHelper {
      */
     public static boolean checkAutoFocus(CameraCharacteristics characteristics) {
         int[] afAvailableModes = new int[0];
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             afAvailableModes = characteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
         }
         if (afAvailableModes.length == 0 || (afAvailableModes.length == 1 && afAvailableModes[0] == CameraMetadata.CONTROL_AF_MODE_OFF)) {
@@ -44,7 +44,7 @@ public class CameraHelper {
      */
     public void checkFocusMode(CameraCharacteristics cameraCharacteristics) {
         int[] availableFocusModes = new int[0];
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             availableFocusModes = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
         }
         for (int focusMode : availableFocusModes != null ? availableFocusModes : new int[0]) {
@@ -72,7 +72,7 @@ public class CameraHelper {
     public static boolean matchCameraDirection(CameraCharacteristics cameraCharacteristics, int direction) {
         //这里设置后摄像头
         Integer facing = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             facing = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
         }
         return (facing != null && facing == direction) ? true : false;
@@ -136,7 +136,7 @@ public class CameraHelper {
             currentZoom = 1;
 
         Rect originReact = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             originReact = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
         }
         Rect zoomRect;
@@ -160,7 +160,7 @@ public class CameraHelper {
      * ImageReader中读取YUV
      */
     public static byte[] readYuv(ImageReader reader) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return null;
         }
         Image image = null;
@@ -173,7 +173,7 @@ public class CameraHelper {
     }
 
     private static byte[] getByteFromImage(Image image) {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             return null;
         }
         int w = image.getWidth(), h = image.getHeight();

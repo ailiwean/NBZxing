@@ -49,6 +49,7 @@ public class LightView extends FrameLayout {
                 toggle();
             }
         });
+        inital();
     }
 
     public void toggle() {
@@ -77,7 +78,7 @@ public class LightView extends FrameLayout {
 
     }
 
-    public void inital() {
+    private void inital() {
         close();
         setVisibility(View.GONE);
     }

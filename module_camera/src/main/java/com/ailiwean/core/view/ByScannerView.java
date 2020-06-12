@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.google.android.cameraview.CameraView;
 import com.google.android.cameraview.R;
 
 import org.jetbrains.annotations.NotNull;

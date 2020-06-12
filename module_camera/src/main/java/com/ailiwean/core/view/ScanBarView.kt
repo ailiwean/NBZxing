@@ -36,37 +36,36 @@ class ScanBarView @JvmOverloads constructor(context: Context, attributeSet: Attr
         }
     }
 
+    private var animator: ValueAnimator? = null
 
-    lateinit var animator: ValueAnimator
 
     fun startAnim() {
+        if (animator != null && animator?.isRunning!!) {
+            return
+        }
+
+        if (measuredHeight == 0)
+            return
+
         visibility = View.VISIBLE
         animator = ValueAnimator.ofFloat(0f, measuredHeight.toFloat())
                 .setDuration(2000)
-        animator.addUpdateListener { it ->
+        animator?.addUpdateListener { it ->
             val values = it.animatedValue as Float
-            if (values <= ALPHA_LENGHT) {
-                alpha = (values / ALPHA_LENGHT).let {
-                    if (it > 1f)
-                        1f
-                    else it
-                }
+            alpha = if (values <= ALPHA_LENGHT) {
+                values / ALPHA_LENGHT
             } else {
-                alpha = ((measuredHeight - values) / ALPHA_LENGHT).let {
-                    if (it < 0f)
-                        0f
-                    else it
-                }
+                (measuredHeight - values) / ALPHA_LENGHT
             }
             translationY = values
         }
-        animator.repeatCount = Int.MAX_VALUE - 1
-        animator.repeatMode = ValueAnimator.RESTART
-        animator.start()
+        animator?.repeatCount = Int.MAX_VALUE - 1
+        animator?.repeatMode = ValueAnimator.RESTART
+        animator?.start()
     }
 
     fun stopAnim() {
         visibility = View.INVISIBLE
-        animator.cancel()
+        animator?.cancel()
     }
 }

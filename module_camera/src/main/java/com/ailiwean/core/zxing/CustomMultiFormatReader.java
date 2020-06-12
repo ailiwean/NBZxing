@@ -1,12 +1,9 @@
 package com.ailiwean.core.zxing;
 
 import com.ailiwean.core.Config;
-import com.ailiwean.core.zxing.QRTypeConfig;
-import com.ailiwean.core.zxing.ScanTypeConfig;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
-import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.Reader;
 import com.google.zxing.ReaderException;
