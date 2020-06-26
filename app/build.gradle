@@ -31,6 +31,6 @@ dependencies {
     //implementation 'com.github.ailiwean:NBZxing:0.0.4'
     api 'com.google.zxing:core:3.3.3'
 
-    implementation 'me.devilsen:czxing:1.0.11'
+    //   implementation 'me.devilsen:czxing:1.0.11'
 
 }

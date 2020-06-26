@@ -1,0 +1,14 @@
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/install/local.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/list_install_components.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/install.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/install/strip.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/czxing.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/zxing/CMakeFiles/edit_cache.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/zxing/CMakeFiles/list_install_components.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/zxing/CMakeFiles/install.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/zxing/CMakeFiles/install/strip.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/zxing/CMakeFiles/install/local.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/zxing/CMakeFiles/rebuild_cache.dir
+/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/debug/armeabi-v7a/zxing/CMakeFiles/ZXingCore.dir

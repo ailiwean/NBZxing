@@ -44,7 +44,7 @@ static std::vector<ZXing::BarcodeFormat> GetFormats(JNIEnv *env, jintArray forma
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_ailiwean_core_czxing_NativeSdk_createInstance(JNIEnv *env, jobject instance,
+Java_me_devilsen_czxing_code_NativeSdk_createInstance(JNIEnv *env, jobject instance,
                                                       jintArray formats_) {
     try {
         if (javaCallHelper) {
@@ -70,7 +70,7 @@ Java_com_ailiwean_core_czxing_NativeSdk_createInstance(JNIEnv *env, jobject inst
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_ailiwean_core_czxing_NativeSdk_setFormat(JNIEnv *env, jobject thiz, jlong objPtr,
+Java_me_devilsen_czxing_code_NativeSdk_setFormat(JNIEnv *env, jobject thiz, jlong objPtr,
                                                  jintArray formats_) {
     if (objPtr == 0) {
         return;
@@ -93,7 +93,7 @@ Java_com_ailiwean_core_czxing_NativeSdk_setFormat(JNIEnv *env, jobject thiz, jlo
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_ailiwean_core_czxing_NativeSdk_destroyInstance(JNIEnv *env, jobject instance,
+Java_me_devilsen_czxing_code_NativeSdk_destroyInstance(JNIEnv *env, jobject instance,
                                                        jlong objPtr) {
 
     try {
@@ -111,21 +111,21 @@ Java_com_ailiwean_core_czxing_NativeSdk_destroyInstance(JNIEnv *env, jobject ins
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_ailiwean_core_czxing_NativeSdk_prepareRead(JNIEnv *env, jobject thiz, jlong objPtr) {
+Java_me_devilsen_czxing_code_NativeSdk_prepareRead(JNIEnv *env, jobject thiz, jlong objPtr) {
     auto imageScheduler = reinterpret_cast<ImageScheduler *>(objPtr);
     imageScheduler->prepare();
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_ailiwean_core_czxing_NativeSdk_stopRead(JNIEnv *env, jobject thiz, jlong objPtr) {
+Java_me_devilsen_czxing_code_NativeSdk_stopRead(JNIEnv *env, jobject thiz, jlong objPtr) {
     auto imageScheduler = reinterpret_cast<ImageScheduler *>(objPtr);
     imageScheduler->stop();
 }
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_ailiwean_core_czxing_NativeSdk_readBarcodeByte(JNIEnv *env, jobject instance, jlong objPtr,
+Java_me_devilsen_czxing_code_NativeSdk_readBarcodeByte(JNIEnv *env, jobject instance, jlong objPtr,
                                                        jbyteArray bytes_, jint left, jint top,
                                                        jint cropWidth, jint cropHeight,
                                                        jint rowWidth, jint rowHeight) {
@@ -140,7 +140,7 @@ Java_com_ailiwean_core_czxing_NativeSdk_readBarcodeByte(JNIEnv *env, jobject ins
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_ailiwean_core_czxing_NativeSdk_readBarcode(JNIEnv *env, jobject instance, jlong objPtr,
+Java_me_devilsen_czxing_code_NativeSdk_readBarcode(JNIEnv *env, jobject instance, jlong objPtr,
                                                    jobject bitmap, jint left, jint top, jint width,
                                                    jint height, jobjectArray result) {
 
@@ -164,7 +164,7 @@ Java_com_ailiwean_core_czxing_NativeSdk_readBarcode(JNIEnv *env, jobject instanc
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_ailiwean_core_czxing_NativeSdk_writeCode(JNIEnv *env, jobject instance, jstring content_,
+Java_me_devilsen_czxing_code_NativeSdk_writeCode(JNIEnv *env, jobject instance, jstring content_,
                                                  jint width, jint height, jint color,
                                                  jstring format_, jobjectArray result) {
     const char *content = env->GetStringUTFChars(content_, 0);

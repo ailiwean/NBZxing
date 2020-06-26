@@ -1,10 +1,5 @@
 package com.ailiwean.core.czxing;
 
-import android.graphics.Bitmap;
-
-import me.devilsen.czxing.util.BarCodeUtil;
-import me.devilsen.czxing.util.BitmapUtil;
-
 public class BarcodeReader {
 
     private long _nativePtr;
@@ -42,36 +37,6 @@ public class BarcodeReader {
         return nativeFormats;
     }
 
-    public CodeResult read(Bitmap bitmap) {
-        if (bitmap == null) {
-            BarCodeUtil.e("bitmap is null");
-            return null;
-        }
-        // 尝试放大，识别更复杂的二维码
-        if ((bitmap.getHeight() < 2000 || bitmap.getWidth() < 1100) && bitmap.getHeight() < 3000) {
-            BarCodeUtil.d("zoom bitmap");
-            bitmap = BitmapUtil.zoomBitmap(bitmap);
-        }
-        // 避免某些情况无法获取图片格式的问题
-        Bitmap newBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
-        int imgWidth = newBitmap.getWidth();
-        int imgHeight = newBitmap.getHeight();
-        BarCodeUtil.d("bitmap width = " + imgWidth + " height = " + imgHeight);
-
-        Object[] result = new Object[2];
-        int resultFormat = NativeSdk.getInstance().readBarcode(_nativePtr, newBitmap, 0, 0, imgWidth, imgHeight, result);
-        bitmap.recycle();
-        newBitmap.recycle();
-        if (resultFormat >= 0) {
-            CodeResult decodeResult = new CodeResult(BarcodeFormat.values()[resultFormat], (String) result[0]);
-            if (result[1] != null) {
-                decodeResult.setPoint((float[]) result[1]);
-            }
-            return decodeResult;
-        }
-        return null;
-    }
-
     public CodeResult read(byte[] data, int cropLeft, int cropTop, int cropWidth, int cropHeight, int rowWidth, int rowHeight) {
         try {
             NativeSdk.getInstance().readBarcodeByte(_nativePtr, data, cropLeft, cropTop, cropWidth, cropHeight, rowWidth, rowHeight);
@@ -107,9 +72,5 @@ public class BarcodeReader {
 
     public interface ReadCodeListener {
         void onReadCodeResult(CodeResult result);
-
-        void onFocus();
-
-        void onAnalysisBrightness(boolean isDark);
     }
 }

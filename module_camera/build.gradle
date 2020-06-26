@@ -14,7 +14,6 @@ android {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
         }
-
         externalNativeBuild {
             cmake {
 //                cppFlags "-std=c++11 -frtti -fexceptions -pthread"

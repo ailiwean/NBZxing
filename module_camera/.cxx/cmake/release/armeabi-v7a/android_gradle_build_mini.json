@@ -1,0 +1,53 @@
+{
+  "buildFiles": [
+    "/Users/mac/Desktop/project/NBZxing/module_camera/src/main/cpp/CMakeLists.txt",
+    "/Users/mac/Desktop/project/NBZxing/module_camera/src/main/cpp/zxing/CMakeLists.txt"
+  ],
+  "cleanCommands": [
+    "/Users/mac/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/release/armeabi-v7a --target clean"
+  ],
+  "libraries": {
+    "opencv_imgproc-Release-armeabi-v7a": {
+      "artifactName": "opencv_imgproc",
+      "abi": "armeabi-v7a",
+      "output": "/Users/mac/Desktop/project/NBZxing/module_camera/src/main/cpp/../../../opencv/libs/armeabi-v7a/libopencv_imgproc.a"
+    },
+    "ZXingCore-Release-armeabi-v7a": {
+      "artifactName": "ZXingCore",
+      "buildCommand": "/Users/mac/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/release/armeabi-v7a --target ZXingCore",
+      "abi": "armeabi-v7a",
+      "output": "/Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/release/armeabi-v7a/zxing/libZXingCore.a"
+    },
+    "czxing-Release-armeabi-v7a": {
+      "artifactName": "czxing",
+      "buildCommand": "/Users/mac/Library/Android/sdk/cmake/3.6.4111459/bin/cmake --build /Users/mac/Desktop/project/NBZxing/module_camera/.cxx/cmake/release/armeabi-v7a --target czxing",
+      "abi": "armeabi-v7a",
+      "output": "/Users/mac/Desktop/project/NBZxing/module_camera/build/intermediates/cmake/release/obj/armeabi-v7a/libczxing.so"
+    },
+    "tegra_hal-Release-armeabi-v7a": {
+      "artifactName": "tegra_hal",
+      "abi": "armeabi-v7a",
+      "output": "/Users/mac/Desktop/project/NBZxing/module_camera/src/main/cpp/../../../opencv/3rdparty/libs/armeabi-v7a/libtegra_hal.a"
+    },
+    "opencv_core-Release-armeabi-v7a": {
+      "artifactName": "opencv_core",
+      "abi": "armeabi-v7a",
+      "output": "/Users/mac/Desktop/project/NBZxing/module_camera/src/main/cpp/../../../opencv/libs/armeabi-v7a/libopencv_core.a"
+    },
+    "cpufeatures-Release-armeabi-v7a": {
+      "artifactName": "cpufeatures",
+      "abi": "armeabi-v7a",
+      "output": "/Users/mac/Desktop/project/NBZxing/module_camera/src/main/cpp/../../../opencv/3rdparty/libs/armeabi-v7a/libcpufeatures.a"
+    },
+    "tbb-Release-armeabi-v7a": {
+      "artifactName": "tbb",
+      "abi": "armeabi-v7a",
+      "output": "/Users/mac/Desktop/project/NBZxing/module_camera/src/main/cpp/../../../opencv/3rdparty/libs/armeabi-v7a/libtbb.a"
+    },
+    "zbar_core-Release-armeabi-v7a": {
+      "artifactName": "zbar_core",
+      "abi": "armeabi-v7a",
+      "output": "/Users/mac/Desktop/project/NBZxing/module_camera/src/main/cpp/../../../libs/armeabi-v7a/libzbarjni.so"
+    }
+  }
+}

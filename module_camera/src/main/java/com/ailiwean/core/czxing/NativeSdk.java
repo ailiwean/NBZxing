@@ -45,9 +45,9 @@ class NativeSdk {
      * Native Callback for focus
      */
     public void onFocusCallback() {
-        if (readCodeListener != null) {
-            readCodeListener.onFocus();
-        }
+//        if (readCodeListener != null) {
+//            readCodeListener.onFocus();
+//        }
     }
 
     /**
@@ -56,9 +56,9 @@ class NativeSdk {
      * @param isDark true : bright too low
      */
     public void onBrightnessCallback(boolean isDark) {
-        if (readCodeListener != null) {
-            readCodeListener.onAnalysisBrightness(isDark);
-        }
+//        if (readCodeListener != null) {
+//            readCodeListener.onAnalysisBrightness(isDark);
+//        }
     }
 
     // read
