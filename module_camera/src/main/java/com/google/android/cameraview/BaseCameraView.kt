@@ -1,17 +1,21 @@
 package com.google.android.cameraview
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
-import android.os.Handler
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.FloatRange
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.ailiwean.core.Config
-import com.ailiwean.core.helper.ZoomHelper
-import com.ailiwean.core.view.LifeOwner
 import com.ailiwean.core.Utils
 import com.ailiwean.core.WorkThreadServer
+import com.ailiwean.core.helper.ZoomHelper
+import com.ailiwean.core.view.LifeOwner
 
 /**
  * @Package:        com.google.android.cameraview
@@ -87,8 +91,13 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         appCompatActivity.lifecycle.addObserver(object : LifeOwner {
             //在onCreate()中调用提升相机打开速度
             override fun onCreate() {
-                WorkThreadServer.getInstance().bgHandle.post {
-                    start()
+                if (checkPermission())
+                    WorkThreadServer.getInstance().bgHandle.post {
+                        start()
+                    }
+                else {
+                    isSingleLoad = true
+                    requstPermission()
                 }
             }
 
@@ -100,7 +109,8 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
                     isSingleLoad = true
                     return
                 }
-                start()
+                if (checkPermission())
+                    start()
             }
 
             override fun onPause() {
@@ -155,4 +165,18 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     override fun onDestroy() {
     }
 
+    fun checkPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context.checkSelfPermission(
+                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+        } else {
+            return true
+        }
+    }
+
+    fun requstPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            (context as? Activity)?.requestPermissions(arrayOf(Manifest.permission.CAMERA), 200)
+        }
+    }
 }
