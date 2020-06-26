@@ -6,7 +6,7 @@
 [![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qaXRwYWNrLmlvL3YvYWlsaXdlYW4vTkJaeGluZy5zdmc?x-oss-process=image/format,png)](https://jitpack.io/#ailiwean/NBZxing)
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.4'
+	        implementation 'com.github.ailiwean:NBZxing:0.0.8'
 
 ```
 
@@ -61,7 +61,6 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
 #### 下载体验
 ![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly93d3cucGd5ZXIuY29tL2FwcC9xcmNvZGUvaWlabg?x-oss-process=image/format,png)
  - 安装密码 ： 1234
- - 没有动态申请权限， 记得手动打开哦
 
 😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
 ##### 联系我
