@@ -1,0 +1,1 @@
+ninja: error: '/Users/mac/Desktop/project/NBZxing/module_camera/libs/arm64-v8a/libzbarjni.so', needed by '/Users/mac/Desktop/project/NBZxing/module_camera/build/intermediates/cmake/debug/obj/arm64-v8a/libczxing.so', missing and no known rule to make it

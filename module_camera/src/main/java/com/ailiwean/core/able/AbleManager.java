@@ -6,6 +6,7 @@ import com.ailiwean.core.WorkThreadServer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @Package: com.ailiwean.core.able
@@ -22,9 +23,9 @@ public class AbleManager extends PixsValuesAble {
         super(handler);
 //        ableList.add(new XQRScanAble(handler));
         ableList.add(new XQRScanZoomAble(handler));
-//        ableList.add(new XQRScanAbleRotate(handler));
-        ableList.add(new CQRScanZoomAble(handler));
-//        ableList.add(new LighSolveAble(handler));
+        ableList.add(new XQRScanAbleRotate(handler));
+//        ableList.add(new CQRScanZoomAble(handler));
+        ableList.add(new LighSolveAble(handler));
     }
 
     public static AbleManager getInstance(Handler handler) {

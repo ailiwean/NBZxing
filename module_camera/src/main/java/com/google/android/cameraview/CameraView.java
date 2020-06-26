@@ -248,13 +248,11 @@ public class CameraView extends FrameLayout {
                     MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
 
         }
-        scanConfig();
+        scanConfig(width, height);
     }
 
-    private void scanConfig() {
+    private void scanConfig(int oriWidth, int oriHeight) {
 
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
         AspectRatio ratio = getAspectRatio();
         if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {
             ratio = ratio.inverse();
@@ -262,25 +260,25 @@ public class CameraView extends FrameLayout {
         float scanRatio = Config.scanRatio;
         //当显示的宽高比，与相机输出的宽高比不同时
         //当实际略宽时, 调整高度保证与输出比例相同
-        if (height < width * ratio.getY() / ratio.getX()) {
+        if (oriHeight < oriWidth * ratio.getY() / ratio.getX()) {
+            float expectHeight = oriWidth * ratio.getY() / (float) ratio.getX();
             r.left = 0 + (1.0f - scanRatio) / 2;
             r.right = 1 - (1.0f - scanRatio) / 2;
-            r.top = ((((float) width * (float) ratio.getY() / (float) ratio.getX() - (float) height)) / 2) /
-                    ((float) width * (float) ratio.getY() / (float) ratio.getX()) + (1.0f - scanRatio) / 2;
-            r.bottom = 1 - r.top - (1.0f - scanRatio) / 2;
+            r.top = (expectHeight - oriHeight) / 2 / expectHeight + (1.0f - scanRatio) / 2;
+            r.bottom = 1 - r.top;
             Config.scanRect.setRect(r);
         }
         //当实际略高时，调整宽度保证与输出比例相同
         else {
-            r.left = (((float) height * (float) ratio.getX() / (float) ratio.getY() - (float) width) / 2) /
-                    ((float) height * (float) ratio.getX() / (float) ratio.getY()) + (1.0f - scanRatio) / 2;
-            r.right = 1 - r.left - (1.0f - scanRatio) / 2;
+            float expectWidth = oriHeight * ratio.getX() / (float) ratio.getY();
+            r.left = (expectWidth - oriWidth) / 2 / expectWidth + (1.0f - scanRatio) / 2;
+            r.right = 1 - r.left;
             r.top = 0 + (1.0f - scanRatio) / 2;
             r.bottom = 1 - (1.0f - scanRatio) / 2;
             Config.scanRect.setRect(r);
         }
-        Config.scanRect.setPreX(width);
-        Config.scanRect.setPreY(height);
+        Config.scanRect.setPreX(oriWidth);
+        Config.scanRect.setPreY(oriHeight);
     }
 
 
