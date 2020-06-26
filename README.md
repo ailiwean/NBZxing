@@ -3,7 +3,7 @@
 
 ### 依赖
 
-[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://jitpack.io/#ailiwean/NBZxing)
+[![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qaXRwYWNrLmlvL3YvYWlsaXdlYW4vTkJaeGluZy5zdmc?x-oss-process=image/format,png)](https://jitpack.io/#ailiwean/NBZxing)
 
 ```
 	        implementation 'com.github.ailiwean:NBZxing:0.0.4'
@@ -63,10 +63,7 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
  - 安装密码 ： 1234
  - 没有动态申请权限， 记得手动打开哦
 
-
+😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
 ##### 联系我
 微信： 17391961576
 QQ:  1581209979
-
-
-
