@@ -78,6 +78,5 @@ public class WorkThreadServer {
             INSTANCE.executor.shutdown();
             INSTANCE.executor = null;
         }
-        INSTANCE = null;
     }
 }
