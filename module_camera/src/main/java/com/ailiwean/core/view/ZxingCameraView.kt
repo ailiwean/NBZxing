@@ -63,13 +63,13 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         }
     }
 
-    private lateinit var ableCollect: AbleManager
+    private var ableCollect: AbleManager? = null
 
     override fun onPreviewByte(camera: CameraView, data: ByteArray) {
         super.onPreviewByte(camera, data)
         val dataWidht = scanRect.dataX
         val dataHeight = scanRect.dataY
-        ableCollect.cusAction(data, dataWidht, dataHeight)
+        ableCollect?.cusAction(data, dataWidht, dataHeight)
     }
 
 
@@ -94,7 +94,8 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
 
     override fun onDestroy() {
         super.onDestroy()
-        ableCollect.release()
+        ableCollect?.release()
+        ableCollect = null
     }
 
     /***
@@ -121,7 +122,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
      * 相机启动数据初始化
      */
     fun initConfig() {
-        ableCollect = AbleManager.getInstance(handleZX)
+        ableCollect = AbleManager.createInstance(handleZX)
         scan_bar.startAnim()
         qr_loc.visibility = View.GONE
         initScanType()

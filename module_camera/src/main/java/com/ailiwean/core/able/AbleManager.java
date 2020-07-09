@@ -28,7 +28,7 @@ public class AbleManager extends PixsValuesAble {
         ableList.add(new LighSolveAble(handler));
     }
 
-    public static AbleManager getInstance(Handler handler) {
+    public static AbleManager createInstance(Handler handler) {
         return new AbleManager(handler);
     }
 
