@@ -88,6 +88,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
      * 绑定AppCompatActivity生命周期并启动相机
      */
     fun synchLifeStart(appCompatActivity: AppCompatActivity) {
+        appCompatActivity.lifecycle.addObserver(this)
         appCompatActivity.lifecycle.addObserver(object : LifeOwner {
             //在onCreate()中调用提升相机打开速度
             override fun onCreate() {
@@ -125,7 +126,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
             }
         })
-        appCompatActivity.lifecycle.addObserver(this)
     }
 
     /***

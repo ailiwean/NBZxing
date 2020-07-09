@@ -2,13 +2,8 @@ package com.ailiwean.core;
 
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +22,9 @@ public class WorkThreadServer {
 
     private ThreadPoolExecutor executor;
 
+
+    private static WorkThreadServer INSTANCE = new WorkThreadServer();
+
     private WorkThreadServer() {
     }
 
@@ -39,41 +37,47 @@ public class WorkThreadServer {
     //线程空闲后的存活时长
     private static final int keepAliveTime = 30;
 
-    private static class Holder {
-        static WorkThreadServer INSTANCE = new WorkThreadServer();
-    }
-
     public static WorkThreadServer getInstance() {
-        if (Holder.INSTANCE.executor == null) {
-            Holder.INSTANCE.executor = new ThreadPoolExecutor(
-                    corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(maximumPoolSize, true), new ThreadPoolExecutor.DiscardOldestPolicy());
+
+        if (INSTANCE.executor == null) {
+            synchronized (WorkThreadServer.class) {
+                if (INSTANCE.executor == null) {
+                    INSTANCE.executor = new ThreadPoolExecutor(
+                            corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
+                            new ArrayBlockingQueue<>(maximumPoolSize, true), new ThreadPoolExecutor.DiscardOldestPolicy());
+                }
+            }
         }
-        if (Holder.INSTANCE.handlerThread == null) {
-            Holder.INSTANCE.handlerThread = new HandlerThread("Default");
-            Holder.INSTANCE.handlerThread.start();
-            Holder.INSTANCE.handler = new Handler(Holder.INSTANCE.handlerThread.getLooper());
+        if (INSTANCE.handlerThread == null) {
+            synchronized (WorkThreadServer.class) {
+                if (INSTANCE.handlerThread == null) {
+                    INSTANCE.handlerThread = new HandlerThread("Default");
+                    INSTANCE.handlerThread.start();
+                    INSTANCE.handler = new Handler(INSTANCE.handlerThread.getLooper());
+                }
+            }
         }
-        return Holder.INSTANCE;
+        return INSTANCE;
     }
 
     public Handler getBgHandle() {
-        return handler;
+        return INSTANCE.handler;
     }
 
     public void post(Runnable runnable) {
-        if (executor != null)
-            executor.execute(runnable);
+        if (INSTANCE.executor != null)
+            INSTANCE.executor.execute(runnable);
     }
 
-    public void quit() {
-        if (handler != null) {
-            handlerThread.quit();
-            handlerThread = null;
+    public static void quit() {
+        if (INSTANCE.handlerThread != null) {
+            INSTANCE.handlerThread.quit();
+            INSTANCE.handlerThread = null;
         }
-        if (executor != null) {
-            executor.shutdownNow();
-            executor = null;
+        if (INSTANCE.executor != null) {
+            INSTANCE.executor.shutdown();
+            INSTANCE.executor = null;
         }
+        INSTANCE = null;
     }
 }
