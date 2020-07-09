@@ -3,7 +3,8 @@
 
 ### 依赖
 
-[![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qaXRwYWNrLmlvL3YvYWlsaXdlYW4vTkJaeGluZy5zdmc?x-oss-process=image/format,png)](https://jitpack.io/#ailiwean/NBZxing)
+[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://jitpack.io/#ailiwean/NBZxing)
+
 
 ```
 	        implementation 'com.github.ailiwean:NBZxing:0.0.8'
