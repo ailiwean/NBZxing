@@ -16,14 +16,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class WorkThreadServer {
 
-    private HandlerThread handlerThread;
-
-    private Handler handler;
-
-    private ThreadPoolExecutor executor;
-
-
-    private static WorkThreadServer INSTANCE = new WorkThreadServer();
+    private ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
+            new ArrayBlockingQueue<>(maximumPoolSize, true), new ThreadPoolExecutor.DiscardOldestPolicy());
 
     private WorkThreadServer() {
     }
@@ -37,46 +32,19 @@ public class WorkThreadServer {
     //线程空闲后的存活时长
     private static final int keepAliveTime = 30;
 
-    public static WorkThreadServer getInstance() {
-
-        if (INSTANCE.executor == null) {
-            synchronized (WorkThreadServer.class) {
-                if (INSTANCE.executor == null) {
-                    INSTANCE.executor = new ThreadPoolExecutor(
-                            corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
-                            new ArrayBlockingQueue<>(maximumPoolSize, true), new ThreadPoolExecutor.DiscardOldestPolicy());
-                }
-            }
-        }
-        if (INSTANCE.handlerThread == null) {
-            synchronized (WorkThreadServer.class) {
-                if (INSTANCE.handlerThread == null) {
-                    INSTANCE.handlerThread = new HandlerThread("Default");
-                    INSTANCE.handlerThread.start();
-                    INSTANCE.handler = new Handler(INSTANCE.handlerThread.getLooper());
-                }
-            }
-        }
-        return INSTANCE;
-    }
-
-    public Handler getBgHandle() {
-        return INSTANCE.handler;
+    public static WorkThreadServer createInstance() {
+        return new WorkThreadServer();
     }
 
     public void post(Runnable runnable) {
-        if (INSTANCE.executor != null)
-            INSTANCE.executor.execute(runnable);
+        if (executor != null)
+            executor.execute(runnable);
     }
 
-    public static void quit() {
-        if (INSTANCE.handlerThread != null) {
-            INSTANCE.handlerThread.quit();
-            INSTANCE.handlerThread = null;
-        }
-        if (INSTANCE.executor != null) {
-            INSTANCE.executor.shutdown();
-            INSTANCE.executor = null;
+    public void quit() {
+        if (executor != null) {
+            executor.shutdown();
+            executor = null;
         }
     }
 }

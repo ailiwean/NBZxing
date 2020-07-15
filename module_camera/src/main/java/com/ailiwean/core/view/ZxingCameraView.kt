@@ -83,6 +83,11 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         VibrateHelper.playBeep()
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        ableCollect = AbleManager.createInstance(handleZX)
+    }
+
     override fun onResume() {
         initConfig()
     }
@@ -95,7 +100,6 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     override fun onDestroy() {
         super.onDestroy()
         ableCollect?.release()
-        ableCollect = null
     }
 
     /***
@@ -122,7 +126,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
      * 相机启动数据初始化
      */
     fun initConfig() {
-        ableCollect = AbleManager.createInstance(handleZX)
+        ableCollect?.loadAble()
         scan_bar.startAnim()
         qr_loc.visibility = View.GONE
         initScanType()

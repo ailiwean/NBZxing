@@ -5,6 +5,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -93,9 +95,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
             //在onCreate()中调用提升相机打开速度
             override fun onCreate() {
                 if (checkPermission())
-                    WorkThreadServer.getInstance().bgHandle.post {
-                        start()
-                    }
+                    openCamera()
                 else {
                     isSingleLoad = true
                     requstPermission()
@@ -111,21 +111,40 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
                     return
                 }
                 if (checkPermission())
-                    start()
+                    openCamera()
             }
 
             override fun onPause() {
-
+                closeCamera()
             }
 
             override fun onStop() {
-                stop()
+
             }
 
             override fun onDestroy() {
 
             }
         })
+    }
+
+    private val cameraHandler by lazy {
+        val handlerThread: HandlerThread = HandlerThread(System.currentTimeMillis().toString())
+        handlerThread.start()
+        Handler(handlerThread.looper)
+    }
+
+    fun openCamera() {
+        cameraHandler.post {
+            start()
+        }
+    }
+
+
+    fun closeCamera() {
+        cameraHandler.post {
+            stop()
+        }
     }
 
     /***
@@ -150,6 +169,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     }
 
     override fun onCreate() {
+
     }
 
     override fun onResume() {
@@ -163,6 +183,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     }
 
     override fun onDestroy() {
+        cameraHandler.looper.quit()
     }
 
     fun checkPermission(): Boolean {
