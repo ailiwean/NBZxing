@@ -31,6 +31,8 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         if (result != null)
             return;
         data = rotateByte(data, dataWidth, dataHeight);
+        if (data == null)
+            return;
         dataWidth += dataHeight;
         dataHeight = dataWidth - dataHeight;
         dataWidth -= dataHeight;
@@ -47,7 +49,11 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         byte[] rotatedData = new byte[data.length];
         for (int y = 0; y < dataHeight; y++) {
             for (int x = 0; x < dataWidth; x++) {
-                rotatedData[x * dataHeight + dataHeight - y - 1] = data[x + y * dataWidth];
+                int i = x * dataHeight + dataHeight - y - 1;
+                if (i >= data.length || x + y * dataWidth >= data.length) {
+                    return null;
+                }
+                rotatedData[i] = data[x + y * dataWidth];
             }
         }
         return rotatedData;

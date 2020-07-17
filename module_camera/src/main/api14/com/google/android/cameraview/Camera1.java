@@ -19,9 +19,7 @@ package com.google.android.cameraview;
 import android.annotation.SuppressLint;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.hardware.camera2.CameraManager;
 import android.view.SurfaceHolder;
-import android.widget.Toast;
 
 import androidx.collection.SparseArrayCompat;
 
@@ -83,7 +81,6 @@ class Camera1 extends CameraViewImpl {
             public void onSurfaceChanged() {
                 if (mCamera != null) {
                     setUpPreview();
-                    adjustCameraParameters();
                 }
             }
         });
@@ -121,12 +118,8 @@ class Camera1 extends CameraViewImpl {
             } else {
                 mCamera.setPreviewTexture((SurfaceTexture) mPreview.getSurfaceTexture());
             }
-            mCamera.setPreviewCallback(new Camera.PreviewCallback() {
-                @Override
-                public void onPreviewFrame(byte[] data, Camera camera) {
-                    mCallback.onPreviewByte(data);
-                }
-            });
+            mCamera.setPreviewCallback((data, camera) ->
+                    mCallback.onPreviewByte(data));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -177,7 +170,10 @@ class Camera1 extends CameraViewImpl {
                 throw new UnsupportedOperationException(ratio + " is not supported");
             } else {
                 mAspectRatio = ratio;
-                adjustCameraParameters();
+                try {
+                    adjustCameraParameters();
+                } catch (Exception ignored) {
+                }
                 return true;
             }
         }
@@ -312,12 +308,10 @@ class Camera1 extends CameraViewImpl {
         try {
             mCamera = Camera.open(mCameraId);
         } catch (Exception e) {
-            Toast.makeText(getView().getContext(), "摄像头损坏", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (mCamera == null) {
-            Toast.makeText(getView().getContext(), "摄像头损坏", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -336,7 +330,10 @@ class Camera1 extends CameraViewImpl {
         if (mAspectRatio == null) {
             mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
         }
-        adjustCameraParameters();
+        try {
+            adjustCameraParameters();
+        } catch (Exception ignored) {
+        }
         mCamera.setDisplayOrientation(calcDisplayOrientation(mDisplayOrientation));
         mCallback.onCameraOpened();
     }
@@ -353,13 +350,20 @@ class Camera1 extends CameraViewImpl {
     }
 
     void adjustCameraParameters() {
+        // Supported preview sizes
+        if (mPictureSizes.ratios().size() == 0) {
+            start();
+            return;
+        }
         SortedSet<Size> sizes = mPreviewSizes.sizes(mAspectRatio);
         if (sizes == null) { // Not supported
             mAspectRatio = chooseAspectRatio();
             sizes = mPreviewSizes.sizes(mAspectRatio);
         }
-        Size size = chooseOptimalSize(sizes);
+        if (mPictureSizes.sizes(mAspectRatio) == null)
+            return;
 
+        Size size = chooseOptimalSize(sizes);
         // Always re-apply camera parameters
         // Largest picture size in this ratio
         final Size pictureSize = mPictureSizes.sizes(mAspectRatio).last();
