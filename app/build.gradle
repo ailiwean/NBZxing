@@ -4,6 +4,14 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+    signingConfigs {
+    release {
+        storeFile file('/Users/mac/Desktop/shuai_sign')
+        storePassword 'shuai1234'
+        keyAlias 'key0'
+        keyPassword 'shuai1234'
+    }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.android.NBZxing"
@@ -12,6 +20,7 @@ android {
         versionCode 4
         versionName "1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_8
             targetCompatibility JavaVersion.VERSION_1_8
@@ -29,7 +38,7 @@ dependencies {
     implementation project(path: ':module_camera')
     api "androidx.appcompat:appcompat:1.1.0"
 //    implementation 'com.github.ailiwean:NBZxing:0.0.7'
-    api 'com.google.zxing:core:3.3.3'
+//    api 'com.google.zxing:core:3.3.3'
 
     //   implementation 'me.devilsen:czxing:1.0.11'
 

@@ -5,9 +5,10 @@ import android.graphics.Rect;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.zxing.PlanarYUVLuminanceSource;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.ResultPoint;
-import com.google.zxing.common.HybridBinarizer;
+import com.ailiwean.core.zxing.core.BinaryBitmap;
+import com.ailiwean.core.zxing.core.InvertedLuminanceSource;
+import com.ailiwean.core.zxing.core.ResultPoint;
+import com.ailiwean.core.zxing.core.common.HybridBinarizer;
 
 /**
  * @Package: com.ailiwean.core.helper
@@ -107,8 +108,8 @@ public class ScanHelper {
      * @param data A preview frame.
      * @return A PlanarYUVLuminanceSource instance.
      */
-    private static PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width,
-                                                                 int height, Rect rect) {
+    public static PlanarYUVLuminanceSource buildLuminanceSource(byte[] data, int width,
+                                                                int height, Rect rect) {
         if ((rect.left == 0 && rect.right == 0) || (rect.top == 0 && rect.bottom == 0)) {
             try {
                 throw new Exception("扫码解析区域异常");

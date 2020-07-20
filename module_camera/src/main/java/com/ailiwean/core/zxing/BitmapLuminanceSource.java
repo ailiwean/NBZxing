@@ -2,7 +2,8 @@ package com.ailiwean.core.zxing;
 
 import android.graphics.Bitmap;
 
-import com.google.zxing.LuminanceSource;
+import com.ailiwean.core.zxing.core.LuminanceSource;
+
 
 /***
  *  Created by SWY

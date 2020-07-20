@@ -6,8 +6,8 @@ import android.os.Message;
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
 import com.ailiwean.core.zxing.CustomMultiFormatReader;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.Result;
+import com.ailiwean.core.zxing.core.BinaryBitmap;
+import com.ailiwean.core.zxing.core.Result;
 
 
 /**
@@ -38,7 +38,6 @@ public class XQRScanAble extends PixsValuesAble {
             Message.obtain(handler, Config.SCAN_RESULT, covertResult(result)).sendToTarget();
         }
     }
-
     protected com.ailiwean.core.Result covertResult(Result result) {
         com.ailiwean.core.Result result_ = new com.ailiwean.core.Result();
         result_.setText(result.getText());

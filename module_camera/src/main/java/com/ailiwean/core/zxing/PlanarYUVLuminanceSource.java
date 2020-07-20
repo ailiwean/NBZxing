@@ -1,7 +1,8 @@
 
 package com.ailiwean.core.zxing;
 
-import com.google.zxing.LuminanceSource;
+
+import com.ailiwean.core.zxing.core.LuminanceSource;
 
 /**
  * This object extends LuminanceSource around an array of YUV data returned from the camera driver,

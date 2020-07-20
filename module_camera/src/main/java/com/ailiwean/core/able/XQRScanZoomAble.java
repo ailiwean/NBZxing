@@ -5,11 +5,11 @@ import android.os.Message;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
-import com.google.zxing.FormatException;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.ResultPoint;
-import com.google.zxing.common.DetectorResult;
-import com.google.zxing.qrcode.detector.Detector;
+import com.ailiwean.core.zxing.core.FormatException;
+import com.ailiwean.core.zxing.core.NotFoundException;
+import com.ailiwean.core.zxing.core.ResultPoint;
+import com.ailiwean.core.zxing.core.common.DetectorResult;
+import com.ailiwean.core.zxing.core.qrcode.detector.Detector;
 
 /**
  * @Package: com.ailiwean.core.able

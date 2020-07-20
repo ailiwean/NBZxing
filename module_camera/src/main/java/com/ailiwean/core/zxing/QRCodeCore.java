@@ -16,22 +16,23 @@
 
 package com.ailiwean.core.zxing;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.ChecksumException;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.FormatException;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.Reader;
-import com.google.zxing.Result;
-import com.google.zxing.ResultMetadataType;
-import com.google.zxing.ResultPoint;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.DecoderResult;
-import com.google.zxing.common.DetectorResult;
-import com.google.zxing.qrcode.decoder.Decoder;
-import com.google.zxing.qrcode.decoder.QRCodeDecoderMetaData;
-import com.google.zxing.qrcode.detector.Detector;
+import com.ailiwean.core.zxing.core.BarcodeFormat;
+import com.ailiwean.core.zxing.core.BinaryBitmap;
+import com.ailiwean.core.zxing.core.ChecksumException;
+import com.ailiwean.core.zxing.core.DecodeHintType;
+import com.ailiwean.core.zxing.core.FormatException;
+import com.ailiwean.core.zxing.core.NotFoundException;
+import com.ailiwean.core.zxing.core.Reader;
+import com.ailiwean.core.zxing.core.Result;
+import com.ailiwean.core.zxing.core.ResultMetadataType;
+import com.ailiwean.core.zxing.core.ResultPoint;
+import com.ailiwean.core.zxing.core.common.BitMatrix;
+import com.ailiwean.core.zxing.core.common.DecoderResult;
+import com.ailiwean.core.zxing.core.common.DetectorResult;
+import com.ailiwean.core.zxing.core.datamatrix.DataMatrixReader;
+import com.ailiwean.core.zxing.core.qrcode.decoder.Decoder;
+import com.ailiwean.core.zxing.core.qrcode.decoder.QRCodeDecoderMetaData;
+import com.ailiwean.core.zxing.core.qrcode.detector.Detector;
 
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class QRCodeCore implements Reader {
      * around it. This is a specialized method that works exceptionally fast in this special
      * case.
      *
-     * @see com.google.zxing.datamatrix.DataMatrixReader#extractPureBits(BitMatrix)
+     * @see DataMatrixReader#extractPureBits(BitMatrix)
      */
     private static BitMatrix extractPureBits(BitMatrix image) throws NotFoundException {
 

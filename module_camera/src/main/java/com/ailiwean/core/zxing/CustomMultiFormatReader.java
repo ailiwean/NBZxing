@@ -1,19 +1,20 @@
 package com.ailiwean.core.zxing;
 
 import com.ailiwean.core.Config;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.Reader;
-import com.google.zxing.ReaderException;
-import com.google.zxing.Result;
-import com.google.zxing.aztec.AztecReader;
-import com.google.zxing.datamatrix.DataMatrixReader;
-import com.google.zxing.maxicode.MaxiCodeReader;
-import com.google.zxing.oned.MultiFormatOneDReader;
-import com.google.zxing.pdf417.PDF417Reader;
-import com.google.zxing.qrcode.QRCodeReader;
+import com.ailiwean.core.zxing.core.BarcodeFormat;
+import com.ailiwean.core.zxing.core.BinaryBitmap;
+import com.ailiwean.core.zxing.core.DecodeHintType;
+import com.ailiwean.core.zxing.core.NotFoundException;
+import com.ailiwean.core.zxing.core.Reader;
+import com.ailiwean.core.zxing.core.ReaderException;
+import com.ailiwean.core.zxing.core.Result;
+import com.ailiwean.core.zxing.core.aztec.AztecReader;
+import com.ailiwean.core.zxing.core.datamatrix.DataMatrixReader;
+import com.ailiwean.core.zxing.core.maxicode.MaxiCodeReader;
+import com.ailiwean.core.zxing.core.oned.MultiFormatOneDReader;
+import com.ailiwean.core.zxing.core.pdf417.PDF417Reader;
+import com.ailiwean.core.zxing.core.qrcode.QRCodeReader;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -209,9 +210,17 @@ public class CustomMultiFormatReader implements Reader {
         }
     }
 
+    static CustomMultiFormatReader customMultiFormatReader;
+
     //获取解析的核心类
     public static CustomMultiFormatReader getInstance() {
-        return new CustomMultiFormatReader();
+        if (customMultiFormatReader == null) {
+            synchronized (CustomMultiFormatReader.class) {
+                if (customMultiFormatReader == null)
+                    customMultiFormatReader = new CustomMultiFormatReader();
+            }
+        }
+        return customMultiFormatReader;
     }
 
     private CustomMultiFormatReader() {

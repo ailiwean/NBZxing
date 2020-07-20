@@ -1,7 +1,8 @@
 package com.ailiwean.core.zxing;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.DecodeHintType;
+
+import com.ailiwean.core.zxing.core.BarcodeFormat;
+import com.ailiwean.core.zxing.core.DecodeHintType;
 
 import java.util.ArrayList;
 import java.util.Collections;

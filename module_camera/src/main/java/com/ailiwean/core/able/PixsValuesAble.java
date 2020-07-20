@@ -10,7 +10,6 @@ import android.os.Handler;
  * @CreateDate: 2020/4/26 3:27 PM
  */
 public abstract class PixsValuesAble {
-
     Handler handler;
 
     public PixsValuesAble(Handler handler) {

@@ -6,8 +6,8 @@ import android.os.Message;
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
 import com.ailiwean.core.zxing.CustomMultiFormatReader;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.Result;
+import com.ailiwean.core.zxing.core.BinaryBitmap;
+import com.ailiwean.core.zxing.core.Result;
 
 /**
  * @Package: com.ailiwean.core.able
@@ -41,7 +41,7 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         binaryBitmap = ScanHelper.byteToBinaryBitmap(data, dataWidth, dataHeight);
         result = reader.decode(binaryBitmap);
         if (result != null) {
-            Message.obtain(handler, Config.SCAN_RESULT, covertResult(result)).sendToTarget();
+            Message.obtain(handler, Config.SCAN_RESULT, covertResultRotate(result)).sendToTarget();
         }
     }
 
@@ -59,11 +59,14 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         return rotatedData;
     }
 
-    private com.ailiwean.core.Result covertResult(Result result) {
+
+    protected com.ailiwean.core.Result covertResultRotate(Result result) {
         com.ailiwean.core.Result result_ = new com.ailiwean.core.Result();
         result_.setText(result.getText());
         result_.setPointF(ScanHelper.rotatePointR(result.getResultPoints()));
         result_.setRotate(true);
         return result_;
     }
+
+
 }
