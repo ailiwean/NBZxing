@@ -33,7 +33,7 @@ public class AbleManager extends PixsValuesAble {
         ableList.add(new XQRScanZoomAble(handler));
         ableList.add(new XQRScanAbleRotate(handler));
 //        ableList.add(new CQRScanZoomAble(handler));
-//        ableList.add(new LighSolveAble(handler));
+        ableList.add(new LighSolveAble(handler));
         ableList.add(new RevColorSanAble(handler));
     }
 
