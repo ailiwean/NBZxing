@@ -8,19 +8,18 @@ import com.ailiwean.core.helper.ScanHelper;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.Result;
 
-
 /**
  * @Package: com.ailiwean.core.able
- * @ClassName: QRScanAble
+ * @ClassName: XQRScanFast
  * @Description:
  * @Author: SWY
- * @CreateDate: 2020/4/23 10:18 AM
+ * @CreateDate: 2020/7/21 2:09 PM
  */
-public class XQRScanAble extends PixsValuesAble {
+class XQRScanFastAble extends PixsValuesAble {
 
     protected Result result;
 
-    XQRScanAble(Handler handler) {
+    public XQRScanFastAble(Handler handler) {
         super(handler);
     }
 
@@ -28,7 +27,7 @@ public class XQRScanAble extends PixsValuesAble {
     protected void needParseDeploy(PlanarYUVLuminanceSource source) {
         if (result != null)
             return;
-        result = toLaunchParse(source.getHybridBinary());
+        result = toLaunchParse(source.getGlobaBinary());
         if (result != null) {
             Message.obtain(handler, Config.SCAN_RESULT, covertResult(result)).sendToTarget();
         }
@@ -40,4 +39,5 @@ public class XQRScanAble extends PixsValuesAble {
         result_.setPointF(ScanHelper.rotatePoint(result.getResultPoints()));
         return result_;
     }
+
 }
