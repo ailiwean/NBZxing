@@ -15,7 +15,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.android.NBZxing"
-        minSdkVersion 22
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 5
         versionName "1.4"
@@ -35,11 +35,11 @@ android {
 }
 
 dependencies {
-    //   implementation project(path: ':module_camera')
+    implementation project(path: ':module_camera')
     api "androidx.appcompat:appcompat:1.1.0"
 //    implementation 'com.github.ailiwean:NBZxing:0.0.7'
 //    api 'com.google.zxing:core:3.3.3'
-    implementation 'com.github.ailiwean:NBZxing:0.0.11'
+ //   implementation 'com.github.ailiwean:NBZxing:0.0.12'
     //   implementation 'me.devilsen:czxing:1.0.11'
 
 }

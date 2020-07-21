@@ -174,6 +174,7 @@ public class CustomMultiFormatReader implements Reader {
         throw NotFoundException.getNotFoundInstance();
     }
 
+
     /**
      * 设置识别的格式
      *

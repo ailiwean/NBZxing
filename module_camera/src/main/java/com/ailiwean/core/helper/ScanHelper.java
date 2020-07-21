@@ -4,9 +4,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 
 import com.ailiwean.core.Config;
-import com.ailiwean.core.zxing.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
-import com.ailiwean.core.zxing.core.InvertedLuminanceSource;
+import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.ResultPoint;
 import com.ailiwean.core.zxing.core.common.HybridBinarizer;
 

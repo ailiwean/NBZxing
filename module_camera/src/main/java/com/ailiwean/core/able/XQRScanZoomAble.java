@@ -7,6 +7,7 @@ import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
 import com.ailiwean.core.zxing.core.FormatException;
 import com.ailiwean.core.zxing.core.NotFoundException;
+import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.ResultPoint;
 import com.ailiwean.core.zxing.core.common.DetectorResult;
 import com.ailiwean.core.zxing.core.qrcode.detector.Detector;
@@ -27,16 +28,25 @@ public class XQRScanZoomAble extends XQRScanAble {
     }
 
     @Override
-    public void cusAction(byte[] data, int dataWidth, int dataHeight) {
-        super.cusAction(data, dataWidth, dataHeight);
+    protected void needParseDeploy(PlanarYUVLuminanceSource source) {
+        super.needParseDeploy(source);
         if (result != null)
             return;
         DetectorResult decoderResult = null;
         ResultPoint[] points;
         try {
-            decoderResult = new Detector(binaryBitmap.getBlackMatrix()).detect(null);
+            decoderResult = new Detector(source.getGlobaBinary().getBlackMatrix()).detect(null);
         } catch (NotFoundException | FormatException e) {
             e.printStackTrace();
+        }
+        if (decoderResult == null) {
+            try {
+                decoderResult = new Detector(source.getHybridBinary().getBlackMatrix()).detect(null);
+            } catch (NotFoundException e) {
+                e.printStackTrace();
+            } catch (FormatException e) {
+                e.printStackTrace();
+            }
         }
         if (decoderResult == null)
             return;

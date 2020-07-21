@@ -24,7 +24,7 @@ public class LighSolveAble extends PixsValuesAble {
     }
 
     @Override
-    void cusAction(byte[] data, int dataWidth, int dataHeight) {
+    protected void cusAction(byte[] data, int dataWidth, int dataHeight) {
         int avDark = LightHelper.getAvDark(data, dataWidth, dataHeight);
         if (avDark > STANDVALUES && !isBright) {
             isBright = true;

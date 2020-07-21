@@ -5,7 +5,6 @@ import android.os.Message;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
-import com.ailiwean.core.zxing.CustomMultiFormatReader;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
 import com.ailiwean.core.zxing.core.Result;
 
@@ -18,7 +17,6 @@ import com.ailiwean.core.zxing.core.Result;
  */
 public class XQRScanAbleRotate extends PixsValuesAble {
 
-    CustomMultiFormatReader reader = CustomMultiFormatReader.getInstance();
     protected Result result;
     BinaryBitmap binaryBitmap;
 
@@ -26,17 +24,23 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         super(handler);
     }
 
+    int i = -1;
+
     @Override
     public void cusAction(byte[] data, int dataWidth, int dataHeight) {
         if (result != null)
             return;
+        //降低旋转二维码调用频率
+        i++;
+        if (i % 10 != 1) {
+            return;
+        }
         data = rotateByte(data, dataWidth, dataHeight);
         if (data == null)
             return;
         dataWidth += dataHeight;
         dataHeight = dataWidth - dataHeight;
         dataWidth -= dataHeight;
-
         //先生产扫码需要的BinaryBitmap
         binaryBitmap = ScanHelper.byteToBinaryBitmap(data, dataWidth, dataHeight);
         result = reader.decode(binaryBitmap);
@@ -59,7 +63,6 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         return rotatedData;
     }
 
-
     protected com.ailiwean.core.Result covertResultRotate(Result result) {
         com.ailiwean.core.Result result_ = new com.ailiwean.core.Result();
         result_.setText(result.getText());
@@ -67,6 +70,4 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         result_.setRotate(true);
         return result_;
     }
-
-
 }
