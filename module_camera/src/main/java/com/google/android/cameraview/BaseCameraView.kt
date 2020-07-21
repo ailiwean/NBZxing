@@ -11,11 +11,11 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.FloatRange
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.ailiwean.core.Config
 import com.ailiwean.core.Utils
-import com.ailiwean.core.WorkThreadServer
 import com.ailiwean.core.helper.ZoomHelper
 import com.ailiwean.core.view.LifeOwner
 
@@ -86,6 +86,10 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
     abstract fun provideFloorView(): View?
 
+
+    //保证避免多次调用start()
+    var isShoudCreateOpen = true
+
     /***
      * 绑定AppCompatActivity生命周期并启动相机
      */
@@ -94,28 +98,15 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         appCompatActivity.lifecycle.addObserver(object : LifeOwner {
             //在onCreate()中调用提升相机打开速度
             override fun onCreate() {
-                if (checkPermission())
-                    openCamera()
-                else {
-                    isSingleLoad = true
-                    requstPermission()
-                }
+                onComCreate()
             }
 
-            //保证避免多次调用start()
-            var isSingleLoad = false
-
             override fun onResume() {
-                if (!isSingleLoad) {
-                    isSingleLoad = true
-                    return
-                }
-                if (checkPermission())
-                    openCamera()
+                onComResume()
             }
 
             override fun onPause() {
-                closeCamera()
+                onComPause()
             }
 
             override fun onStop() {
@@ -126,6 +117,69 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
             }
         })
+    }
+
+    fun synchLifeStart(fragment: Fragment) {
+        fragment.fragmentManager?.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
+            override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
+                if (f != fragment) {
+                    return
+                }
+                if (isShoudCreateOpen) {
+                    onCreate()
+                    onComCreate()
+                } else {
+                    onResume()
+                    onComResume()
+                }
+            }
+
+            override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
+                if (f != fragment) {
+                    return
+                }
+                onPause()
+                onComPause()
+            }
+
+
+            override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
+                if (f != fragment) {
+                    return
+                }
+                onStop()
+            }
+
+            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+                if (f != fragment) {
+                    return
+                }
+                onDestroy()
+            }
+        }, false)
+    }
+
+    fun onComCreate() {
+        if (!isShoudCreateOpen)
+            return
+        if (checkPermission()) {
+            openCamera()
+        } else {
+            requstPermission()
+        }
+    }
+
+    fun onComResume() {
+        if (isShoudCreateOpen) {
+            return
+        }
+        if (checkPermission())
+            openCamera()
+    }
+
+    fun onComPause() {
+        closeCamera()
+        isShoudCreateOpen = false
     }
 
     private val cameraHandler by lazy {
@@ -139,7 +193,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
             start()
         }
     }
-
 
     fun closeCamera() {
         cameraHandler.post {

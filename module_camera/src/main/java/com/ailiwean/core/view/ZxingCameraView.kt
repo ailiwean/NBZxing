@@ -44,7 +44,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
             lightOperator(it)
         }
     }
-        
+
     private val handleZX = HandleZX {
         when (it.what) {
             SCAN_RESULT -> {
@@ -89,6 +89,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     }
 
     override fun onResume() {
+        super.onResume()
         initConfig()
     }
 
