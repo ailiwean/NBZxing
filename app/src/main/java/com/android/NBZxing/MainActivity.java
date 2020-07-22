@@ -12,12 +12,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        this.<CusZxingView>findViewById(R.id.zxingview)
-//                .synchLifeStart(this);
+        this.<CusZxingView>findViewById(R.id.zxingview)
+                .synchLifeStart(this);
 
-        ZxingFragment fragment = new ZxingFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.parent, fragment)
-                .commit();
+//        ZxingFragment fragment = new ZxingFragment();
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.parent, fragment)
+//                .commit();
     }
 }

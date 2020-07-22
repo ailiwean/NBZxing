@@ -1,7 +1,9 @@
 package com.android.NBZxing
 
 import android.content.Context
+import android.os.Environment
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 import com.ailiwean.core.view.ZxingCameraView
@@ -24,7 +26,14 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
      * 可扩展顶层View
      */
     override fun provideFloorView(): View? {
-        return null
+        val v = LayoutInflater.from(context)
+                .inflate(R.layout.floorview_layout, this, false)
+
+        v.findViewById<View>(R.id.img)
+                .setOnClickListener {
+                    parseFile(Environment.getExternalStorageDirectory().absolutePath + "/scan.jpg")
+                }
+        return v
     }
 
     /***

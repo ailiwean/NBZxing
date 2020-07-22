@@ -16,6 +16,8 @@
 
 package com.ailiwean.core.zxing.core;
 
+import android.util.Log;
+
 import com.ailiwean.core.zxing.core.common.GlobalHistogramBinarizer;
 import com.ailiwean.core.zxing.core.common.HybridBinarizer;
 

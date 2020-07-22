@@ -4,10 +4,13 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +19,18 @@ import com.ailiwean.core.Result
 import com.ailiwean.core.Utils
 import com.ailiwean.core.able.AbleManager
 import com.ailiwean.core.helper.VibrateHelper
+import com.ailiwean.core.zxing.BitmapLuminanceSource
+import com.ailiwean.core.zxing.CustomMultiFormatReader
 import com.ailiwean.core.zxing.ScanTypeConfig
+import com.ailiwean.core.zxing.core.BinaryBitmap
+import com.ailiwean.core.zxing.core.RGBLuminanceSource
+import com.ailiwean.core.zxing.core.common.HybridBinarizer
 import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
 import com.google.android.cameraview.CameraView
 import com.google.android.cameraview.R
 import kotlinx.android.synthetic.main.base_zxing_layout.view.*
+import java.io.File
 
 /**
  * @Package:        com.google.android.cameraview
@@ -139,6 +148,12 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
      */
     abstract fun resultBack(content: String)
 
+
+    protected fun resultBackFile(content: String) {
+
+    }
+
+
     class HandleZX constructor(val callback: (Message) -> Unit) : Handler() {
         var hasResult = false
         override fun handleMessage(msg: Message?) {
@@ -170,4 +185,26 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         return ScanTypeConfig.HIGH_FREQUENCY
     }
 
+    protected fun parseFile(filePath: String) {
+        onComPause()
+        val file = File(filePath)
+        if (!file.exists()) {
+            return
+        }
+        val bitmap = BitmapFactory.decodeFile(filePath)
+        parseBitmap(bitmap)
+    }
+
+    protected fun parseBitmap(bitmap: Bitmap) {
+        val source = BitmapLuminanceSource(bitmap)
+        val result = CustomMultiFormatReader.getInstance()
+                .decode(BinaryBitmap(HybridBinarizer(source)))
+        if (result != null) {
+            resultBackFile(result.text)
+            scanSucHelper()
+        } else {
+            resultBackFile("")
+            onComResume()
+        }
+    }
 }

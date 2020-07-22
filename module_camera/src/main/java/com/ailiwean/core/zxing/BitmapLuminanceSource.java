@@ -1,6 +1,7 @@
 package com.ailiwean.core.zxing;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.ailiwean.core.zxing.core.LuminanceSource;
 
@@ -19,15 +20,16 @@ public class BitmapLuminanceSource extends LuminanceSource {
 
     public BitmapLuminanceSource(Bitmap bitmap) {
         super(bitmap.getWidth(), bitmap.getHeight());
-
         // 首先，要取得该图片的像素数组内容
         int[] data = new int[bitmap.getWidth() * bitmap.getHeight()];
         this.bitmapPixels = new byte[bitmap.getWidth() * bitmap.getHeight()];
         bitmap.getPixels(data, 0, getWidth(), 0, 0, getWidth(), getHeight());
-      
-        // 将int数组转换为byte数组，也就是取像素值中蓝色值部分作为辨析内容
         for (int i = 0; i < data.length; i++) {
-            this.bitmapPixels[i] = (byte) data[i];
+            int pixel = data[i];
+            int r = (pixel >> 16) & 0xff; // red
+            int g2 = (pixel >> 7) & 0x1fe; // 2 * green
+            int b = pixel & 0xff; // blue
+            this.bitmapPixels[i] = (byte) ((r + g2 + b) / 4);
         }
     }
 
