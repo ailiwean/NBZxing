@@ -149,7 +149,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     abstract fun resultBack(content: String)
 
 
-    protected fun resultBackFile(content: String) {
+    protected open fun resultBackFile(content: String) {
 
     }
 
