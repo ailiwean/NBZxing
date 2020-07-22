@@ -73,6 +73,7 @@ class Camera2 extends CameraViewImpl {
 
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
+            Log.e("currentThread-Open", Thread.currentThread().getName());
             mCamera = camera;
             mCallback.onCameraOpened();
             startCaptureSession();
@@ -204,12 +205,7 @@ class Camera2 extends CameraViewImpl {
     Camera2(Callback callback, PreviewImpl preview, Context context) {
         super(callback, preview);
         mCameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
-        mPreview.setCallback(new PreviewImpl.Callback() {
-            @Override
-            public void onSurfaceChanged() {
-                startCaptureSession();
-            }
-        });
+        mPreview.setCallback(() -> startCaptureSession());
     }
 
     @Override
@@ -470,9 +466,6 @@ class Camera2 extends CameraViewImpl {
             }
         }
 
-        if (!mPreviewSizes.ratios().contains(mAspectRatio))
-            mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
-
         mPictureSizes.clear();
         collectPictureSizes(mPictureSizes, map);
         for (AspectRatio ratio : mPreviewSizes.ratios()) {
@@ -483,7 +476,9 @@ class Camera2 extends CameraViewImpl {
 
         if (!mPreviewSizes.ratios().contains(mAspectRatio)) {
             mAspectRatio = mPreviewSizes.ratios().iterator().next();
+            mPreview.updateAspectRatio(mPreviewSizes.ratios().iterator().next());
         }
+
     }
 
     protected void collectPictureSizes(SizeMap sizes, StreamConfigurationMap map) {

@@ -85,4 +85,14 @@ abstract class PreviewImpl {
     int getHeight() {
         return mHeight;
     }
+
+    /***
+     * 当相机测量出的不支持设定的， 则提供一个支持的参数
+     * @param aspectRatio
+     */
+    public void updateAspectRatio(AspectRatio aspectRatio) {
+        if (getView().getParent() instanceof CameraView) {
+            ((CameraView) getView().getParent()).setAspectRatio(aspectRatio);
+        }
+    }
 }

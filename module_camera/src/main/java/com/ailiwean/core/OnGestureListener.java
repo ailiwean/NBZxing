@@ -2,6 +2,7 @@ package com.ailiwean.core;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -13,13 +14,13 @@ import android.view.View;
  */
 public abstract class OnGestureListener implements View.OnTouchListener {
 
-    private int count = 0;//点击次数
-    private long firstClick = 0;//第一次点击时间
-    private long secondClick = 0;//第二次点击时间
     /**
      * 两次点击时间间隔，单位毫秒
      */
     private final int totalTime = 500;
+
+    private long lastClickTime = 0L;
+
 
     Context mContext;
 
@@ -54,6 +55,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
      */
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
         if (event.getActionMasked() == MotionEvent.ACTION_UP) {
             distance = 0;
             total = 0;
@@ -88,22 +90,13 @@ public abstract class OnGestureListener implements View.OnTouchListener {
          * 监听双击
          */
         if (MotionEvent.ACTION_DOWN == event.getAction()) {
-            count++;
-            if (1 == count) {
-                firstClick = System.currentTimeMillis();
-            } else if (2 == count) {
-                secondClick = System.currentTimeMillis();
-                if (secondClick - firstClick < totalTime) {
-                    onDoubleClick();
-                }
-                count = 0;
-                firstClick = 0;
-            } else {
-                firstClick = secondClick;
-                count = 1;
-            }
-            secondClick = 0;
+            if (System.currentTimeMillis() - lastClickTime < totalTime) {
+                onDoubleClick();
+                lastClickTime = 0L;
+            } else
+                lastClickTime = System.currentTimeMillis();
         }
+
         return true;
     }
 

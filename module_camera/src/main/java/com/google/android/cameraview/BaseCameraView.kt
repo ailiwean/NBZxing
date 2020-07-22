@@ -39,7 +39,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
             var hasFloorView = false
 
             override fun onCameraOpened(cameraView: CameraView) {
-                hand.post {
+                mainHand.post {
                     if (!hasFloorView) {
                         provideFloorView()?.let {
                             this@BaseCameraView.addView(it, ViewGroup.LayoutParams(-1, -1))
@@ -51,13 +51,13 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
             }
 
             override fun onCameraClosed(cameraView: CameraView) {
-                hand.post {
+                mainHand.post {
                     onCameraClose(cameraView)
                 }
             }
 
             override fun onPictureTaken(cameraView: CameraView, data: ByteArray) {
-                hand.post {
+                mainHand.post {
                     onPictureTake(cameraView, data)
                 }
             }

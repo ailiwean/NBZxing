@@ -8,8 +8,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.PointF
 import android.os.Handler
+import android.os.HandlerThread
 import android.os.Message
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -108,6 +110,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     override fun onDestroy() {
         super.onDestroy()
         ableCollect?.release()
+        busHandle?.looper?.quit()
     }
 
     /***
@@ -183,33 +186,46 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         return ScanTypeConfig.HIGH_FREQUENCY
     }
 
+    var busHandle: Handler? = null
+
     protected fun parseFile(filePath: String) {
-        onComPause()
         val file = File(filePath)
         if (!file.exists()) {
             return
         }
-        cameraHandler.post {
+
+        if (busHandle == null)
+            initBusHandle()
+
+        busHandle?.post {
             val bitmap = BitmapFactory.decodeFile(filePath)
             parseBitmap(bitmap)
         }
     }
 
+    private fun initBusHandle() {
+        val handlerThread = HandlerThread(System.currentTimeMillis().toString())
+        handlerThread.start()
+        busHandle = Handler(handlerThread.looper)
+    }
+
     protected fun parseBitmap(bitmap: Bitmap) {
-        onComPause()
-        cameraHandler.post {
+
+        if (busHandle == null)
+            initBusHandle()
+
+        busHandle?.post {
             val source = BitmapLuminanceSource(bitmap)
             val result = CustomMultiFormatReader.getInstance()
                     .decode(BinaryBitmap(HybridBinarizer(source)))
             if (result != null) {
-                hand.post {
+                mainHand.post {
                     resultBackFile(result.text)
                     scanSucHelper()
                 }
             } else {
-                hand.post {
+                mainHand.post {
                     resultBackFile("")
-                    onComResume()
                 }
             }
         }
