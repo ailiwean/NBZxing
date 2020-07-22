@@ -182,7 +182,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         isShoudCreateOpen = false
     }
 
-    private val cameraHandler by lazy {
+    protected val cameraHandler by lazy {
         val handlerThread: HandlerThread = HandlerThread(System.currentTimeMillis().toString())
         handlerThread.start()
         Handler(handlerThread.looper)

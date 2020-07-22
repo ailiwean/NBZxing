@@ -10,7 +10,6 @@ import android.graphics.PointF
 import android.os.Handler
 import android.os.Message
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ import com.ailiwean.core.zxing.BitmapLuminanceSource
 import com.ailiwean.core.zxing.CustomMultiFormatReader
 import com.ailiwean.core.zxing.ScanTypeConfig
 import com.ailiwean.core.zxing.core.BinaryBitmap
-import com.ailiwean.core.zxing.core.RGBLuminanceSource
 import com.ailiwean.core.zxing.core.common.HybridBinarizer
 import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
@@ -86,7 +84,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
      * 扫码成功后的一些动作
      */
     fun scanSucHelper() {
-        stop()
+        onComPause()
         scan_bar.stopAnim()
         VibrateHelper.playVibrate()
         VibrateHelper.playBeep()
@@ -191,20 +189,29 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         if (!file.exists()) {
             return
         }
-        val bitmap = BitmapFactory.decodeFile(filePath)
-        parseBitmap(bitmap)
+        cameraHandler.post {
+            val bitmap = BitmapFactory.decodeFile(filePath)
+            parseBitmap(bitmap)
+        }
     }
 
     protected fun parseBitmap(bitmap: Bitmap) {
-        val source = BitmapLuminanceSource(bitmap)
-        val result = CustomMultiFormatReader.getInstance()
-                .decode(BinaryBitmap(HybridBinarizer(source)))
-        if (result != null) {
-            resultBackFile(result.text)
-            scanSucHelper()
-        } else {
-            resultBackFile("")
-            onComResume()
+        onComPause()
+        cameraHandler.post {
+            val source = BitmapLuminanceSource(bitmap)
+            val result = CustomMultiFormatReader.getInstance()
+                    .decode(BinaryBitmap(HybridBinarizer(source)))
+            if (result != null) {
+                hand.post {
+                    resultBackFile(result.text)
+                    scanSucHelper()
+                }
+            } else {
+                hand.post {
+                    resultBackFile("")
+                    onComResume()
+                }
+            }
         }
     }
 }

@@ -1,13 +1,23 @@
 package com.android.NBZxing
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
-import android.os.Environment
+import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.ailiwean.core.view.ZxingCameraView
 import com.ailiwean.core.zxing.ScanTypeConfig
+import com.zhihu.matisse.Matisse
+import com.zhihu.matisse.MimeType
+import com.zhihu.matisse.engine.impl.GlideEngine
+
 
 /**
  * @Package:        com.android.NBZXing
@@ -27,12 +37,42 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
      */
     override fun provideFloorView(): View? {
         val v = LayoutInflater.from(context)
-                .inflate(R.layout.floorview_layout, this, false)
+                .inflate(R.layout.tool_title, this, false)
 
-        v.findViewById<View>(R.id.img)
-                .setOnClickListener {
-                    parseFile(Environment.getExternalStorageDirectory().absolutePath + "/scan.jpg")
+        v.findViewById<View>(R.id.vToolBar)
+                .setBackgroundColor(Color.parseColor("#2f000000"))
+
+        v.findViewById<TextView>(R.id.vTitle).text = "扫一扫"
+
+        v.findViewById<View>(R.id.vLeftImage)
+                .setOnClickListener { v: View? ->
+                    if (context is Activity) {
+                        (context as Activity).finish()
+                    }
                 }
+
+        v.findViewById<TextView>(R.id.vRightTextView).text = "相册"
+        v.findViewById<TextView>(R.id.vRightTextView)
+                .setOnClickListener { v: View? ->
+                    if (!checkPermissionRW()) {
+                        requstPermissionRW()
+                        return@setOnClickListener
+                    }
+                    if (context is Activity) {
+                        Matisse.from(context as Activity)
+                                .choose(MimeType.ofAll())
+                                .countable(true)
+                                .maxSelectable(9)
+                                .gridExpectedSize(300)
+                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                                .thumbnailScale(0.85f)
+                                .imageEngine(GlideEngine())
+                                .showPreview(false) // Default is `true`
+                                .forResult(1)
+                    }
+
+                }
+
         return v
     }
 
@@ -46,6 +86,31 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
      */
     override fun getScanType(): ScanTypeConfig {
         return ScanTypeConfig.HIGH_FREQUENCY
+    }
+
+    fun toParse(string: String) {
+        parseFile(string)
+    }
+
+
+    fun checkPermissionRW(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context.checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+
+            context.checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+
+        } else {
+            return true
+        }
+    }
+
+
+    fun requstPermissionRW() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            (context as? Activity)?.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 200)
+        }
     }
 
 }
