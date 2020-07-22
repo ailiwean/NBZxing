@@ -7,7 +7,7 @@
 
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.11'
+	        implementation 'com.github.ailiwean:NBZxing:0.0.14'
 
 ```
 **注意：库中已经包含zxing源码无需再次依赖**
@@ -49,13 +49,40 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
 }
 ```
 
- **step2.  同步AppComActivity生命周期**
+ **step2.  同步生命周期**
 
-在onCreate方法中调用
+在Activity的onCreate方法中调用
 
 ```
    this.<CusZxingView>findViewById(R.id.cusZxing)
                 .synchLifeStart(this);
+```
+
+在Fragment中
+```
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        zxingCameraView = new ZxingCameraView(container.getContext()) {
+            @Override
+            public void resultBack(@NotNull String content) {
+                Toast.makeText(container.getContext(), content, Toast.LENGTH_LONG).show();
+            }
+
+            @org.jetbrains.annotations.Nullable
+            @Override
+            public View provideFloorView() {
+                return null;
+            }
+        };
+        return zxingCameraView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        zxingCameraView.synchLifeStart(this);
+    }
 ```
 
 -------
