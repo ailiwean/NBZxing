@@ -1,6 +1,6 @@
 #  NBZxing
  一个稳定完善的扫码库，几行代码既可接入，完美适配各种分辨率，无拉伸。
-
+  
 ### 依赖
 
 [![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://jitpack.io/#ailiwean/NBZxing)
@@ -84,6 +84,8 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
     }
 ```
 
+**注意：仅支持AndroidX**
+
 
 #### 图片资源解析
 在ZxingCameraView的子类中调用		
@@ -103,7 +105,6 @@ protected open fun resultBackFile(content: String) {
 }
 
 ```
-注意：在解析图片资源时会自动关闭相机， 若解析失败则重写打开
 
 -------
 
