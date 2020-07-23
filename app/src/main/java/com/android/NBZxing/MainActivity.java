@@ -37,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String path = Matisse.obtainPathResult(data).get(0);
                 this.<CusZxingView>findViewById(R.id.zxingview).toParse(path);
-            } else
-                Toast.makeText(this, "uri为null", Toast.LENGTH_SHORT).show();
+            }
         }
 
     }

@@ -24,6 +24,7 @@ import com.ailiwean.core.zxing.BitmapLuminanceSource
 import com.ailiwean.core.zxing.CustomMultiFormatReader
 import com.ailiwean.core.zxing.ScanTypeConfig
 import com.ailiwean.core.zxing.core.BinaryBitmap
+import com.ailiwean.core.zxing.core.common.GlobalHistogramBinarizer
 import com.ailiwean.core.zxing.core.common.HybridBinarizer
 import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
@@ -210,14 +211,19 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     }
 
     protected fun parseBitmap(bitmap: Bitmap) {
-
         if (busHandle == null)
             initBusHandle()
 
         busHandle?.post {
             val source = BitmapLuminanceSource(bitmap)
-            val result = CustomMultiFormatReader.getInstance()
-                    .decode(BinaryBitmap(HybridBinarizer(source)))
+
+            var result = CustomMultiFormatReader.getInstance()
+                    .decode(BinaryBitmap(GlobalHistogramBinarizer(source)))
+
+            if (result == null)
+                result = CustomMultiFormatReader.getInstance()
+                        .decode(BinaryBitmap(HybridBinarizer(source)))
+
             if (result != null) {
                 mainHand.post {
                     resultBackFile(result.text)

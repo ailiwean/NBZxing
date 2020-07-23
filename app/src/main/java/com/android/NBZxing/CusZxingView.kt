@@ -93,6 +93,11 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
     }
 
 
+    override fun resultBackFile(content: String) {
+        Toast.makeText(context, content, Toast.LENGTH_LONG).show()
+    }
+
+
     fun checkPermissionRW(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             context.checkSelfPermission(
