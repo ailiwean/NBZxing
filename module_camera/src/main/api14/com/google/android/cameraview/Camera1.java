@@ -89,13 +89,20 @@ class Camera1 extends CameraViewImpl {
     @Override
     boolean start() {
         chooseCamera();
+        if (mCameraId == INVALID_CAMERA_ID) {
+            return false;
+        }
         openCamera();
         if (mPreview.isReady()) {
             setUpPreview();
         }
         mShowingPreview = true;
-        if (mCamera != null)
-            mCamera.startPreview();
+        if (mCamera != null) {
+            try {
+                mCamera.startPreview();
+            } catch (Exception ignored) {
+            }
+        }
         return true;
     }
 
