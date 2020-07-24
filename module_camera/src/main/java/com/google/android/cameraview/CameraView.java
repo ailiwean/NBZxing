@@ -311,9 +311,6 @@ public class CameraView extends FrameLayout {
      * Open a camera device and start showing camera preview. This is typically called from
      */
     public void start() {
-
-        Log.e("currentThread", Thread.currentThread().getName());
-
         if (!isCameraOpened() && !mImpl.start()) {
             //store the state ,and restore this state after fall back o Camera1
             Parcelable state = onSaveInstanceState();

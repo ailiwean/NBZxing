@@ -19,6 +19,7 @@ package com.google.android.cameraview;
 import android.annotation.SuppressLint;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import androidx.collection.SparseArrayCompat;
@@ -76,12 +77,9 @@ class Camera1 extends CameraViewImpl {
 
     Camera1(Callback callback, PreviewImpl preview) {
         super(callback, preview);
-        preview.setCallback(new PreviewImpl.Callback() {
-            @Override
-            public void onSurfaceChanged() {
-                if (mCamera != null) {
-                    setUpPreview();
-                }
+        preview.setCallback(() -> {
+            if (mCamera != null) {
+                setUpPreview();
             }
         });
     }
@@ -92,7 +90,8 @@ class Camera1 extends CameraViewImpl {
         if (mCameraId == INVALID_CAMERA_ID) {
             return false;
         }
-        openCamera();
+        if (!openCamera())
+            return false;
         if (mPreview.isReady()) {
             setUpPreview();
         }
@@ -108,27 +107,32 @@ class Camera1 extends CameraViewImpl {
 
     @Override
     void stop() {
-        if (mCamera != null) {
-            mCamera.stopPreview();
-            mCamera.setPreviewCallback(null);
+        synchronized (Camera1.class) {
+            if (mCamera != null) {
+                mCamera.stopPreview();
+                mCamera.setPreviewCallback(null);
+            }
+            mShowingPreview = false;
+            releaseCamera();
         }
-        mShowingPreview = false;
-        releaseCamera();
     }
 
     // Suppresses Camera#setPreviewTexture
     @SuppressLint("NewApi")
     void setUpPreview() {
-        try {
-            if (mPreview.getOutputClass() == SurfaceHolder.class) {
-                mCamera.setPreviewDisplay(mPreview.getSurfaceHolder());
-            } else {
-                mCamera.setPreviewTexture((SurfaceTexture) mPreview.getSurfaceTexture());
+        synchronized (Camera1.class) {
+            if (mCamera == null)
+                return;
+            try {
+                if (mPreview.getOutputClass() == SurfaceHolder.class) {
+                    mCamera.setPreviewDisplay(mPreview.getSurfaceHolder());
+                } else {
+                    mCamera.setPreviewTexture((SurfaceTexture) mPreview.getSurfaceTexture());
+                }
+                mCamera.setPreviewCallback((data, camera) ->
+                        mCallback.onPreviewByte(data));
+            } catch (IOException ignored) {
             }
-            mCamera.setPreviewCallback((data, camera) ->
-                    mCallback.onPreviewByte(data));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -308,18 +312,18 @@ class Camera1 extends CameraViewImpl {
         mCameraId = INVALID_CAMERA_ID;
     }
 
-    private void openCamera() {
+    private boolean openCamera() {
         if (mCamera != null) {
             releaseCamera();
         }
         try {
             mCamera = Camera.open(mCameraId);
         } catch (Exception e) {
-            return;
+            return false;
         }
 
         if (mCamera == null) {
-            return;
+            return false;
         }
 
         mCameraParameters = mCamera.getParameters();
@@ -340,9 +344,11 @@ class Camera1 extends CameraViewImpl {
         try {
             adjustCameraParameters();
         } catch (Exception ignored) {
+            return false;
         }
         mCamera.setDisplayOrientation(calcDisplayOrientation(mDisplayOrientation));
         mCallback.onCameraOpened();
+        return true;
     }
 
     private AspectRatio chooseAspectRatio() {

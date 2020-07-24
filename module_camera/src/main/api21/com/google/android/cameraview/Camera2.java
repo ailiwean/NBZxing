@@ -73,7 +73,6 @@ class Camera2 extends CameraViewImpl {
 
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
-            Log.e("currentThread-Open", Thread.currentThread().getName());
             mCamera = camera;
             mCallback.onCameraOpened();
             startCaptureSession();
@@ -156,21 +155,16 @@ class Camera2 extends CameraViewImpl {
     };
 
     private final ImageReader.OnImageAvailableListener mOnImageAvailableListener
-            = new ImageReader.OnImageAvailableListener() {
-
-        @Override
-        public void onImageAvailable(ImageReader reader) {
-            try (Image image = reader.acquireNextImage()) {
-                Image.Plane[] planes = image.getPlanes();
-                if (planes.length > 0) {
-                    ByteBuffer buffer = planes[0].getBuffer();
-                    byte[] data = new byte[buffer.remaining()];
-                    buffer.get(data);
-                    mCallback.onPictureTaken(data);
-                }
+            = reader -> {
+        try (Image image = reader.acquireNextImage()) {
+            Image.Plane[] planes = image.getPlanes();
+            if (planes.length > 0) {
+                ByteBuffer buffer = planes[0].getBuffer();
+                byte[] data = new byte[buffer.remaining()];
+                buffer.get(data);
+                mCallback.onPictureTaken(data);
             }
         }
-
     };
 
 
@@ -205,7 +199,7 @@ class Camera2 extends CameraViewImpl {
     Camera2(Callback callback, PreviewImpl preview, Context context) {
         super(callback, preview);
         mCameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
-        mPreview.setCallback(() -> startCaptureSession());
+        mPreview.setCallback(this::startCaptureSession);
     }
 
     @Override
@@ -221,21 +215,23 @@ class Camera2 extends CameraViewImpl {
 
     @Override
     void stop() {
-        if (mCamera != null) {
-            mCamera.close();
-            mCamera = null;
-        }
-        if (mCaptureSession != null) {
-            mCaptureSession.close();
-            mCaptureSession = null;
-        }
-        if (mImageReader != null) {
-            mImageReader.close();
-            mImageReader = null;
-        }
-        if (mYuvReader != null) {
-            mYuvReader.close();
-            mYuvReader = null;
+        synchronized (Camera2.class) {
+            if (mCamera != null) {
+                mCamera.close();
+                mCamera = null;
+            }
+            if (mCaptureSession != null) {
+                mCaptureSession.close();
+                mCaptureSession = null;
+            }
+            if (mImageReader != null) {
+                mImageReader.close();
+                mImageReader = null;
+            }
+            if (mYuvReader != null) {
+                mYuvReader.close();
+                mYuvReader = null;
+            }
         }
     }
 
@@ -531,23 +527,25 @@ class Camera2 extends CameraViewImpl {
      * <p>The result will be continuously processed in {@link #mSessionCallback}.</p>
      */
     void startCaptureSession() {
-        if (!isCameraOpened() || !mPreview.isReady() || mImageReader == null) {
-            return;
-        }
-        Size previewSize = chooseOptimalSize();
-        mPreview.setBufferSize(previewSize.getWidth(), previewSize.getHeight());
-        Surface surface = mPreview.getSurface();
-        try {
-            mPreviewRequestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-            mPreviewRequestBuilder.addTarget(surface);
-            mPreviewRequestBuilder.addTarget(mYuvReader.getSurface());
-            mCamera.createCaptureSession(Arrays.asList(surface
-                    , mImageReader.getSurface()
-                    , mYuvReader.getSurface()
-                    ),
-                    mSessionCallback, null);
-        } catch (CameraAccessException e) {
-            throw new RuntimeException("Failed to start camera session");
+        synchronized (Camera2.class) {
+            if (!isCameraOpened() || !mPreview.isReady() || mImageReader == null) {
+                return;
+            }
+            Size previewSize = chooseOptimalSize();
+            mPreview.setBufferSize(previewSize.getWidth(), previewSize.getHeight());
+            Surface surface = mPreview.getSurface();
+            try {
+                mPreviewRequestBuilder = mCamera.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                mPreviewRequestBuilder.addTarget(surface);
+                mPreviewRequestBuilder.addTarget(mYuvReader.getSurface());
+                mCamera.createCaptureSession(Arrays.asList(surface
+                        , mImageReader.getSurface()
+                        , mYuvReader.getSurface()
+                        ),
+                        mSessionCallback, null);
+            } catch (CameraAccessException e) {
+                throw new RuntimeException("Failed to start camera session");
+            }
         }
     }
 
