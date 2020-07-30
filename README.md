@@ -7,7 +7,7 @@
 
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.16'
+	        implementation 'com.github.ailiwean:NBZxing:0.0.19'
 
 ```
 **注意：库中已经包含zxing源码无需再次依赖**
@@ -113,8 +113,6 @@ protected open fun resultBackFile(content: String) {
  - 安装密码 ： 1234
 
 😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
-后期开始发力钻研图像领域，再在不过分增大包体积前提下将该库打造成真正媲美微信一样的扫码
-#### 喜欢的话留个watch哦，江湖匆匆，下次相见不知哪站！
 
 ##### 联系我
 微信： 17391961576
