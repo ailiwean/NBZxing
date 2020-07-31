@@ -7,7 +7,7 @@
 
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.16'
+	        implementation 'com.github.ailiwean:NBZxing:0.0.19'
 
 ```
 **注意：库中已经包含zxing源码无需再次依赖**
@@ -113,6 +113,7 @@ protected open fun resultBackFile(content: String) {
  - 安装密码 ： 1234
 
 😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
+
 ##### 联系我
 微信： 17391961576
 QQ:  1581209979
