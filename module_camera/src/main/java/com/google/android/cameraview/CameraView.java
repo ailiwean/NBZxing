@@ -282,6 +282,10 @@ public class CameraView extends FrameLayout {
         Config.scanRect.setPreY(oriHeight);
     }
 
+    protected void provideCameraHandler(Handler handler) {
+        if (preview != null)
+            preview.setCameraHandle(handler);
+    }
 
     @Override
     protected Parcelable onSaveInstanceState() {

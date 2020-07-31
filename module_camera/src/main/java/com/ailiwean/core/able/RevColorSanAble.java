@@ -34,7 +34,7 @@ class RevColorSanAble extends PixsValuesAble {
             return;
         //降低反色二维码调用频率
         i++;
-        if (i % 10 != 1) {
+        if (i % 6 != 1) {
             return;
         }
         result = toLaunchParse(new HybridBinarizer(new InvertedLuminanceSource(source)));

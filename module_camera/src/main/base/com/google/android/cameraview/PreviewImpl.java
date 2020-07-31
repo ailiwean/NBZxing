@@ -16,6 +16,7 @@
 
 package com.google.android.cameraview;
 
+import android.os.Handler;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -26,6 +27,8 @@ import android.view.ViewGroup;
  * Encapsulates all the operations related to camera preview in a backward-compatible manner.
  */
 abstract class PreviewImpl {
+
+    private Handler cameraHandler;
 
     interface Callback {
         void onSurfaceChanged();
@@ -41,6 +44,10 @@ abstract class PreviewImpl {
         mCallback = callback;
     }
 
+    void setCameraHandle(Handler cameraHandle) {
+        this.cameraHandler = cameraHandle;
+    }
+
     abstract Surface getSurface();
 
     abstract View getView();
@@ -52,7 +59,9 @@ abstract class PreviewImpl {
     abstract boolean isReady();
 
     protected void dispatchSurfaceChanged() {
-        mCallback.onSurfaceChanged();
+        if (cameraHandler != null)
+            cameraHandler.post(() -> mCallback.onSurfaceChanged());
+        else mCallback.onSurfaceChanged();
     }
 
     SurfaceHolder getSurfaceHolder() {
@@ -70,6 +79,8 @@ abstract class PreviewImpl {
         mWidth = width;
         mHeight = height;
         View v = (View) getView().getParent();
+        getView().setTranslationX(0);
+        getView().setTranslationY(0);
         if (v == null)
             return;
         if (width > v.getMeasuredWidth())

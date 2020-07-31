@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.FloatRange
@@ -102,10 +103,12 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
             }
 
             override fun onResume() {
+                Log.e("TAG-TAG", "onResume");
                 onComResume()
             }
 
             override fun onPause() {
+                Log.e("TAG-TAG", "onPause");
                 onComPause()
             }
 
@@ -182,19 +185,24 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         isShoudCreateOpen = false
     }
 
-    protected val cameraHandler by lazy {
+    private val cameraHandler by lazy {
         val handlerThread = HandlerThread(System.currentTimeMillis().toString())
         handlerThread.start()
         Handler(handlerThread.looper)
+                .apply {
+                    provideCameraHandler(this)
+                }
     }
 
     fun openCamera() {
+        cameraHandler.removeCallbacksAndMessages(null)
         cameraHandler.post {
             start()
         }
     }
 
     fun closeCamera() {
+        cameraHandler.removeCallbacksAndMessages(null)
         cameraHandler.post {
             stop()
         }
@@ -212,7 +220,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         //捕获当前倍率
         Config.currentZoom = percent
     }
-
 
     /***
      * 打开/关闭 闪光灯

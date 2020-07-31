@@ -73,6 +73,7 @@ class Camera2 extends CameraViewImpl {
 
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
+
             mCamera = camera;
             mCallback.onCameraOpened();
             startCaptureSession();
@@ -204,21 +205,24 @@ class Camera2 extends CameraViewImpl {
 
     @Override
     boolean start() {
-        if (!chooseCameraIdByFacing()) {
-            return false;
+        synchronized (Camera2.class) {
+            if (!chooseCameraIdByFacing()) {
+                return false;
+            }
+            collectCameraInfo();
+            prepareImageReader();
+            startOpeningCamera();
+            return true;
         }
-        collectCameraInfo();
-        prepareImageReader();
-        startOpeningCamera();
-        return true;
     }
 
     @Override
     void stop() {
         synchronized (Camera2.class) {
             if (mCamera != null) {
-                mCamera.close();
+                CameraDevice temp = mCamera;
                 mCamera = null;
+                temp.close();
             }
             if (mCaptureSession != null) {
                 mCaptureSession.close();
@@ -543,8 +547,9 @@ class Camera2 extends CameraViewImpl {
                         , mYuvReader.getSurface()
                         ),
                         mSessionCallback, null);
-            } catch (CameraAccessException e) {
-                throw new RuntimeException("Failed to start camera session");
+            } catch (CameraAccessException ignored) {
+                stop();
+                start();
             }
         }
     }
