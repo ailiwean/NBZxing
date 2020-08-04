@@ -3,19 +3,20 @@ package com.ailiwean.core.view
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.content.ContentUris
 import android.content.Context
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.graphics.PointF
-import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
 import android.provider.MediaStore
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -193,6 +194,12 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
 
     var busHandle: Handler? = null
 
+    private fun initBusHandle() {
+        val handlerThread = HandlerThread(System.currentTimeMillis().toString())
+        handlerThread.start()
+        busHandle = Handler(handlerThread.looper)
+    }
+
     protected fun parseFile(filePath: String) {
 
         if (!checkPermissionRW())
@@ -207,7 +214,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
 
         busHandle?.post {
             val bitmap: Bitmap = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                ImageDecoder.decodeBitmap(ImageDecoder.createSource(file))
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, getMediaUriFromPath(context, filePath)))
                         .copy(Bitmap.Config.RGB_565, false)
             } else
                 BitmapFactory.decodeFile(filePath))
@@ -216,13 +223,9 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         }
     }
 
-    private fun initBusHandle() {
-        val handlerThread = HandlerThread(System.currentTimeMillis().toString())
-        handlerThread.start()
-        busHandle = Handler(handlerThread.looper)
-    }
-
-    protected fun parseBitmap(bitmap: Bitmap) {
+    protected fun parseBitmap(bitmap: Bitmap?) {
+        if (bitmap == null)
+            return
         if (busHandle == null)
             initBusHandle()
         busHandle?.post {
@@ -256,5 +259,21 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
                 }
             }
         }
+    }
+
+    open fun getMediaUriFromPath(context: Context, path: String): Uri {
+        val mediaUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val cursor: Cursor? = context.contentResolver.query(mediaUri,
+                null,
+                MediaStore.Images.Media.DISPLAY_NAME + "= ?", arrayOf(path.substring(path.lastIndexOf("/") + 1)),
+                null)
+        var uri: Uri? = null
+        cursor?.let {
+            it.moveToFirst()
+            uri = ContentUris.withAppendedId(mediaUri,
+                    it.getLong(it.getColumnIndex(MediaStore.Images.Media._ID)))
+        }
+        cursor?.close()
+        return uri ?: Uri.EMPTY
     }
 }
