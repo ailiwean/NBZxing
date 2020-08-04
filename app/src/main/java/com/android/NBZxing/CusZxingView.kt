@@ -98,20 +98,6 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
     }
 
 
-    fun checkPermissionRW(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context.checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
-            context.checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
-        } else {
-            return true
-        }
-    }
-
-
     fun requstPermissionRW() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             (context as? Activity)?.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 200)

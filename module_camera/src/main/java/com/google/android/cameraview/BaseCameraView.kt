@@ -165,7 +165,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     fun onComCreate() {
         if (!isShoudCreateOpen)
             return
-        if (checkPermission()) {
+        if (checkPermissionCamera()) {
             openCamera()
         } else {
             requstPermission()
@@ -176,7 +176,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         if (isShoudCreateOpen) {
             return
         }
-        if (checkPermission())
+        if (checkPermissionCamera())
             openCamera()
     }
 
@@ -246,7 +246,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         cameraHandler.looper.quit()
     }
 
-    fun checkPermission(): Boolean {
+    fun checkPermissionCamera(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             context.checkSelfPermission(
                     Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -255,9 +255,26 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }
     }
 
-    fun requstPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            (context as? Activity)?.requestPermissions(arrayOf(Manifest.permission.CAMERA), 200)
+    fun checkPermissionRW(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context.checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+
+            context.checkSelfPermission(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+
+        } else {
+            return true
         }
     }
+
+    fun requstPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            (context as? Activity)?.requestPermissions(arrayOf(Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            ), 200)
+        }
+    }
+
 }

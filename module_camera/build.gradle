@@ -6,7 +6,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 group = 'com.github.ailiwean'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     resourcePrefix "camera_"
     defaultConfig {
         minSdkVersion 17

@@ -6,10 +6,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
 import android.graphics.PointF
+import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
+import android.provider.MediaStore
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
@@ -190,16 +194,24 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     var busHandle: Handler? = null
 
     protected fun parseFile(filePath: String) {
-        val file = File(filePath)
-        if (!file.exists()) {
+
+        if (!checkPermissionRW())
             return
-        }
+
+        val file = File(filePath)
+        if (!file.exists())
+            return
 
         if (busHandle == null)
             initBusHandle()
 
         busHandle?.post {
-            val bitmap = BitmapFactory.decodeFile(filePath)
+            val bitmap: Bitmap = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(file))
+                        .copy(Bitmap.Config.RGB_565, false)
+            } else
+                BitmapFactory.decodeFile(filePath))
+                    ?: return@post
             parseBitmap(bitmap)
         }
     }
@@ -213,25 +225,34 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     protected fun parseBitmap(bitmap: Bitmap) {
         if (busHandle == null)
             initBusHandle()
-
         busHandle?.post {
-            val source = BitmapLuminanceSource(bitmap)
-
-            var result = CustomMultiFormatReader.getInstance()
-                    .decode(BinaryBitmap(GlobalHistogramBinarizer(source)))
-
-            if (result == null)
-                result = CustomMultiFormatReader.getInstance()
-                        .decode(BinaryBitmap(HybridBinarizer(source)))
-
-            if (result != null) {
-                mainHand.post {
-                    resultBackFile(result.text)
-                    scanSucHelper()
+            bitmap.apply {
+                if (config != Bitmap.Config.RGB_565
+                        && config != Bitmap.Config.ARGB_8888) {
+                    if (isMutable)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            config = Bitmap.Config.RGB_565
+                        } else {
+                            copy(Bitmap.Config.RGB_565, false)
+                        }
+                    else
+                        copy(Bitmap.Config.RGB_565, false)
                 }
-            } else {
-                mainHand.post {
-                    resultBackFile("")
+                val source = BitmapLuminanceSource(this)
+                var result = CustomMultiFormatReader.getInstance()
+                        .decode(BinaryBitmap(GlobalHistogramBinarizer(source)))
+                if (result == null)
+                    result = CustomMultiFormatReader.getInstance()
+                            .decode(BinaryBitmap(HybridBinarizer(source)))
+                if (result != null) {
+                    mainHand.post {
+                        resultBackFile(result.text)
+                        scanSucHelper()
+                    }
+                } else {
+                    mainHand.post {
+                        resultBackFile("")
+                    }
                 }
             }
         }
