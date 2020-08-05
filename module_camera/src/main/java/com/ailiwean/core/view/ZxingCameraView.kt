@@ -37,6 +37,7 @@ import com.google.android.cameraview.CameraView
 import com.google.android.cameraview.R
 import kotlinx.android.synthetic.main.base_zxing_layout.view.*
 import java.io.File
+import java.lang.ref.WeakReference
 
 /**
  * @Package:        com.google.android.cameraview
@@ -161,16 +162,23 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     }
 
 
-    class HandleZX constructor(val callback: (Message) -> Unit) : Handler() {
+    class HandleZX constructor(callback_: (Message) -> Unit) : Handler() {
         var hasResult = false
+        var callback: WeakReference<Function1<Message, Unit>>? = null
+
+        init {
+            this@HandleZX.callback = WeakReference(callback_)
+        }
+
         override fun handleMessage(msg: Message?) {
-            super.handleMessage(msg)
             if (hasResult)
                 return
             msg?.apply {
                 if (msg.what == SCAN_RESULT)
                     hasResult = true
-                callback(msg)
+                this@HandleZX.callback?.get()?.let {
+                    it(msg)
+                }
             }
         }
 
