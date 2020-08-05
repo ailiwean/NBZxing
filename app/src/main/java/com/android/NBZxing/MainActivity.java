@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         this.<CusZxingView>findViewById(R.id.zxingview)
                 .synchLifeStart(this);
 
@@ -29,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 //                .replace(R.id.parent, fragment)
 //                .commit();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

@@ -47,7 +47,7 @@ import java.lang.ref.WeakReference
  * @CreateDate:     2020/4/19 12:38 AM
  */
 abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
-        BaseCameraView(context, attributeSet, def) {
+        BaseCameraView(context, attributeSet, def), Handler.Callback {
 
     init {
         facing = FACING_BACK
@@ -61,7 +61,9 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         }
     }
 
-    private val handleZX = HandleZX {
+    private val handleZX = HandleZX(this)
+
+    override fun handleMessage(it: Message): Boolean {
         when (it.what) {
             SCAN_RESULT -> {
                 scanSucHelper()
@@ -77,6 +79,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
                 setZoom(it.obj.toString().toFloat())
             }
         }
+        return true
     }
 
     private var ableCollect: AbleManager? = null
@@ -162,12 +165,12 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     }
 
 
-    class HandleZX constructor(callback_: (Message) -> Unit) : Handler() {
+    class HandleZX constructor(view: Callback) : Handler() {
         var hasResult = false
-        var callback: WeakReference<Function1<Message, Unit>>? = null
+        var viewReference: WeakReference<Callback>? = null
 
         init {
-            this@HandleZX.callback = WeakReference(callback_)
+            this@HandleZX.viewReference = WeakReference(view)
         }
 
         override fun handleMessage(msg: Message?) {
@@ -176,8 +179,8 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
             msg?.apply {
                 if (msg.what == SCAN_RESULT)
                     hasResult = true
-                this@HandleZX.callback?.get()?.let {
-                    it(msg)
+                this@HandleZX.viewReference?.get()?.let {
+                    it.handleMessage(msg)
                 }
             }
         }
