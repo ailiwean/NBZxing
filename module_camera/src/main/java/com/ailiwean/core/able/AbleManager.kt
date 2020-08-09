@@ -19,8 +19,8 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     private val ableList: MutableList<PixsValuesAble> = ArrayList()
 
-    var server: WorkThreadServer
-    val grayProcessHandler by lazy {
+    private var server: WorkThreadServer
+    private val grayProcessHandler by lazy {
         Handler(HandlerThread("GrayProcessThread")
                 .apply { start() }
                 .looper)
@@ -39,7 +39,6 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         ableList.add(XQRScanAbleRotate(handler))
         ableList.add(LighSolveAble(handler))
         ableList.add(RevColorSanAble(handler))
-        //        ableList.add(new GrayscaleStrengAble(handler));
     }
 
     public override fun cusAction(data: ByteArray, dataWidth: Int, dataHeight: Int) {
@@ -58,6 +57,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     private fun grayscaleProcess(data: ByteArray, dataWidth: Int, dataHeight: Int) {
+        grayProcessHandler.removeCallbacksAndMessages(null)
         grayProcessHandler.post {
             val newByte = dispatch(data, dataWidth, dataHeight)
             executeToParse(newByte, dataWidth, dataHeight)

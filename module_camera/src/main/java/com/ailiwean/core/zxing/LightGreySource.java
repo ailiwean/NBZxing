@@ -4,6 +4,7 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.os.Environment;
+import android.util.Log;
 
 import com.ailiwean.core.zxing.core.InvertedLuminanceSource;
 import com.ailiwean.core.zxing.core.LuminanceSource;
@@ -77,8 +78,9 @@ public class LightGreySource extends LuminanceSource {
                 e.printStackTrace();
             }
 
+            short random = (short) (Math.random() * 4 + 3);
             for (int i = 0; i < w * h; i++) {
-                cropNv21[i] = (byte) (cropNv21[i] * 2f);
+                cropNv21[i] = (byte) (cropNv21[i] * random);
             }
 //            for (int step_h = 0; step_h + stepX < h; step_h += stepY) {
 //                for (int step_w = 0; step_w + stepX < w; step_w += stepX) {
@@ -124,6 +126,7 @@ public class LightGreySource extends LuminanceSource {
     @Override
     public byte[] getMatrix() {
         int length = getWidth() * getHeight();
+        toPut(delegate.getMatrix(), getWidth(), getHeight());
         byte[] lightGrey = delegate.getMatrix().clone();
         for (int i = 0; i < length; i++) {
             lightGrey[i] = (byte) (lightGrey[i] * 2f);
