@@ -1,27 +1,14 @@
 package com.ailiwean.core.helper;
 
-import android.graphics.ImageFormat;
 import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraMetadata;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
-import android.os.Environment;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.FloatRange;
-
-import com.ailiwean.core.Utils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Camera2 API中一些计算
@@ -200,7 +187,7 @@ public class CameraHelper {
             byte[] nv21 = new byte[remaining0 + remaining2];
             planes[0].getBuffer().get(yRawSrcBytes);
             planes[2].getBuffer().get(uvRawSrcBytes);
-            //0b10000001 对应-127,YUV二值化操作
+            //0b10000001 对应-127,YUV灰度操作
 //            for (int i = 0; i < uvRawSrcBytes.length; i++)
 //                nv21[yRawSrcBytes.length + i] = (byte) 0b10000001;
             System.arraycopy(yRawSrcBytes, 0, nv21, 0, yRawSrcBytes.length);

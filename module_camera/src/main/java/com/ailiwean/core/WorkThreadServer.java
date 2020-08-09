@@ -1,8 +1,5 @@
 package com.ailiwean.core;
 
-import android.os.Handler;
-import android.os.HandlerThread;
-
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;

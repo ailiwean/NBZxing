@@ -15,7 +15,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.android.NBZxing"
-        minSdkVersion 19
+        minSdkVersion 17
         targetSdkVersion 29
         versionCode 9
         versionName "1.9"
