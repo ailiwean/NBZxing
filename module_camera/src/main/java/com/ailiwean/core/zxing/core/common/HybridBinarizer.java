@@ -17,8 +17,6 @@
 package com.ailiwean.core.zxing.core.common;
 
 
-import android.util.Log;
-
 import com.ailiwean.core.zxing.core.Binarizer;
 import com.ailiwean.core.zxing.core.LuminanceSource;
 import com.ailiwean.core.zxing.core.NotFoundException;

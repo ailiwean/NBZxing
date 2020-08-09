@@ -1,10 +1,8 @@
 package com.ailiwean.core.able;
 
-import android.graphics.Rect;
 import android.os.Handler;
 
 import com.ailiwean.core.WorkThreadServer;
-import com.ailiwean.core.zxing.core.BinaryBitmap;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 
 import java.util.ArrayList;
@@ -40,6 +38,7 @@ public class AbleManager extends PixsValuesAble {
         ableList.add(new XQRScanAbleRotate(handler));
         ableList.add(new LighSolveAble(handler));
         ableList.add(new RevColorSanAble(handler));
+        ableList.add(new GrayscaleStrengAble(handler));
     }
 
     public static AbleManager createInstance(Handler handler) {

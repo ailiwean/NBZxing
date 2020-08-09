@@ -2,17 +2,10 @@ package com.android.NBZxing;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.zhihu.matisse.Matisse;
-
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {

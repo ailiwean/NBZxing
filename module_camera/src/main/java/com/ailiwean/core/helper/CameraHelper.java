@@ -1,14 +1,27 @@
 package com.ailiwean.core.helper;
 
+import android.graphics.ImageFormat;
 import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraMetadata;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.FloatRange;
+
+import com.ailiwean.core.Utils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Camera2 API中一些计算
@@ -174,61 +187,30 @@ public class CameraHelper {
 
     private static byte[] getByteFromImage(Image image) {
         try {
-
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 return null;
             }
-
             if (image == null || image.getPlanes() == null || image.getPlanes().length == 0)
                 return null;
-
-            int w = image.getWidth(), h = image.getHeight();
-            int i420Size = w * h * 3 / 2;
-
             Image.Plane[] planes = image.getPlanes();
-            //remaining0 = rowStride*(h-1)+w => 27632= 192*143+176
             int remaining0 = planes[0].getBuffer().remaining();
-            int remaining1 = planes[1].getBuffer().remaining();
-            //remaining2 = rowStride*(h/2-1)+w-1 =>  13807=  192*71+176-1
             int remaining2 = planes[2].getBuffer().remaining();
-            //获取pixelStride，可能跟width相等，可能不相等
-            int pixelStride = planes[2].getPixelStride();
-            int rowOffest = planes[2].getRowStride();
-            byte[] nv21 = new byte[i420Size];
             byte[] yRawSrcBytes = new byte[remaining0];
-            byte[] uRawSrcBytes = new byte[remaining1];
-            byte[] vRawSrcBytes = new byte[remaining2];
+            byte[] uvRawSrcBytes = new byte[remaining2];
+            byte[] nv21 = new byte[remaining0 + remaining2];
             planes[0].getBuffer().get(yRawSrcBytes);
-            planes[1].getBuffer().get(uRawSrcBytes);
-            planes[2].getBuffer().get(vRawSrcBytes);
-            if (pixelStride == w) {
-                //两者相等，说明每个YUV块紧密相连，可以直接拷贝
-                System.arraycopy(yRawSrcBytes, 0, nv21, 0, rowOffest * h);
-                System.arraycopy(vRawSrcBytes, 0, nv21, rowOffest * h, rowOffest * h / 2 - 1);
-            } else {
-                byte[] ySrcBytes = new byte[w * h];
-                byte[] vSrcBytes = new byte[w * h / 2 - 1];
-                for (int row = 0; row < h; row++) {
-                    //源数组每隔 rowOffest 个bytes 拷贝 w 个bytes到目标数组
-                    System.arraycopy(yRawSrcBytes, rowOffest * row, ySrcBytes, w * row, w);
-
-                    //y执行两次，uv执行一次
-                    if (row % 2 == 0) {
-                        //最后一行需要减一
-                        if (row == h - 2) {
-                            System.arraycopy(vRawSrcBytes, rowOffest * row / 2, vSrcBytes, w * row / 2, w - 1);
-                        } else {
-                            System.arraycopy(vRawSrcBytes, rowOffest * row / 2, vSrcBytes, w * row / 2, w);
-                        }
-                    }
-                }
-                System.arraycopy(ySrcBytes, 0, nv21, 0, w * h);
-                System.arraycopy(vSrcBytes, 0, nv21, w * h, w * h / 2 - 1);
-            }
+            planes[2].getBuffer().get(uvRawSrcBytes);
+            //0b10000001 对应-127,YUV二值化操作
+//            for (int i = 0; i < uvRawSrcBytes.length; i++)
+//                nv21[yRawSrcBytes.length + i] = (byte) 0b10000001;
+            System.arraycopy(yRawSrcBytes, 0, nv21, 0, yRawSrcBytes.length);
+            System.arraycopy(uvRawSrcBytes, 0, nv21, yRawSrcBytes.length, uvRawSrcBytes.length);
             return nv21;
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             return null;
         }
+
     }
 
 
@@ -249,6 +231,4 @@ public class CameraHelper {
         p.setZoom(zoom);
         mCamera.setParameters(p);
     }
-
-
 }
