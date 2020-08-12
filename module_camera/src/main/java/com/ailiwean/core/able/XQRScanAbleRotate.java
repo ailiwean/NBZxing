@@ -32,7 +32,7 @@ public class XQRScanAbleRotate extends PixsValuesAble {
             return;
         //降低旋转二维码调用频率
         i++;
-        if (i % 10 != 1) {
+        if (i % 5 != 1) {
             return;
         }
         data = rotateByte(data, dataWidth, dataHeight);

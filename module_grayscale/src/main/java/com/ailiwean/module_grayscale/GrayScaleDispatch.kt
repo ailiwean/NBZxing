@@ -21,8 +21,10 @@ object GrayScaleDispatch : Dispatch {
     }
 
     override fun dispatch(data: ByteArray?, width: Int, height: Int): ByteArray {
-        return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(
-                data, width, height)
+        if (random.nextInt(10) in 0..5)
+            return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(
+                    data, width, height)
+        return ByteArray(0)
     }
 
 }

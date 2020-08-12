@@ -18,6 +18,7 @@ import com.ailiwean.core.zxing.core.Result;
 public abstract class PixsValuesAble {
 
     Handler handler;
+    boolean isNative;
 
     CustomMultiFormatReader reader = CustomMultiFormatReader.getInstance();
 
@@ -32,6 +33,11 @@ public abstract class PixsValuesAble {
      * @param dataHeight
      */
     protected void cusAction(byte[] data, int dataWidth, int dataHeight) {
+    }
+
+    protected void cusAction(byte[] data, int dataWidth, int dataHeight, boolean isNative) {
+        this.isNative = isNative;
+        cusAction(data, dataWidth, dataHeight);
     }
 
     /***

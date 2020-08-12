@@ -42,15 +42,15 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     public override fun cusAction(data: ByteArray, dataWidth: Int, dataHeight: Int) {
-        executeToParse(data, dataWidth, dataHeight)
+        executeToParse(data, dataWidth, dataHeight, true)
         grayscaleProcess(data, dataWidth, dataHeight)
     }
 
-    private fun executeToParse(data: ByteArray, dataWidth: Int, dataHeight: Int) {
+    private fun executeToParse(data: ByteArray, dataWidth: Int, dataHeight: Int, isNative: Boolean) {
         val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight)
         for (able in ableList) {
             server.post {
-                able.cusAction(data, dataWidth, dataHeight)
+                able.cusAction(data, dataWidth, dataHeight, isNative)
                 able.needParseDeploy(source)
             }
         }
@@ -60,7 +60,8 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         grayProcessHandler.removeCallbacksAndMessages(null)
         grayProcessHandler.post {
             val newByte = dispatch(data, dataWidth, dataHeight)
-            executeToParse(newByte, dataWidth, dataHeight)
+            if (newByte.isNotEmpty())
+                executeToParse(newByte, dataWidth, dataHeight, false)
         }
     }
 
