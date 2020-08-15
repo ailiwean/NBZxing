@@ -129,7 +129,9 @@ protected open fun resultBackFile(content: String) {
 #### 下版预期
 提供完全的自定义界面，近期发布
 
-
 ##### 联系我
 微信： 17391961576
 QQ:  1581209979
+
+白嫖这种行为不好啊😄
+![pay](https://github.com/ailiwean/NBZxing/blob/master/qr_test/pay.png "pay")
