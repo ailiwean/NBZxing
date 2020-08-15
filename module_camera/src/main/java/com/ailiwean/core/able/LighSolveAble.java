@@ -2,6 +2,7 @@ package com.ailiwean.core.able;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.LightHelper;

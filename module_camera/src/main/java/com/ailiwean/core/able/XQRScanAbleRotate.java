@@ -23,18 +23,11 @@ public class XQRScanAbleRotate extends PixsValuesAble {
     XQRScanAbleRotate(Handler handler) {
         super(handler);
     }
-
-    int i = -1;
-
+    
     @Override
     public void cusAction(byte[] data, int dataWidth, int dataHeight) {
-        if (result != null)
+        if (result != null && !isNative)
             return;
-        //降低旋转二维码调用频率
-        i++;
-        if (i % 5 != 1) {
-            return;
-        }
         data = rotateByte(data, dataWidth, dataHeight);
         if (data == null)
             return;

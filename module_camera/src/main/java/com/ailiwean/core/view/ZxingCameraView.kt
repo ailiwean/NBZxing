@@ -152,6 +152,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         qr_loc.visibility = View.GONE
         initScanType()
         handleZX.init()
+        VibrateHelper.playInit()
     }
 
     /***

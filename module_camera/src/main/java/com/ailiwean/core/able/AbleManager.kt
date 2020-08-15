@@ -20,6 +20,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     private val ableList: MutableList<PixsValuesAble> = ArrayList()
 
     private var server: WorkThreadServer
+
     private val grayProcessHandler by lazy {
         Handler(HandlerThread("GrayProcessThread")
                 .apply { start() }
@@ -42,18 +43,12 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     public override fun cusAction(data: ByteArray, dataWidth: Int, dataHeight: Int) {
-        executeToParse(data, dataWidth, dataHeight, true)
+        originProcess(data, dataWidth, dataHeight)
         grayscaleProcess(data, dataWidth, dataHeight)
     }
 
-    private fun executeToParse(data: ByteArray, dataWidth: Int, dataHeight: Int, isNative: Boolean) {
-        val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight)
-        for (able in ableList) {
-            server.post {
-                able.cusAction(data, dataWidth, dataHeight, isNative)
-                able.needParseDeploy(source)
-            }
-        }
+    private fun originProcess(data: ByteArray, dataWidth: Int, dataHeight: Int) {
+        executeToParse(data, dataWidth, dataHeight, true, server)
     }
 
     private fun grayscaleProcess(data: ByteArray, dataWidth: Int, dataHeight: Int) {
@@ -61,7 +56,17 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         grayProcessHandler.post {
             val newByte = dispatch(data, dataWidth, dataHeight)
             if (newByte.isNotEmpty())
-                executeToParse(newByte, dataWidth, dataHeight, false)
+                executeToParse(newByte, dataWidth, dataHeight, false, server)
+        }
+    }
+
+    private fun executeToParse(data: ByteArray, dataWidth: Int, dataHeight: Int, isNative: Boolean, server: WorkThreadServer) {
+        val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight)
+        for (able in ableList) {
+            server.post {
+                able.cusAction(data, dataWidth, dataHeight, isNative)
+                able.needParseDeploy(source)
+            }
         }
     }
 

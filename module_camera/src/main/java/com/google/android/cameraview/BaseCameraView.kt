@@ -103,12 +103,10 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
             }
 
             override fun onResume() {
-                Log.e("TAG-TAG", "onResume");
                 onComResume()
             }
 
             override fun onPause() {
-                Log.e("TAG-TAG", "onPause");
                 onComPause()
             }
 

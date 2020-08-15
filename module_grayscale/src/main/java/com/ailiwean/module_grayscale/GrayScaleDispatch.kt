@@ -18,13 +18,12 @@ object GrayScaleDispatch : Dispatch {
 
     init {
         grayScaleProcess.add(LightGreyScale())
+        grayScaleProcess.add(OverBrightScale())
     }
 
     override fun dispatch(data: ByteArray?, width: Int, height: Int): ByteArray {
-        if (random.nextInt(10) in 0..5)
-            return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(
-                    data, width, height)
-        return ByteArray(0)
+        return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(
+                data, width, height)
     }
 
 }
