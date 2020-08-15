@@ -7,7 +7,7 @@
 
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.20'
+	        implementation 'com.github.ailiwean:NBZxing:0.0.21'
 
 ```
 **注意：库中已经包含zxing源码无需再次依赖**
@@ -112,6 +112,19 @@ protected open fun resultBackFile(content: String) {
  - 安装密码 ： 1234
 
 😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
+
+#### 测试二维码
+
+![标准反色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/82984899-9f981600-a025-11ea-9fe6-ad9fead67afa.png "标准反色")
+
+![彩色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/caise.png "彩色")
+
+![暗色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_dart.png "暗色")
+
+![曝光](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_light.png "曝光")
+
+![浅色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/test_gray.png "浅色")
+
 
 #### 下版预期
 提供完全的自定义界面，近期发布
