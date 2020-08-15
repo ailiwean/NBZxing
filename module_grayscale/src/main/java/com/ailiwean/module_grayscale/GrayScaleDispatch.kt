@@ -19,6 +19,7 @@ object GrayScaleDispatch : Dispatch {
     init {
         grayScaleProcess.add(LightGreyScale())
         grayScaleProcess.add(OverBrightScale())
+        grayScaleProcess.add(OverDarkScale())
     }
 
     override fun dispatch(data: ByteArray?, width: Int, height: Int): ByteArray {

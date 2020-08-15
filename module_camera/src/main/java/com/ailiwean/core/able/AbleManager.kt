@@ -39,6 +39,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         ableList.add(XQRScanAbleRotate(handler))
         ableList.add(LighSolveAble(handler))
         ableList.add(RevColorSanAble(handler))
+        //    ableList.add(GrayscaleStrengAble(handler))
     }
 
     public override fun cusAction(data: ByteArray, dataWidth: Int, dataHeight: Int) {
