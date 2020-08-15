@@ -21,6 +21,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     private var server: WorkThreadServer
 
+    private var processClz: Class<out Any>? = null
     private var processDispatch: GrayScaleDispatch? = null
 
     private val grayProcessHandler by lazy {
@@ -32,7 +33,9 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     init {
         loadAble()
         server = WorkThreadServer.createInstance()
-        processDispatch = Class.forName("com.ailiwean.module_grayscale.GrayScaleDispatch").newInstance() as GrayScaleDispatch?
+        processClz = Class.forName("com.ailiwean.module_grayscale.GrayScaleDispatch")
+        if (processClz != null)
+            processDispatch = processClz?.newInstance() as GrayScaleDispatch?
     }
 
     fun loadAble() {
@@ -56,7 +59,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     private fun grayscaleProcess(data: ByteArray, dataWidth: Int, dataHeight: Int) {
         grayProcessHandler.removeCallbacksAndMessages(null)
-        if (processDispatch == null)
+        if (processClz == null)
             return
         grayProcessHandler.post {
             val newByte = processDispatch!!.dispatch(data, dataWidth, dataHeight)
