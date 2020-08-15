@@ -80,7 +80,8 @@ public class LightGreySource extends LuminanceSource {
 
             short random = (short) (Math.random() * 4 + 3);
             for (int i = 0; i < w * h; i++) {
-                cropNv21[i] = (byte) (cropNv21[i] & 0xff - 100);
+                cropNv21[i] = (byte) (255 * Math.pow((cropNv21[i] & 0xff) / 255f, 7f));
+
             }
 //            for (int step_h = 0; step_h + stepX < h; step_h += stepY) {
 //                for (int step_w = 0; step_w + stepX < w; step_w += stepX) {

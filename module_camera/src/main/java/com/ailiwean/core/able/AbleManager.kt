@@ -34,7 +34,6 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     fun loadAble() {
         ableList.clear()
-        //        ableList.add(new XQRScanAble(handler));
         ableList.add(XQRScanZoomAble(handler))
         ableList.add(XQRScanFastAble(handler))
         ableList.add(XQRScanAbleRotate(handler))

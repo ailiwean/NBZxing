@@ -56,7 +56,7 @@ public class XQRScanZoomAble extends XQRScanAble {
             //自动变焦时间间隔为500ms
             if (System.currentTimeMillis() - zoomTime < 500)
                 return;
-            Message.obtain(handler, Config.AUTO_ZOOM, Config.currentZoom + 0.1 + "")
+            Message.obtain(handler, Config.AUTO_ZOOM, Config.currentZoom + 0.07 + "")
                     .sendToTarget();
             zoomTime = System.currentTimeMillis();
         }
