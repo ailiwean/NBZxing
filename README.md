@@ -3,14 +3,19 @@
   
 ### 依赖
 
-[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://jitpack.io/#ailiwean/NBZxing)
+[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://jitpack.io/#ailiwean/NBZxing)    [![](https://jitpack.io/v/ailiwean/NBZxing-Scale.svg)](https://jitpack.io/#ailiwean/NBZxing-Scale)
+
+
 
 
 ```
 	        implementation 'com.github.ailiwean:NBZxing:0.0.21'
-
+		//若需要使用灰度算法增强库，再次添加以下依赖		
+		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.1'
 ```
 **注意：库中已经包含zxing源码无需再次依赖**
+
+
 
 两步搞定
 
