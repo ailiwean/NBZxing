@@ -11,7 +11,7 @@ import kotlin.collections.ArrayList
  * @Author:         SWY
  * @CreateDate:     2020/8/9 6:33 PM
  */
-object GrayScaleDispatch : Dispatch {
+class GrayScaleDispatch : Dispatch {
 
     private var grayScaleProcess = ArrayList<Dispatch>()
     var random = Random()

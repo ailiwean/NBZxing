@@ -5,7 +5,7 @@ import android.os.HandlerThread
 import com.ailiwean.core.WorkThreadServer
 import com.ailiwean.core.helper.ScanHelper
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource
-import com.ailiwean.module_grayscale.GrayScaleDispatch.dispatch
+import com.ailiwean.module_grayscale.GrayScaleDispatch
 import java.util.*
 
 /**
@@ -21,6 +21,8 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     private var server: WorkThreadServer
 
+    private var processDispatch: GrayScaleDispatch? = null
+
     private val grayProcessHandler by lazy {
         Handler(HandlerThread("GrayProcessThread")
                 .apply { start() }
@@ -30,6 +32,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     init {
         loadAble()
         server = WorkThreadServer.createInstance()
+        processDispatch = Class.forName("com.ailiwean.module_grayscale.GrayScaleDispatch").newInstance() as GrayScaleDispatch?
     }
 
     fun loadAble() {
@@ -53,8 +56,10 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     private fun grayscaleProcess(data: ByteArray, dataWidth: Int, dataHeight: Int) {
         grayProcessHandler.removeCallbacksAndMessages(null)
+        if (processDispatch == null)
+            return
         grayProcessHandler.post {
-            val newByte = dispatch(data, dataWidth, dataHeight)
+            val newByte = processDispatch!!.dispatch(data, dataWidth, dataHeight)
             if (newByte.isNotEmpty())
                 executeToParse(newByte, dataWidth, dataHeight, false, server)
         }
