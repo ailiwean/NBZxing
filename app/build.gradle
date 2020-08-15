@@ -35,12 +35,12 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':module_camera')
+//    implementation project(path: ':module_camera')
     api "androidx.appcompat:appcompat:1.1.0"
     implementation 'com.zhihu.android:matisse:0.5.3-beta3'
 //    implementation 'com.github.ailiwean:NBZxing:0.0.7'
 //    api 'com.google.zxing:core:3.3.3'
-//    implementation 'com.github.ailiwean:NBZxing:0.0.20'
+    implementation 'com.github.ailiwean:NBZxing:0.0.21'
     //   implementation 'me.devilsen:czxing:1.0.11'
 
 }
