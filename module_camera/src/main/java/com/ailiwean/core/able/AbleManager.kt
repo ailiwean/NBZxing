@@ -33,7 +33,10 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     init {
         loadAble()
         server = WorkThreadServer.createInstance()
-        processClz = Class.forName("com.ailiwean.module_grayscale.GrayScaleDispatch")
+        try {
+            processClz = Class.forName("com.ailiwean.module_grayscale.GrayScaleDispatch")
+        } catch (e: Exception) {
+        }
         if (processClz != null)
             processDispatch = processClz?.newInstance() as GrayScaleDispatch?
     }
