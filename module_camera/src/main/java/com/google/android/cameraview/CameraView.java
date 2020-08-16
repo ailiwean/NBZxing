@@ -187,10 +187,10 @@ public class CameraView extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        if (isInEditMode()) {
-//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//            return;
-//        }
+        if (isInEditMode()) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
         // Handle android:adjustViewBounds
 //        if (mAdjustViewBounds) {
 //            if (!isCameraOpened()) {

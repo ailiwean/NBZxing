@@ -9,8 +9,8 @@
 
 
 ```
-	    implementation 'com.github.ailiwean:NBZxing:0.0.21'
-		//若需要使用灰度算法增强库，再次添加以下依赖 //纯java版超轻量
+	        implementation 'com.github.ailiwean:NBZxing:0.0.21'
+		//若需要使用灰度算法增强库，再次添加以下依赖//纯java超轻量
 		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.1'
 ```
 **注意：库中已经包含zxing源码无需再次依赖**

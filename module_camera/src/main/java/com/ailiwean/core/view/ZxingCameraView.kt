@@ -149,7 +149,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     fun initConfig() {
         ableCollect?.loadAble()
         scan_bar.startAnim()
-        qr_loc.visibility = View.GONE
+        qr_loc.visibility = View.INVISIBLE
         initScanType()
         handleZX.init()
         VibrateHelper.playInit()

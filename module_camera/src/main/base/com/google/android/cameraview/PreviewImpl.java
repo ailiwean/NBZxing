@@ -17,6 +17,7 @@
 package com.google.android.cameraview;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.View;
