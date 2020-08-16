@@ -355,28 +355,22 @@ class Camera2 extends CameraViewImpl {
 
     @Override
     void toZoomMax() {
-        try {
-            mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, CameraHelper.getZoomRect(mCameraCharacteristics, 1));
-            mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
-        } catch (Exception e) {
-        }
+        setZoom(1);
     }
 
     @Override
     void toZoomMin() {
-        try {
-            mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, CameraHelper.getZoomRect(mCameraCharacteristics, 0));
-            mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
-        } catch (Exception e) {
-        }
+        setZoom(0);
     }
 
     @Override
     void setZoom(float percent) {
-        try {
-            mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, CameraHelper.getZoomRect(mCameraCharacteristics, percent));
-            mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
-        } catch (Exception e) {
+        synchronized (Camera2.class) {
+            try {
+                mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, CameraHelper.getZoomRect(mCameraCharacteristics, percent));
+                mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
+            } catch (Exception e) {
+            }
         }
     }
 

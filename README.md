@@ -9,8 +9,8 @@
 
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.21'
-		//若需要使用灰度算法增强库，再次添加以下依赖		
+	    implementation 'com.github.ailiwean:NBZxing:0.0.21'
+		//若需要使用灰度算法增强库，再次添加以下依赖 //纯java版超轻量
 		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.1'
 ```
 **注意：库中已经包含zxing源码无需再次依赖**
@@ -138,5 +138,4 @@ protected open fun resultBackFile(content: String) {
 微信： 17391961576
 QQ:  1581209979
 
-白嫖这种行为不好啊😄
 ![pay](https://github.com/ailiwean/NBZxing/blob/master/qr_test/pay.png "pay")

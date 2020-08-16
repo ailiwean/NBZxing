@@ -61,9 +61,9 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     private fun grayscaleProcess(data: ByteArray, dataWidth: Int, dataHeight: Int) {
-        grayProcessHandler.removeCallbacksAndMessages(null)
         if (processClz == null)
             return
+        grayProcessHandler.removeCallbacksAndMessages(null)
         grayProcessHandler.post {
             val newByte = processDispatch!!.dispatch(data, dataWidth, dataHeight)
             if (newByte.isNotEmpty())
@@ -94,6 +94,8 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     fun release() {
         ableList.clear()
         server.quit()
+        if (processClz == null)
+            return
         grayProcessHandler.looper.quit()
     }
 

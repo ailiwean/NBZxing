@@ -282,17 +282,19 @@ class Camera1 extends CameraViewImpl {
 
     @Override
     void toZoomMax() {
-        CameraHelper.setZoom(1, mCamera);
+        setZoom(1);
     }
 
     @Override
     void toZoomMin() {
-        CameraHelper.setZoom(0, mCamera);
+        setZoom(0);
     }
 
     @Override
     void setZoom(float percent) {
-        CameraHelper.setZoom(percent, mCamera);
+        synchronized (Camera1.class) {
+            CameraHelper.setZoom(percent, mCamera);
+        }
     }
 
     @Override
