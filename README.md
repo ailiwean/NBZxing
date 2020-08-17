@@ -13,6 +13,8 @@
 		//若需要使用灰度算法增强库，再次添加以下依赖//纯java超轻量
 		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.1'
 ```
+[NBZxing-Scale](https://github.com/ailiwean/NBZxing-Scale "NBZxing-Scale")
+
 **注意：库中已经包含zxing源码无需再次依赖**
 
 
@@ -114,28 +116,37 @@ protected open fun resultBackFile(content: String) {
 
 #### 下载体验
 ![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly93d3cucGd5ZXIuY29tL2FwcC9xcmNvZGUvaWlabg?x-oss-process=image/format,png)
- - 安装密码 ： 1234
 
-😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
+- 安装密码1234
+
+###### 😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
+
+----
 
 #### 测试二维码
 
-![标准反色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/82984899-9f981600-a025-11ea-9fe6-ad9fead67afa.png "标准反色")
-
-![彩色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/caise.png "彩色")
-
-![暗色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_dart.png "暗色")
-
-![曝光](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_light.png "曝光")
-
-![浅色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/test_gray.png "浅色")
-
+| 标准反色  | ![标准反色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/82984899-9f981600-a025-11ea-9fe6-ad9fead67afa.png "标准反色")  |
+| ------------ | ------------ |
+| 彩色  | ![彩色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/caise.png "彩色")  |
+| 暗色  | ![暗色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_dart.png "暗色")  |
+|  曝光 |  ![曝光](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_light.png "曝光") |
+|  浅色 | ![浅色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/test_gray.png "浅色")  |
 
 #### 下版预期
-提供完全的自定义界面，近期发布
+-  `提供完全的自定义界面`
 
-##### 联系我
-微信： 17391961576
-QQ:  1581209979
+-  `二维码生成`
 
-![pay](https://github.com/ailiwean/NBZxing/blob/master/qr_test/pay.png "pay")
+-  `图片识别引用灰度扩展库`
+
+#### 联系我
+
+`微信： 17391961576`   `QQ:  1581209979`
+
+
+| 😊  |  😊 |
+| ------------ | ------------ |
+|  请喝咖啡 | ![pay](https://github.com/ailiwean/NBZxing/blob/master/qr_test/pay.png "pay")  |
+
+
+
