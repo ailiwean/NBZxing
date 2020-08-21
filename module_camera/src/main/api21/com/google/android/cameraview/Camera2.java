@@ -17,6 +17,7 @@
 package com.google.android.cameraview;
 
 import android.content.Context;
+import android.graphics.Camera;
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -376,9 +377,11 @@ class Camera2 extends CameraViewImpl {
 
     @Override
     void lightOperator(boolean isOpen) {
-        if (isOpen)
-            setFlash(Constants.FLASH_TORCH);
-        else setFlash(Constants.FLASH_OFF);
+        synchronized (Camera2.class) {
+            if (isOpen)
+                setFlash(Constants.FLASH_TORCH);
+            else setFlash(Constants.FLASH_OFF);
+        }
     }
 
     /**

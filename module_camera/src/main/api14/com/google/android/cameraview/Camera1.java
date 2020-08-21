@@ -299,7 +299,9 @@ class Camera1 extends CameraViewImpl {
 
     @Override
     void lightOperator(boolean isOpen) {
-        LightHelper.openLight(mCamera, isOpen);
+        synchronized (Camera1.class) {
+            LightHelper.openLight(mCamera, isOpen);
+        }
     }
 
     /**
