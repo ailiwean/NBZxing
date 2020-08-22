@@ -2,6 +2,8 @@ package com.ailiwean.core.able
 
 import android.os.Handler
 import android.os.HandlerThread
+import com.ailiwean.core.Config
+import com.ailiwean.core.TypeRunnable
 import com.ailiwean.core.WorkThreadServer
 import com.ailiwean.core.helper.ScanHelper
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource
@@ -34,7 +36,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         loadAble()
         server = WorkThreadServer.createInstance()
         try {
-            processClz = Class.forName("com.ailiwean.module_grayscale.GrayScaleDispatch")
+            processClz = Class.forName(Config.GARY_SCALE_PATH)
         } catch (e: Exception) {
         }
         if (processClz != null)
@@ -47,7 +49,6 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         ableList.add(XQRScanFastAble(handler))
         ableList.add(XQRScanAbleRotate(handler))
         ableList.add(LighSolveAble(handler))
-        ableList.add(RevColorSanAble(handler))
         //    ableList.add(GrayscaleStrengAble(handler))
     }
 
@@ -74,10 +75,10 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     private fun executeToParse(data: ByteArray, dataWidth: Int, dataHeight: Int, isNative: Boolean, server: WorkThreadServer) {
         val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight)
         for (able in ableList) {
-            server.post {
+            server.post(TypeRunnable.create(if (isNative) TypeRunnable.NORMAL else TypeRunnable.SCALE) {
                 able.cusAction(data, dataWidth, dataHeight, isNative)
                 able.needParseDeploy(source)
-            }
+            })
         }
     }
 

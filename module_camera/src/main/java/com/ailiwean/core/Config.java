@@ -33,4 +33,6 @@ public class Config {
     //自动缩放
     public static final int AUTO_ZOOM = 2;
 
+    public static final String GARY_SCALE_PATH = "com.ailiwean.module_grayscale.GrayScaleDispatch";
+
 }

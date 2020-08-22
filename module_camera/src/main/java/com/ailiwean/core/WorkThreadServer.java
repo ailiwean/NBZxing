@@ -13,11 +13,26 @@ import java.util.concurrent.TimeUnit;
  */
 public class WorkThreadServer {
 
-    private ThreadPoolExecutor executor = new ThreadPoolExecutor(
-            corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(maximumPoolSize, true), new ThreadPoolExecutor.DiscardOldestPolicy());
+    private ThreadPoolExecutor executor;
 
     private WorkThreadServer() {
+        boolean hasGrayScale;
+        try {
+            Class.forName(Config.GARY_SCALE_PATH);
+            hasGrayScale = true;
+        } catch (ClassNotFoundException e) {
+            hasGrayScale = false;
+        }
+
+        if (!hasGrayScale)
+            executor = new ThreadPoolExecutor(
+                    corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
+                    new ArrayBlockingQueue<>(maximumPoolSize, true),
+                    new ThreadPoolExecutor.DiscardOldestPolicy());
+        else executor = new RespectScalePool(
+                corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
+                RespectScaleQueue.create(maximumPoolSize / 3 * 2, maximumPoolSize / 3),
+                new RespectScalePool.RespectScalePolicy());
     }
 
     //参数初始化
