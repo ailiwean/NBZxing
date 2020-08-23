@@ -2,7 +2,6 @@ package com.ailiwean.core.view
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -93,8 +92,8 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     /***
      * 相机采集数据实时回调
      */
-    override fun onPreviewByte(camera: CameraView, data: ByteArray) {
-        super.onPreviewByte(camera, data)
+    override fun onPreviewByteBack(camera: CameraView, data: ByteArray) {
+        super.onPreviewByteBack(camera, data)
         //解析数据
         ableCollect?.cusAction(data, scanRect.dataX, scanRect.dataY)
     }
@@ -202,8 +201,8 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     /***
      * 启动相机后的操作
      */
-    override fun onCameraOpen(camera: CameraView) {
-        super.onCameraOpen(camera)
+    override fun onCameraOpenBack(camera: CameraView) {
+        super.onCameraOpenBack(camera)
         clearFindViewByIdCache()
         LayoutInflater.from(context).inflate(R.layout.base_zxing_layout, this, true)
         topViewInitWithConfig()

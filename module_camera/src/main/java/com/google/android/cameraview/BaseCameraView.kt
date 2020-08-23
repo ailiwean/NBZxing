@@ -44,42 +44,42 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
             override fun onCameraOpened(cameraView: CameraView) {
                 mainHand.post {
-                    onCameraOpen(cameraView)
+                    onCameraOpenBack(cameraView)
                 }
             }
 
             override fun onCameraClosed(cameraView: CameraView) {
                 mainHand.post {
-                    onCameraClose(cameraView)
+                    onCameraCloseBack(cameraView)
                 }
             }
 
             override fun onPictureTaken(cameraView: CameraView, data: ByteArray) {
                 mainHand.post {
-                    onPictureTake(cameraView, data)
+                    onPictureTakeBack(cameraView, data)
                 }
             }
 
             override fun onPreviewByte(cameraView: CameraView, data: ByteArray?) {
                 if (data != null)
-                    this@BaseCameraView.onPreviewByte(cameraView, data)
+                    this@BaseCameraView.onPreviewByteBack(cameraView, data)
             }
 
         })
     }
 
-    open fun onCameraOpen(camera: CameraView) {
+    open fun onCameraOpenBack(camera: CameraView) {
         ZoomHelper.toAutoZoom(this)
     }
 
-    open fun onCameraClose(camera: CameraView) {
+    open fun onCameraCloseBack(camera: CameraView) {
         ZoomHelper.close(this)
     }
 
-    open fun onPictureTake(camera: CameraView, data: ByteArray) {
+    open fun onPictureTakeBack(camera: CameraView, data: ByteArray) {
     }
 
-    open fun onPreviewByte(camera: CameraView, data: ByteArray) {
+    open fun onPreviewByteBack(camera: CameraView, data: ByteArray) {
     }
 
     /***
@@ -162,7 +162,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }
     }
 
-    private fun onCameraResume() {
+    fun onCameraResume() {
         if (isShoudCreateOpen) {
             return
         }
@@ -186,7 +186,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
                 }
     }
 
-    fun openCamera() {
+    private fun openCamera() {
         cameraHandler.removeCallbacksAndMessages(null)
         cameraHandler.post {
             if (!isProscribeCamera)
@@ -194,7 +194,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }
     }
 
-    fun closeCamera() {
+    private fun closeCamera() {
         cameraHandler.removeCallbacksAndMessages(null)
         cameraHandler.post {
             stop()
@@ -284,6 +284,4 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         isProscribeCamera = false
         openCamera()
     }
-
-
 }

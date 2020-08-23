@@ -101,6 +101,16 @@ public class ScanLightView extends FrameLayout implements LightViewCallBack {
         setBright(true);
     }
 
+    @Override
+    public void lightOpen() {
+
+    }
+
+    @Override
+    public void lightClose() {
+
+    }
+
 
     public interface LightClick {
         void onClick(boolean isOpen);

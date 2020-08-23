@@ -325,7 +325,7 @@ public class CameraView extends FrameLayout {
     /**
      * Open a camera device and start showing camera preview. This is typically called from
      */
-    public void start() {
+    protected void start() {
         if (!isCameraOpened() && !mImpl.start()) {
             //store the state ,and restore this state after fall back o Camera1
             Parcelable state = onSaveInstanceState();
@@ -341,7 +341,7 @@ public class CameraView extends FrameLayout {
      * Stop camera preview and close the device. This is typically called from
      * {@link Activity}.
      */
-    public void stop() {
+    protected void stop() {
         mImpl.stop();
     }
 
