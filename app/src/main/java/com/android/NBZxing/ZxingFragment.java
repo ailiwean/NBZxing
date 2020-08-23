@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.ailiwean.core.view.ZxingCameraView;
+import com.ailiwean.core.view.NBZxingView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,23 +23,23 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ZxingFragment extends Fragment {
 
-    private ZxingCameraView zxingCameraView;
+    private NBZxingView NBZxingView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        zxingCameraView = new ZxingCameraView(container.getContext()) {
+        NBZxingView = new NBZxingView(container.getContext()) {
             @Override
             public void resultBack(@NotNull String content) {
                 Toast.makeText(container.getContext(), content, Toast.LENGTH_LONG).show();
             }
         };
-        return zxingCameraView;
+        return NBZxingView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        zxingCameraView.synchLifeStart(this);
+        NBZxingView.synchLifeStart(this);
     }
 }

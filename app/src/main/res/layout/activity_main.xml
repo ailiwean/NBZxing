@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.android.NBZxing.CusZxingView
+    <com.android.NBZxing.CusNBZxingView
         android:id="@+id/zxingview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

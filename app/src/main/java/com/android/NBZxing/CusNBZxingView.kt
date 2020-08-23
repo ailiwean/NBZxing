@@ -1,22 +1,10 @@
 package com.android.NBZxing
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.os.Build
 import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.TextView
 import android.widget.Toast
-import com.ailiwean.core.view.ZxingCameraView
+import com.ailiwean.core.view.NBZxingView
 import com.ailiwean.core.zxing.ScanTypeConfig
-import com.zhihu.matisse.Matisse
-import com.zhihu.matisse.MimeType
-import com.zhihu.matisse.engine.impl.GlideEngine
 
 
 /**
@@ -26,7 +14,7 @@ import com.zhihu.matisse.engine.impl.GlideEngine
  * @Author:         SWY
  * @CreateDate:     2020/4/30 4:06 PM
  */
-class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : ZxingCameraView(context, attributeSet, def) {
+class CusNBZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
 
     override fun resultBack(content: String) {
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show()

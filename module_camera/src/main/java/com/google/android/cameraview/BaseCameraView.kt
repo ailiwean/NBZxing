@@ -27,6 +27,12 @@ import com.ailiwean.core.view.LifeOwner
 abstract class BaseCameraView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
         CameraView(context, attributeSet, def), LifeOwner {
 
+    //保证避免多次调用start()
+    var isShoudCreateOpen = true
+
+    //是否禁止相机
+    var isProscribeCamera = false
+
     init {
         Utils.init(context)
         autoFocus = true
@@ -75,9 +81,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
     open fun onPreviewByte(camera: CameraView, data: ByteArray) {
     }
-
-    //保证避免多次调用start()
-    var isShoudCreateOpen = true
 
     /***
      * 绑定AppCompatActivity生命周期并启动相机
@@ -186,7 +189,8 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     fun openCamera() {
         cameraHandler.removeCallbacksAndMessages(null)
         cameraHandler.post {
-            start()
+            if (!isProscribeCamera)
+                start()
         }
     }
 
@@ -264,5 +268,22 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
             ), 200)
         }
     }
+
+    /***
+     * 禁止相机启用
+     */
+    fun proscribeCamera() {
+        isProscribeCamera = true
+        closeCamera()
+    }
+
+    /***
+     * 允许并启用
+     */
+    fun unProscibeCamera() {
+        isProscribeCamera = false
+        openCamera()
+    }
+
 
 }

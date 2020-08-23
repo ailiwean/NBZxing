@@ -19,9 +19,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        findViewById<CusZxingView>(R.id.zxingview)
+        findViewById<CusNBZxingView>(R.id.zxingview)
                 .synchLifeStart(this)
-
         initView()
 //        ZxingFragment fragment = new ZxingFragment();
 //        getSupportFragmentManager().beginTransaction()
@@ -66,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 val path = Matisse.obtainPathResult(data)[0]
-                findViewById<CusZxingView>(R.id.zxingview).toParse(path)
+                findViewById<CusNBZxingView>(R.id.zxingview).toParse(path)
             }
         }
     }

@@ -46,7 +46,7 @@ import java.lang.ref.WeakReference
  * @Author:         SWY
  * @CreateDate:     2020/4/19 12:38 AM
  */
-abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
+abstract class NBZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
         BaseCameraView(context, attributeSet, def), Handler.Callback {
 
     init {
@@ -55,6 +55,8 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     }
 
     private val handleZX = HandleZX(this)
+
+    private var ableCollect: AbleManager? = null
 
     override fun handleMessage(it: Message): Boolean {
         when (it.what) {
@@ -74,8 +76,6 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         }
         return true
     }
-
-    private var ableCollect: AbleManager? = null
 
     override fun onPreviewByte(camera: CameraView, data: ByteArray) {
         super.onPreviewByte(camera, data)
@@ -185,6 +185,8 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
 
     protected fun parseFile(filePath: String) {
 
+        proscribeCamera()
+
         if (!checkPermissionRW())
             return
 
@@ -207,6 +209,9 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     }
 
     protected fun parseBitmap(bitmap: Bitmap?) {
+
+        proscribeCamera()
+
         if (bitmap == null)
             return
         if (busHandle == null)
@@ -236,6 +241,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
                         scanSucHelper()
                     }
                 } else {
+                    unProscibeCamera()
                     mainHand.post {
                         resultBackFile("")
                     }
@@ -244,7 +250,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         }
     }
 
-    open fun getMediaUriFromPath(context: Context, path: String): Uri {
+    private fun getMediaUriFromPath(context: Context, path: String): Uri {
         val mediaUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val cursor: Cursor? = context.contentResolver.query(mediaUri,
                 null,
