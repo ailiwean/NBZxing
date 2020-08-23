@@ -20,6 +20,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
+import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
@@ -61,17 +62,48 @@ class TextureViewPreview extends PreviewImpl {
 
             @Override
             public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
             }
         });
     }
 
     @TargetApi(15)
     @Override
-    void setBufferSize(int width, int height) {
-        if (mTextureView.getSurfaceTexture() != null)
-            mTextureView.getSurfaceTexture().setDefaultBufferSize(width, height);
-        Config.scanRect.setDataX(width);
-        Config.scanRect.setDataY(height);
+    void setBufferSize(int widthData, int heightData) {
+        Config.scanRect.setDataX(widthData);
+        Config.scanRect.setDataY(heightData);
+        if (getSurfaceTexture() != null)
+            getSurfaceTexture().setDefaultBufferSize(widthData, heightData);
+        else {
+            TextureView.SurfaceTextureListener listener = mTextureView.getSurfaceTextureListener();
+            mTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+                @Override
+                public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                    if (listener != null)
+                        listener.onSurfaceTextureAvailable(surface, width, height);
+                    getSurfaceTexture().setDefaultBufferSize(widthData, heightData);
+                }
+
+                @Override
+                public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+                    if (listener != null)
+                        listener.onSurfaceTextureSizeChanged(surface, width, height);
+                }
+
+                @Override
+                public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                    if (listener != null)
+                        return listener.onSurfaceTextureDestroyed(surface);
+                    return false;
+                }
+
+                @Override
+                public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+                    if (listener != null)
+                        listener.onSurfaceTextureUpdated(surface);
+                }
+            });
+        }
     }
 
     @Override
@@ -143,5 +175,4 @@ class TextureViewPreview extends PreviewImpl {
         }
         mTextureView.setTransform(matrix);
     }
-
 }

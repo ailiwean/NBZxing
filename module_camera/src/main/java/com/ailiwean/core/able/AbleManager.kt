@@ -8,7 +8,7 @@ import com.ailiwean.core.WorkThreadServer
 import com.ailiwean.core.helper.ScanHelper
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource
 import com.ailiwean.module_grayscale.GrayScaleDispatch
-import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * @Package: com.ailiwean.core.able
@@ -19,7 +19,7 @@ import java.util.*
  */
 class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler) {
 
-    private val ableList: MutableList<PixsValuesAble> = ArrayList()
+    private val ableList = CopyOnWriteArrayList<PixsValuesAble>()
 
     private var server: WorkThreadServer
 
@@ -33,8 +33,8 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     init {
-        loadAble()
         server = WorkThreadServer.createInstance()
+        init()
         try {
             processClz = Class.forName(Config.GARY_SCALE_PATH)
         } catch (e: Exception) {
@@ -43,7 +43,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
             processDispatch = processClz?.newInstance() as GrayScaleDispatch?
     }
 
-    fun loadAble() {
+    fun init() {
         ableList.clear()
         ableList.add(XQRScanZoomAble(handler))
         ableList.add(XQRScanFastAble(handler))
@@ -98,6 +98,11 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         if (processClz == null)
             return
         grayProcessHandler.looper.quit()
+    }
+
+    fun clear() {
+        server.clear()
+        ableList.clear()
     }
 
 }

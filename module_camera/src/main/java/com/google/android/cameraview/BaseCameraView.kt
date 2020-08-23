@@ -8,9 +8,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -41,12 +38,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
             override fun onCameraOpened(cameraView: CameraView) {
                 mainHand.post {
-                    if (!hasFloorView) {
-                        provideFloorView()?.let {
-                            this@BaseCameraView.addView(it, ViewGroup.LayoutParams(-1, -1))
-                        }
-                        hasFloorView = true
-                    }
                     onCameraOpen(cameraView)
                 }
             }
@@ -85,9 +76,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     open fun onPreviewByte(camera: CameraView, data: ByteArray) {
     }
 
-    abstract fun provideFloorView(): View?
-
-
     //保证避免多次调用start()
     var isShoudCreateOpen = true
 
@@ -99,15 +87,15 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         appCompatActivity.lifecycle.addObserver(object : LifeOwner {
             //在onCreate()中调用提升相机打开速度
             override fun onCreate() {
-                onComCreate()
+                onCameraCreate()
             }
 
             override fun onResume() {
-                onComResume()
+                onCameraResume()
             }
 
             override fun onPause() {
-                onComPause()
+                onCameraPause()
             }
 
             override fun onStop() {
@@ -128,10 +116,10 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
                 }
                 if (isShoudCreateOpen) {
                     onCreate()
-                    onComCreate()
+                    onCameraCreate()
                 } else {
                     onResume()
-                    onComResume()
+                    onCameraResume()
                 }
             }
 
@@ -140,7 +128,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
                     return
                 }
                 onPause()
-                onComPause()
+                onCameraPause()
             }
 
 
@@ -160,25 +148,28 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }, false)
     }
 
-    fun onComCreate() {
+    private fun onCameraCreate() {
         if (!isShoudCreateOpen)
             return
         if (checkPermissionCamera()) {
+            openCameraBefore()
             openCamera()
         } else {
             requstPermission()
         }
     }
 
-    fun onComResume() {
+    private fun onCameraResume() {
         if (isShoudCreateOpen) {
             return
         }
-        if (checkPermissionCamera())
+        if (checkPermissionCamera()) {
+            openCameraBefore()
             openCamera()
+        }
     }
 
-    fun onComPause() {
+    fun onCameraPause() {
         closeCamera()
         isShoudCreateOpen = false
     }
@@ -227,7 +218,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     }
 
     override fun onCreate() {
-
     }
 
     override fun onResume() {

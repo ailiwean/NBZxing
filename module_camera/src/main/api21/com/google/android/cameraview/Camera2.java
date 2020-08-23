@@ -198,9 +198,14 @@ class Camera2 extends CameraViewImpl {
 
     private int mDisplayOrientation;
 
-    Camera2(Callback callback, PreviewImpl preview, Context context) {
-        super(callback, preview);
+    Camera2(Callback callback, Context context) {
+        super(callback);
         mCameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+    }
+
+    @Override
+    public void updatePreView(PreviewImpl preview) {
+        super.updatePreView(preview);
         mPreview.setCallback(this::startCaptureSession);
     }
 
@@ -406,7 +411,7 @@ class Camera2 extends CameraViewImpl {
                 }
                 Integer internal = characteristics.get(CameraCharacteristics.LENS_FACING);
                 if (internal == null) {
-                    throw new NullPointerException("Unexpected state: LENS_FACING null");
+                    return false;
                 }
                 if (internal == internalFacing) {
                     mCameraId = id;
@@ -425,7 +430,7 @@ class Camera2 extends CameraViewImpl {
             }
             Integer internal = mCameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
             if (internal == null) {
-                throw new NullPointerException("Unexpected state: LENS_FACING null");
+                return false;
             }
             for (int i = 0, count = INTERNAL_FACINGS.size(); i < count; i++) {
                 if (INTERNAL_FACINGS.valueAt(i) == internal) {
@@ -438,7 +443,7 @@ class Camera2 extends CameraViewImpl {
             mFacing = Constants.FACING_BACK;
             return true;
         } catch (CameraAccessException e) {
-            throw new RuntimeException("Failed to get a list of camera devices", e);
+            return false;
         }
     }
 
@@ -451,7 +456,7 @@ class Camera2 extends CameraViewImpl {
         StreamConfigurationMap map = mCameraCharacteristics.get(
                 CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
         if (map == null) {
-            throw new IllegalStateException("Failed to get configuration map: " + mCameraId);
+            return;
         }
 
         mPreviewSizes.clear();
@@ -518,7 +523,6 @@ class Camera2 extends CameraViewImpl {
         try {
             mCameraManager.openCamera(mCameraId, mCameraDeviceCallback, null);
         } catch (CameraAccessException e) {
-            throw new RuntimeException("Failed to open camera: " + mCameraId, e);
         }
     }
 

@@ -33,12 +33,6 @@ public class ZxingFragment extends Fragment {
             public void resultBack(@NotNull String content) {
                 Toast.makeText(container.getContext(), content, Toast.LENGTH_LONG).show();
             }
-
-            @org.jetbrains.annotations.Nullable
-            @Override
-            public View provideFloorView() {
-                return null;
-            }
         };
         return zxingCameraView;
     }

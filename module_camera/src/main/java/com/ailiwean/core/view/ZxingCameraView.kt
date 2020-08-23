@@ -19,7 +19,6 @@ import android.provider.MediaStore
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.ailiwean.core.Config.*
 import com.ailiwean.core.Result
 import com.ailiwean.core.Utils
@@ -35,6 +34,7 @@ import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
 import com.google.android.cameraview.CameraView
 import com.google.android.cameraview.R
+import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.base_zxing_layout.view.*
 import java.io.File
 import java.lang.ref.WeakReference
@@ -52,13 +52,6 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     init {
         facing = FACING_BACK
         this.setAspectRatio(AspectRatio.of(16, 9))
-        this.addView(LayoutInflater.from(context).inflate(R.layout.base_zxing_layout, this, false)
-                , ViewGroup.LayoutParams(-1, -1))
-
-        //注册打开关闭闪光灯点击事件
-        lightView.regLightClick {
-            lightOperator(it)
-        }
     }
 
     private val handleZX = HandleZX(this)
@@ -91,12 +84,12 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         ableCollect?.cusAction(data, dataWidht, dataHeight)
     }
 
-
     /***
      * 扫码成功后的一些动作
      */
-    fun scanSucHelper() {
-        onComPause()
+    private fun scanSucHelper() {
+        ableCollect?.clear()
+        onCameraPause()
         scan_bar.stopAnim()
         VibrateHelper.playVibrate()
         VibrateHelper.playBeep()
@@ -105,11 +98,6 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
     override fun onCreate() {
         super.onCreate()
         ableCollect = AbleManager.createInstance(handleZX)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initConfig()
     }
 
     override fun onPause() {
@@ -147,7 +135,7 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
      * 相机启动数据初始化
      */
     fun initConfig() {
-        ableCollect?.loadAble()
+        ableCollect?.init()
         scan_bar.startAnim()
         qr_loc.visibility = View.INVISIBLE
         initScanType()
@@ -159,40 +147,23 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
      * 扫码结果回调
      */
     abstract fun resultBack(content: String)
-
-
     protected open fun resultBackFile(content: String) {
 
     }
 
-
-    class HandleZX constructor(view: Callback) : Handler() {
-        var hasResult = false
-        var viewReference: WeakReference<Callback>? = null
-
-        init {
-            this@HandleZX.viewReference = WeakReference(view)
+    override fun onCameraOpen(camera: CameraView) {
+        super.onCameraOpen(camera)
+        clearFindViewByIdCache()
+        LayoutInflater.from(context).inflate(R.layout.base_zxing_layout, this, true)
+        //注册打开关闭闪光灯点击事件
+        lightView.regLightClick {
+            lightOperator(it)
         }
-
-        override fun handleMessage(msg: Message?) {
-            if (hasResult)
-                return
-            msg?.apply {
-                if (msg.what == SCAN_RESULT)
-                    hasResult = true
-                this@HandleZX.viewReference?.get()?.let {
-                    it.handleMessage(msg)
-                }
-            }
-        }
-
-        fun init() {
-            hasResult = false
-        }
+        initConfig()
     }
 
     @SuppressLint("WrongViewCast")
-    fun getView(): View {
+    fun getView(): View? {
         return findViewById(R.id.base_floor)
     }
 
@@ -288,4 +259,30 @@ abstract class ZxingCameraView @JvmOverloads constructor(context: Context, attri
         cursor?.close()
         return uri ?: Uri.EMPTY
     }
+
+    class HandleZX constructor(view: Callback) : Handler() {
+        var hasResult = false
+        var viewReference: WeakReference<Callback>? = null
+
+        init {
+            this@HandleZX.viewReference = WeakReference(view)
+        }
+
+        override fun handleMessage(msg: Message?) {
+            if (hasResult)
+                return
+            msg?.apply {
+                if (msg.what == SCAN_RESULT)
+                    hasResult = true
+                this@HandleZX.viewReference?.get()?.let {
+                    it.handleMessage(msg)
+                }
+            }
+        }
+
+        fun init() {
+            hasResult = false
+        }
+    }
+
 }

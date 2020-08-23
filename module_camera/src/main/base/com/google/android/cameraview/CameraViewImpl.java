@@ -26,15 +26,21 @@ abstract class CameraViewImpl {
 
     protected final Callback mCallback;
 
-    protected final PreviewImpl mPreview;
+    protected PreviewImpl mPreview = null;
 
-    CameraViewImpl(Callback callback, PreviewImpl preview) {
+    CameraViewImpl(Callback callback) {
         mCallback = callback;
-        mPreview = preview;
     }
 
     View getView() {
-        return mPreview.getView();
+        if (mPreview != null) {
+            return mPreview.getView();
+        }
+        return null;
+    }
+
+    public void updatePreView(PreviewImpl preview) {
+        this.mPreview = preview;
     }
 
     /**

@@ -72,7 +72,6 @@ public class ByFaceCameraView extends BaseCameraView implements View.OnClickList
 
     @SuppressLint("ClickableViewAccessibility")
     @NotNull
-    @Override
     public View provideFloorView() {
         ViewGroup rootView = (ViewGroup) LayoutInflater.from(getContext()).
                 inflate(R.layout.by_face_layout, this, false);

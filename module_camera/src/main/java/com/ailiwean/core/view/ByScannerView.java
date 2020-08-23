@@ -29,12 +29,6 @@ public class ByScannerView extends ZxingCameraView {
         super(context, attrs, defStyleAttr);
     }
 
-    @NotNull
-    @Override
-    public View provideFloorView() {
-        return LayoutInflater.from(getContext()).inflate(R.layout.by_scan_layout, this, false);
-    }
-
     @Override
     public void resultBack(@NotNull String content) {
 

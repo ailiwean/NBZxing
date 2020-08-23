@@ -26,7 +26,6 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import androidx.annotation.IntDef;
@@ -53,6 +52,7 @@ public class CameraView extends FrameLayout {
      */
     public static final int FACING_FRONT = Constants.FACING_FRONT;
     private PreviewImpl preview;
+    private Handler cameraHandler;
 
     /**
      * Direction the camera faces relative to device screen.
@@ -121,14 +121,13 @@ public class CameraView extends FrameLayout {
             return;
         }
         // Internal setup
-        preview = createPreviewImpl(context);
         mCallbacks = new CallbackBridge();
         if (Build.VERSION.SDK_INT < 21) {
-            mImpl = new Camera1(mCallbacks, preview);
+            mImpl = new Camera1(mCallbacks);
         } else if (Build.VERSION.SDK_INT < 23) {
-            mImpl = new Camera2(mCallbacks, preview, context);
+            mImpl = new Camera2(mCallbacks, context);
         } else {
-            mImpl = new Camera2Api23(mCallbacks, preview, context);
+            mImpl = new Camera2Api23(mCallbacks, context);
         }
 
 //        mImpl = new Camera1(mCallbacks, preview);
@@ -157,13 +156,8 @@ public class CameraView extends FrameLayout {
 
     @NonNull
     private PreviewImpl createPreviewImpl(Context context) {
-        PreviewImpl preview;
-//        if (Build.VERSION.SDK_INT >= 23) {
-//            preview = new SurfaceViewPreview(context, this);
-//        } else {
-//            preview = new TextureViewPreview(context, this);
-//        }
         preview = new TextureViewPreview(context, this);
+        preview.setCameraHandle(cameraHandler);
         return preview;
     }
 
@@ -283,8 +277,11 @@ public class CameraView extends FrameLayout {
     }
 
     protected void provideCameraHandler(Handler handler) {
-        if (preview != null)
-            preview.setCameraHandle(handler);
+        this.cameraHandler = handler;
+    }
+
+    protected PreviewImpl getPreviewImpl() {
+        return preview;
     }
 
     @Override
@@ -311,6 +308,15 @@ public class CameraView extends FrameLayout {
         setFlash(ss.flash);
     }
 
+    private void initPreView() {
+        mImpl.updatePreView(createPreviewImpl(getContext()));
+    }
+
+    public void openCameraBefore() {
+        removeAllViews();
+        initPreView();
+    }
+
     /**
      * Open a camera device and start showing camera preview. This is typically called from
      */
@@ -319,7 +325,8 @@ public class CameraView extends FrameLayout {
             //store the state ,and restore this state after fall back o Camera1
             Parcelable state = onSaveInstanceState();
             // Camera2 uses legacy hardware layer; fall back to Camera1
-            mImpl = new Camera1(mCallbacks, preview);
+            mImpl = new Camera1(mCallbacks);
+            mImpl.updatePreView(preview);
             onRestoreInstanceState(state);
             mImpl.start();
         }

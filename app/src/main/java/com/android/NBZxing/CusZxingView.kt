@@ -33,50 +33,6 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
     }
 
     /***
-     * 可扩展顶层View
-     */
-    override fun provideFloorView(): View? {
-        val v = LayoutInflater.from(context)
-                .inflate(R.layout.tool_title, this, false)
-
-        v.findViewById<View>(R.id.vToolBar)
-                .setBackgroundColor(Color.parseColor("#2f000000"))
-
-        v.findViewById<TextView>(R.id.vTitle).text = "扫一扫"
-
-        v.findViewById<View>(R.id.vLeftImage)
-                .setOnClickListener { v: View? ->
-                    if (context is Activity) {
-                        (context as Activity).finish()
-                    }
-                }
-
-        v.findViewById<TextView>(R.id.vRightTextView).text = "相册"
-        v.findViewById<TextView>(R.id.vRightTextView)
-                .setOnClickListener { v: View? ->
-                    if (!checkPermissionRW()) {
-                        requstPermissionRW()
-                        return@setOnClickListener
-                    }
-                    if (context is Activity) {
-                        Matisse.from(context as Activity)
-                                .choose(MimeType.ofAll())
-                                .countable(true)
-                                .maxSelectable(9)
-                                .gridExpectedSize(300)
-                                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                                .thumbnailScale(0.85f)
-                                .imageEngine(GlideEngine())
-                                .showPreview(false) // Default is `true`
-                                .forResult(1)
-                    }
-
-                }
-
-        return v
-    }
-
-    /***
      * 返回扫码类型
      * 1 ScanTypeConfig.HIGH_FREQUENCY 高频率格式(默认)
      * 2 ScanTypeConfig.ALL  所有格式
@@ -95,13 +51,6 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
 
     override fun resultBackFile(content: String) {
         Toast.makeText(context, content, Toast.LENGTH_LONG).show()
-    }
-
-
-    fun requstPermissionRW() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            (context as? Activity)?.requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 200)
-        }
     }
 
 }

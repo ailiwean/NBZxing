@@ -75,9 +75,15 @@ class Camera1 extends CameraViewImpl {
 
     private int mDisplayOrientation;
 
-    Camera1(Callback callback, PreviewImpl preview) {
-        super(callback, preview);
-        preview.setCallback(() -> {
+    Camera1(Callback callback) {
+        super(callback);
+    }
+
+
+    @Override
+    public void updatePreView(PreviewImpl preview) {
+        super.updatePreView(preview);
+        mPreview.setCallback(() -> {
             if (mCamera != null) {
                 setUpPreview();
             }
@@ -180,7 +186,7 @@ class Camera1 extends CameraViewImpl {
         } else if (!mAspectRatio.equals(ratio)) {
             final Set<Size> sizes = mPreviewSizes.sizes(ratio);
             if (sizes == null) {
-                throw new UnsupportedOperationException(ratio + " is not supported");
+                return false;
             } else {
                 mAspectRatio = ratio;
                 try {
@@ -235,8 +241,7 @@ class Camera1 extends CameraViewImpl {
     @Override
     void takePicture() {
         if (!isCameraOpened()) {
-            throw new IllegalStateException(
-                    "Camera is not ready. Call start() before takePicture().");
+            return;
         }
         if (getAutoFocus()) {
             mCamera.cancelAutoFocus();

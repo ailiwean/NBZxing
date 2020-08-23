@@ -56,7 +56,14 @@ public class WorkThreadServer {
     public void quit() {
         if (executor != null) {
             executor.shutdown();
+            executor.getQueue().clear();
             executor = null;
         }
     }
+
+    public void clear() {
+        if (executor != null)
+            executor.getQueue().clear();
+    }
+
 }
