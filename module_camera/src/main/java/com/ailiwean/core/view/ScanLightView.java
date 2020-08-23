@@ -15,7 +15,7 @@ import com.google.android.cameraview.R;
  *  DATE 2019/6/23
  *
  */
-public class LightView extends FrameLayout {
+public class ScanLightView extends FrameLayout implements LightViewCallBack {
 
     private TextView tv;
     private ImageView iv;
@@ -23,17 +23,17 @@ public class LightView extends FrameLayout {
 
     private boolean isBright;
 
-    public LightView(Context context) {
+    public ScanLightView(Context context) {
         super(context);
         initView();
     }
 
-    public LightView(Context context, AttributeSet attrs) {
+    public ScanLightView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView();
     }
 
-    public LightView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ScanLightView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
     }
@@ -90,6 +90,17 @@ public class LightView extends FrameLayout {
             setVisibility(View.INVISIBLE);
         }
     }
+
+    @Override
+    public void lightBrighter() {
+        setBright(false);
+    }
+
+    @Override
+    public void lightDark() {
+        setBright(true);
+    }
+
 
     public interface LightClick {
         void onClick(boolean isOpen);

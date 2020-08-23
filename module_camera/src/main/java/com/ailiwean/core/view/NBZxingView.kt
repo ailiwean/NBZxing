@@ -50,61 +50,99 @@ abstract class NBZxingView @JvmOverloads constructor(context: Context, attribute
         BaseCameraView(context, attributeSet, def), Handler.Callback {
 
     init {
+
+        //使用后置相机
         facing = FACING_BACK
+
+        //设定相机数据选取比例
         this.setAspectRatio(AspectRatio.of(16, 9))
+
     }
 
     private val handleZX = HandleZX(this)
 
     private var ableCollect: AbleManager? = null
 
+    private var busHandle: Handler? = null
+
+    /***
+     * Handler结果回调
+     */
     override fun handleMessage(it: Message): Boolean {
         when (it.what) {
+
+            //扫码结果回调
             SCAN_RESULT -> {
                 scanSucHelper()
                 if (it.obj is Result) {
                     showQRLoc((it.obj as Result).pointF, it.obj.toString())
                 }
             }
+
+            //环境亮度变换回调
             LIGHT_CHANGE -> {
                 lightView.setBright(it.obj.toString().toBoolean())
             }
 
+            //放大回调
             AUTO_ZOOM -> {
                 setZoom(it.obj.toString().toFloat())
             }
+
         }
         return true
     }
 
+    /***
+     * 相机采集数据实时回调
+     */
     override fun onPreviewByte(camera: CameraView, data: ByteArray) {
         super.onPreviewByte(camera, data)
-        val dataWidht = scanRect.dataX
-        val dataHeight = scanRect.dataY
-        ableCollect?.cusAction(data, dataWidht, dataHeight)
+        //解析数据
+        ableCollect?.cusAction(data, scanRect.dataX, scanRect.dataY)
     }
 
     /***
      * 扫码成功后的一些动作
      */
     private fun scanSucHelper() {
-        ableCollect?.clear()
+
+        //关闭相机
         onCameraPause()
+
+        //清理线程池任务缓存
+        ableCollect?.clear()
+
+        //关闭扫码条动画
         scan_bar.stopAnim()
+
+        //播放音频
         VibrateHelper.playVibrate()
+
+        //震动
         VibrateHelper.playBeep()
+
     }
 
+    /***
+     * Activity或Fragment创建，详见{@link BaseCameraView.synchLifeStart}
+     */
     override fun onCreate() {
         super.onCreate()
         ableCollect = AbleManager.createInstance(handleZX)
     }
 
+    /***
+     * Activity或Fragment不可视，详见{@link BaseCameraView.synchLifeStart}
+     */
     override fun onPause() {
         super.onPause()
         scan_bar.stopAnim()
     }
 
+    /***
+     * Activity或Fragment生命周期结束销毁，详见{@link BaseCameraView.synchLifeStart}
+     */
     override fun onDestroy() {
         super.onDestroy()
         ableCollect?.release()
@@ -129,17 +167,27 @@ abstract class NBZxingView @JvmOverloads constructor(context: Context, attribute
                     }
                 })
                 .start()
+
     }
 
     /***
-     * 相机启动数据初始化
+     * 表层的View及一些配置初始化
      */
-    fun initConfig() {
-        ableCollect?.init()
+    private fun topViewInitWithConfig() {
+
         scan_bar.startAnim()
         qr_loc.visibility = View.INVISIBLE
+
+        //重新装填AbleManager
+        ableCollect?.init()
+
+        //配置扫码类型
         initScanType()
+
+        //重新接收数据
         handleZX.init()
+
+        //音频资源加载
         VibrateHelper.playInit()
     }
 
@@ -147,42 +195,49 @@ abstract class NBZxingView @JvmOverloads constructor(context: Context, attribute
      * 扫码结果回调
      */
     abstract fun resultBack(content: String)
-    protected open fun resultBackFile(content: String) {
 
-    }
+    /***
+     * 图片文件扫码
+     * 扫码失败返回空字符串，详见{ @link #parseBitmap}
+     */
+    protected open fun resultBackFile(content: String) {}
 
+    /***
+     * 启动相机后的操作
+     */
     override fun onCameraOpen(camera: CameraView) {
         super.onCameraOpen(camera)
         clearFindViewByIdCache()
         LayoutInflater.from(context).inflate(R.layout.base_zxing_layout, this, true)
-        //注册打开关闭闪光灯点击事件
-        lightView.regLightClick {
-            lightOperator(it)
-        }
-        initConfig()
+        topViewInitWithConfig()
     }
 
-    @SuppressLint("WrongViewCast")
-    fun getView(): View? {
-        return findViewById(R.id.base_floor)
-    }
-
+    /***
+     * 配置扫码类型
+     */
     private fun initScanType() {
         scanTypeConfig = getScanType()
     }
 
+    /***
+     * 获取扫码类型
+     */
     open fun getScanType(): ScanTypeConfig {
         return ScanTypeConfig.HIGH_FREQUENCY
     }
 
-    var busHandle: Handler? = null
-
+    /***
+     * 初始化业务Handler
+     */
     private fun initBusHandle() {
         val handlerThread = HandlerThread(System.currentTimeMillis().toString())
         handlerThread.start()
         busHandle = Handler(handlerThread.looper)
     }
 
+    /***
+     * File转Bitmap详见{@link #parseBitmap}
+     */
     protected fun parseFile(filePath: String) {
 
         proscribeCamera()
@@ -208,6 +263,10 @@ abstract class NBZxingView @JvmOverloads constructor(context: Context, attribute
         }
     }
 
+    /***
+     * 解析Bitmap
+     * 解析过程中会关闭相机， 解析失败重新启动
+     */
     protected fun parseBitmap(bitmap: Bitmap?) {
 
         proscribeCamera()
@@ -250,6 +309,9 @@ abstract class NBZxingView @JvmOverloads constructor(context: Context, attribute
         }
     }
 
+    /***
+     * path转Uri兼容Android10
+     */
     private fun getMediaUriFromPath(context: Context, path: String): Uri {
         val mediaUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         val cursor: Cursor? = context.contentResolver.query(mediaUri,
@@ -266,6 +328,9 @@ abstract class NBZxingView @JvmOverloads constructor(context: Context, attribute
         return uri ?: Uri.EMPTY
     }
 
+    /***
+     * 全局Handler
+     */
     class HandleZX constructor(view: Callback) : Handler() {
         var hasResult = false
         var viewReference: WeakReference<Callback>? = null

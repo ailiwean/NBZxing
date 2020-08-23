@@ -17,12 +17,12 @@ import com.google.android.cameraview.R
  * @Author:         SWY
  * @CreateDate:     2020/4/26 9:50 AM
  */
-class ScanBarView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : FrameLayout(context, attributeSet, def) {
+class ScanBarView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
+        FrameLayout(context, attributeSet, def), ScanBarCallBack {
 
     private val ALPHA_LENGHT = 100f
 
-
-    val barView: ImageView by lazy {
+    private val barView: ImageView by lazy {
         val view = ImageView(context)
         view.layoutParams = ViewGroup.LayoutParams(-1, Utils.dp2px(50f))
         view.setBackgroundResource(R.drawable.ic_scan_bar)
@@ -37,7 +37,6 @@ class ScanBarView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     private var animator: ValueAnimator? = null
-
 
     fun startAnim() {
         if (animator != null && animator?.isRunning!!) {
@@ -67,5 +66,13 @@ class ScanBarView @JvmOverloads constructor(context: Context, attributeSet: Attr
     fun stopAnim() {
         visibility = View.INVISIBLE
         animator?.cancel()
+    }
+
+    override fun startScanAnimator() {
+        startAnim()
+    }
+
+    override fun stopScanAnimator() {
+        stopAnim()
     }
 }

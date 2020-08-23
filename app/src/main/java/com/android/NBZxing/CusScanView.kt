@@ -14,7 +14,7 @@ import com.ailiwean.core.zxing.ScanTypeConfig
  * @Author:         SWY
  * @CreateDate:     2020/4/30 4:06 PM
  */
-class CusNBZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
+class CusScanView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
 
     override fun resultBack(content: String) {
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show()

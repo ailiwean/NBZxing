@@ -243,10 +243,15 @@ public class CameraView extends FrameLayout {
                     MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
 
         }
-        scanConfig(width, height);
+        defineScanRect(width, height);
     }
 
-    private void scanConfig(int oriWidth, int oriHeight) {
+    /***
+     * 确定扫码区域
+     * @param oriWidth TextureView 原始宽
+     * @param oriHeight TextureView 原始高
+     */
+    protected void defineScanRect(int oriWidth, int oriHeight) {
 
         AspectRatio ratio = getAspectRatio();
         if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {

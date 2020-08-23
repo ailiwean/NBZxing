@@ -12,15 +12,9 @@ import com.ailiwean.core.zxing.ScanTypeConfig;
  */
 public class Config {
 
-    //扫码区域比率 相对于屏幕，若值为1，则对应整个View区域
-    public static float scanRatio = 0.9f;
-
-    //扫码类型
-    public static ScanTypeConfig scanTypeConfig = ScanTypeConfig.HIGH_FREQUENCY;
-
-    //扫码区域
-    public static ScanRect scanRect = new ScanRect();
-
+    /***
+     * Handler 返回标示
+     */
     //当前变焦倍率
     public static float currentZoom = 0f;
 
@@ -33,6 +27,18 @@ public class Config {
     //自动缩放
     public static final int AUTO_ZOOM = 2;
 
+    //###############################################
+
+    //扫码区域比率 相对于屏幕，若值为1，则对应整个View区域
+    public static float scanRatio = 0.9f;
+
+    //扫码类型
+    public static ScanTypeConfig scanTypeConfig = ScanTypeConfig.HIGH_FREQUENCY;
+
+    //扫码区域
+    public static ScanRect scanRect = new ScanRect();
+
+    //灰度算法类路径
     public static final String GARY_SCALE_PATH = "com.ailiwean.module_grayscale.GrayScaleDispatch";
 
 }
