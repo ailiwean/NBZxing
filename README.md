@@ -9,9 +9,9 @@
 
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.22'
+	        implementation 'com.github.ailiwean:NBZxing:0.0.21'
 		//若需要使用灰度算法增强库，再次添加以下依赖//纯java超轻量
-		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.2'
+		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.1'
 ```
 [NBZxing-Scale](https://github.com/ailiwean/NBZxing-Scale "NBZxing-Scale")
 
@@ -24,7 +24,7 @@
  **step1.  自定义一个View继承NBZxingView**
 			
 ```
-class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : ZxingCameraView(context, attributeSet, def) {
+class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
 	
     /***
      * 扫码结果回调
@@ -33,6 +33,7 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
     }
 
+  
     /***
      * 返回扫码类型
      * 1 ScanTypeConfig.HIGH_FREQUENCY 高频率格式(默认)
@@ -88,7 +89,7 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
 
 
 #### 图片资源解析
-在ZxingCameraView的子类中调用		
+在NBZxingView的子类中调用		
 	
 ```
   	parseFile(filePath: String);
@@ -113,6 +114,7 @@ protected open fun resultBackFile(content: String) {
 - 安装密码1234
 
 ###### 😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
+
 ----
 
 #### 测试二维码
