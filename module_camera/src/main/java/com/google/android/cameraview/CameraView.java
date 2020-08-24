@@ -129,7 +129,6 @@ public class CameraView extends FrameLayout {
         } else {
             mImpl = new Camera2Api23(mCallbacks, context);
         }
-
 //        mImpl = new Camera1(mCallbacks, preview);
         // Attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView, defStyleAttr,
@@ -219,6 +218,8 @@ public class CameraView extends FrameLayout {
 //            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 //        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (mImpl.getView() == null)
+            return;
         // Measure the TextureView
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();

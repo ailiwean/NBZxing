@@ -102,7 +102,8 @@ abstract class NBZxingView @JvmOverloads constructor(context: Context, attribute
 
     override fun onPause() {
         super.onPause()
-        scan_bar.stopAnim()
+        if (scan_bar != null)
+            scan_bar.stopAnim()
     }
 
     override fun onDestroy() {
