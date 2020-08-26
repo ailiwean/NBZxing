@@ -215,7 +215,8 @@ class Camera2 extends CameraViewImpl {
             if (!chooseCameraIdByFacing()) {
                 return false;
             }
-            collectCameraInfo();
+            if (!collectCameraInfo())
+                return false;
             prepareImageReader();
             startOpeningCamera();
             return true;
@@ -453,11 +454,11 @@ class Camera2 extends CameraViewImpl {
      * <p>This rewrites {@link #mPreviewSizes}, {@link #mPictureSizes}, and optionally,
      * {@link #mAspectRatio}.</p>
      */
-    private void collectCameraInfo() {
+    private boolean collectCameraInfo() {
         StreamConfigurationMap map = mCameraCharacteristics.get(
                 CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
         if (map == null) {
-            return;
+            return false;
         }
 
         mPreviewSizes.clear();
@@ -478,10 +479,18 @@ class Camera2 extends CameraViewImpl {
         }
 
         if (!mPreviewSizes.ratios().contains(mAspectRatio)) {
-            mAspectRatio = mPreviewSizes.ratios().iterator().next();
-            mPreview.updateAspectRatio(mPreviewSizes.ratios().iterator().next());
+            //扫码没有16：9则取4:3
+            mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
+            //没有4：3则取第一位
+            if (!mPreviewSizes.ratios().contains(mAspectRatio)) {
+                mAspectRatio = mPreviewSizes.ratios().iterator().next();
+                mPreview.updateAspectRatio(mPreviewSizes.ratios().iterator().next());
+                return true;
+            }
+            mPreview.updateAspectRatio(mAspectRatio);
+            return true;
         }
-
+        return true;
     }
 
     protected void collectPictureSizes(SizeMap sizes, StreamConfigurationMap map) {
