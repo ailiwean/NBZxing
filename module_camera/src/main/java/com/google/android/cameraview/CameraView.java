@@ -124,10 +124,8 @@ public class CameraView extends FrameLayout {
         mCallbacks = new CallbackBridge();
         if (Build.VERSION.SDK_INT < 21) {
             mImpl = new Camera1(mCallbacks);
-        } else if (Build.VERSION.SDK_INT < 23) {
-            mImpl = new Camera2(mCallbacks, context);
         } else {
-            mImpl = new Camera2Api23(mCallbacks, context);
+            mImpl = new Camera2(mCallbacks, context);
         }
 //        mImpl = new Camera1(mCallbacks, preview);
         // Attributes

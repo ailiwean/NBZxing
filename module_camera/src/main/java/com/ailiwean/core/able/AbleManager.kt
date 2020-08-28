@@ -21,7 +21,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     private val ableList = CopyOnWriteArrayList<PixsValuesAble>()
 
-    private var server: WorkThreadServer
+    private var server: WorkThreadServer = WorkThreadServer.createInstance()
 
     private var processClz: Class<out Any>? = null
     private var processDispatch: GrayScaleDispatch? = null
@@ -33,7 +33,6 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     init {
-        server = WorkThreadServer.createInstance()
         init()
         try {
             processClz = Class.forName(Config.GARY_SCALE_PATH)
