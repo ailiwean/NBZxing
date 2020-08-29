@@ -19,6 +19,7 @@ package com.google.android.cameraview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
@@ -26,6 +27,7 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.IntDef;
@@ -124,12 +126,9 @@ public class CameraView extends FrameLayout {
         mCallbacks = new CallbackBridge();
         if (Build.VERSION.SDK_INT < 21) {
             mImpl = new Camera1(mCallbacks);
-        } else if (Build.VERSION.SDK_INT < 23) {
-            mImpl = new Camera2(mCallbacks, context);
         } else {
-            mImpl = new Camera2Api23(mCallbacks, context);
+            mImpl = new Camera2(mCallbacks, context);
         }
-
 //        mImpl = new Camera1(mCallbacks, preview);
         // Attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView, defStyleAttr,
@@ -185,40 +184,9 @@ public class CameraView extends FrameLayout {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
-        // Handle android:adjustViewBounds
-//        if (mAdjustViewBounds) {
-//            if (!isCameraOpened()) {
-//                mCallbacks.reserveRequestLayoutOnOpen();
-//                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//                return;
-//            }
-//            final int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-//            final int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-//            if (widthMode == MeasureSpec.EXACTLY && heightMode != MeasureSpec.EXACTLY) {
-//                final AspectRatio ratio = getAspectRatio();
-//                assert ratio != null;
-//                int height = (int) (MeasureSpec.getSize(widthMeasureSpec) * ratio.toFloat());
-//                if (heightMode == MeasureSpec.AT_MOST) {
-//                    height = Math.min(height, MeasureSpec.getSize(heightMeasureSpec));
-//                }
-//                super.onMeasure(widthMeasureSpec,
-//                        MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-//            } else if (widthMode != MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY) {
-//                final AspectRatio ratio = getAspectRatio();
-//                assert ratio != null;
-//                int width = (int) (MeasureSpec.getSize(heightMeasureSpec) * ratio.toFloat());
-//                if (widthMode == MeasureSpec.AT_MOST) {
-//                    width = Math.min(width, MeasureSpec.getSize(widthMeasureSpec));
-//                }
-//                super.onMeasure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-//                        heightMeasureSpec);
-//            } else {
-//                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//            }
-//        } else {
-//            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (mImpl.getView() == null)
+            return;
         // Measure the TextureView
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
@@ -243,43 +211,94 @@ public class CameraView extends FrameLayout {
                     MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
 
         }
-        defineScanRect(width, height);
     }
 
     /***
      * 确定扫码区域
-     * @param oriWidth TextureView 原始宽
-     * @param oriHeight TextureView 原始高
      */
-    protected void defineScanRect(int oriWidth, int oriHeight) {
+    protected void defineScanParseRect(View view) {
+
+        Config.scanRect.setScanR(null);
+        Config.scanRect.setScanRR(null);
+        Config.scanRect.setRect(null);
+
+        int oriHeight = getMeasuredHeight();
+        int oriWidth = getMeasuredWidth();
 
         AspectRatio ratio = getAspectRatio();
         if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {
             ratio = ratio.inverse();
         }
-        float scanRatio = Config.scanRatio;
-        //当显示的宽高比，与相机输出的宽高比不同时
+
+        if (ratio == null)
+            return;
+
         //当实际略宽时, 调整高度保证与输出比例相同
         if (oriHeight < oriWidth * ratio.getY() / ratio.getX()) {
-            float expectHeight = oriWidth * ratio.getY() / (float) ratio.getX();
-            r.left = 0 + (1.0f - scanRatio) / 2;
-            r.right = 1 - (1.0f - scanRatio) / 2;
-            r.top = (expectHeight - oriHeight) / 2 / expectHeight + (1.0f - scanRatio) / 2;
-            r.bottom = 1 - r.top;
+            int measureHeight = (int) (oriWidth * ratio.getY() / (float) ratio.getX());
+            float expectRatio = (measureHeight - oriHeight) / 2f / measureHeight;
+            float[] edgeRatio = findEdgeRatio(view, oriWidth, measureHeight);
+            r.left = edgeRatio[0];
+            r.right = edgeRatio[2];
+            r.top = expectRatio + edgeRatio[1];
+            r.bottom = expectRatio + edgeRatio[3];
             Config.scanRect.setRect(r);
+            Config.scanRect.setExtraX(0);
+            Config.scanRect.setExtraY(measureHeight - oriHeight);
         }
         //当实际略高时，调整宽度保证与输出比例相同
         else {
-            float expectWidth = oriHeight * ratio.getX() / (float) ratio.getY();
-            r.left = (expectWidth - oriWidth) / 2 / expectWidth + (1.0f - scanRatio) / 2;
-            r.right = 1 - r.left;
-            r.top = 0 + (1.0f - scanRatio) / 2;
-            r.bottom = 1 - (1.0f - scanRatio) / 2;
+            int measureWidht = (int) (oriHeight * ratio.getX() / (float) ratio.getY());
+            float expectRatio = (measureWidht - oriWidth) / 2f / measureWidht;
+            float[] edgeRatio = findEdgeRatio(view, measureWidht, oriHeight);
+            r.left = expectRatio + edgeRatio[0];
+            r.right = expectRatio + edgeRatio[2];
+            r.top = edgeRatio[1];
+            r.bottom = edgeRatio[3];
             Config.scanRect.setRect(r);
+            Config.scanRect.setExtraX(measureWidht - oriWidth);
+            Config.scanRect.setExtraY(0);
         }
         Config.scanRect.setPreX(oriWidth);
         Config.scanRect.setPreY(oriHeight);
     }
+
+    /***
+     * 确定可视区域比例
+     * @param view
+     * @param realWidht
+     * @param realHeight
+     * @return
+     */
+    private float[] findEdgeRatio(View view, int realWidht, int realHeight) {
+
+        int[] parseRect_screen = new int[2];
+        view.getLocationOnScreen(parseRect_screen);
+
+        int[] parseRect = new int[4];
+        parseRect[0] = parseRect_screen[0];
+        parseRect[1] = parseRect_screen[1];
+        parseRect[2] = parseRect[0] + view.getMeasuredWidth();
+        parseRect[3] = parseRect[1] + view.getMeasuredHeight();
+
+        int[] surfaceRect_screen = new int[2];
+        this.getLocationOnScreen(surfaceRect_screen);
+
+        float[] edgeRatio = new float[4];
+        edgeRatio[0] = (parseRect[0] - surfaceRect_screen[0]) / (float) realWidht;
+        edgeRatio[1] = (parseRect[1] - surfaceRect_screen[1]) / (float) realHeight;
+        edgeRatio[2] = (parseRect[2] - surfaceRect_screen[0]) / (float) realWidht;
+        edgeRatio[3] = (parseRect[3] - surfaceRect_screen[1]) / (float) realHeight;
+
+        for (int i = 0; i < 4; i++) {
+            if (edgeRatio[i] < 0)
+                edgeRatio[i] = 0;
+            if (edgeRatio[i] > 1)
+                edgeRatio[i] = 1;
+        }
+        return edgeRatio;
+    }
+
 
     protected void provideCameraHandler(Handler handler) {
         this.cameraHandler = handler;

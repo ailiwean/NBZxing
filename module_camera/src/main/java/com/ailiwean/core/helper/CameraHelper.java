@@ -17,6 +17,8 @@ import androidx.annotation.FloatRange;
 public class CameraHelper {
 
 
+    static long startTime = 0L;
+
     /**
      * 检查是否支持设备自动对焦
      * <p>
@@ -34,29 +36,6 @@ public class CameraHelper {
             return false;
         } else {
             return true;
-        }
-    }
-
-    /**
-     * 检查相机支持哪几种focusMode
-     *
-     * @param cameraCharacteristics
-     */
-    public void checkFocusMode(CameraCharacteristics cameraCharacteristics) {
-        int[] availableFocusModes = new int[0];
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            availableFocusModes = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
-        }
-        for (int focusMode : availableFocusModes != null ? availableFocusModes : new int[0]) {
-            if (focusMode == CameraCharacteristics.CONTROL_AF_MODE_OFF) {
-
-            } else if (focusMode == CameraCharacteristics.CONTROL_AF_MODE_MACRO) {
-
-            } else if (focusMode == CameraCharacteristics.CONTROL_AF_MODE_CONTINUOUS_PICTURE) {
-
-            } else if (focusMode == CameraCharacteristics.CONTROL_AF_MODE_AUTO) {
-
-            }
         }
     }
 
@@ -173,6 +152,9 @@ public class CameraHelper {
     }
 
     private static byte[] getByteFromImage(Image image) {
+
+        byte[] nv21 = null;
+
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 return null;
@@ -182,24 +164,37 @@ public class CameraHelper {
             Image.Plane[] planes = image.getPlanes();
             int remaining0 = planes[0].getBuffer().remaining();
             int remaining2 = planes[2].getBuffer().remaining();
+            int w = image.getWidth();
+            int h = image.getHeight();
             byte[] yRawSrcBytes = new byte[remaining0];
             byte[] uvRawSrcBytes = new byte[remaining2];
-            byte[] nv21 = new byte[remaining0 + remaining2];
+            nv21 = new byte[w * h * 3 / 2];
             planes[0].getBuffer().get(yRawSrcBytes);
             planes[2].getBuffer().get(uvRawSrcBytes);
             //0b10000001 对应-127,YUV灰度操作
 //            for (int i = 0; i < uvRawSrcBytes.length; i++)
 //                nv21[yRawSrcBytes.length + i] = (byte) 0b10000001;
-            System.arraycopy(yRawSrcBytes, 0, nv21, 0, yRawSrcBytes.length);
-            System.arraycopy(uvRawSrcBytes, 0, nv21, yRawSrcBytes.length, uvRawSrcBytes.length);
+            for (int i = 0; i < h; i++) {
+
+                System.arraycopy(yRawSrcBytes, planes[0].getRowStride() * i,
+                        nv21, w * i, w);
+
+                if (i > image.getHeight() / 2)
+                    continue;
+
+                int offset = w * (h + i);
+
+                if (offset + w >= nv21.length)
+                    continue;
+
+                System.arraycopy(uvRawSrcBytes, planes[2].getRowStride() * i,
+                        nv21, offset, w);
+            }
             return nv21;
-        } catch (
-                Exception e) {
-            return null;
+        } catch (Exception e) {
+            return nv21;
         }
-
     }
-
 
     /***
      * camera1 zoom
@@ -217,5 +212,28 @@ public class CameraHelper {
             zoom = 1;
         p.setZoom(zoom);
         mCamera.setParameters(p);
+    }
+
+    /**
+     * 检查相机支持哪几种focusMode
+     *
+     * @param cameraCharacteristics
+     */
+    public void checkFocusMode(CameraCharacteristics cameraCharacteristics) {
+        int[] availableFocusModes = new int[0];
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            availableFocusModes = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
+        }
+        for (int focusMode : availableFocusModes != null ? availableFocusModes : new int[0]) {
+            if (focusMode == CameraCharacteristics.CONTROL_AF_MODE_OFF) {
+
+            } else if (focusMode == CameraCharacteristics.CONTROL_AF_MODE_MACRO) {
+
+            } else if (focusMode == CameraCharacteristics.CONTROL_AF_MODE_CONTINUOUS_PICTURE) {
+
+            } else if (focusMode == CameraCharacteristics.CONTROL_AF_MODE_AUTO) {
+
+            }
+        }
     }
 }

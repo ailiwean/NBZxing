@@ -162,7 +162,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }
     }
 
-    fun onCameraResume() {
+    protected fun onCameraResume() {
         if (isShoudCreateOpen) {
             return
         }
@@ -172,7 +172,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }
     }
 
-    fun onCameraPause() {
+    protected fun onCameraPause() {
         closeCamera()
         isShoudCreateOpen = false
     }

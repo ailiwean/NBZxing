@@ -19,7 +19,6 @@ package com.google.android.cameraview;
 import android.annotation.SuppressLint;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 import androidx.collection.SparseArrayCompat;
@@ -74,6 +73,10 @@ class Camera1 extends CameraViewImpl {
     private int mFlash;
 
     private int mDisplayOrientation;
+
+    private static final int MAX_PREVIEW_WIDTH = 1920;
+
+    private static final int MAX_PREVIEW_HEIGHT = 1080;
 
     Camera1(Callback callback) {
         super(callback);
@@ -350,6 +353,13 @@ class Camera1 extends CameraViewImpl {
         for (Camera.Size size : mCameraParameters.getSupportedPictureSizes()) {
             mPictureSizes.add(new Size(size.width, size.height));
         }
+
+        for (AspectRatio ratio : mPreviewSizes.ratios()) {
+            if (!mPictureSizes.ratios().contains(ratio)) {
+                mPreviewSizes.remove(ratio);
+            }
+        }
+
         // AspectRatio
         if (mAspectRatio == null) {
             mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
@@ -364,31 +374,19 @@ class Camera1 extends CameraViewImpl {
         return true;
     }
 
-    private AspectRatio chooseAspectRatio() {
-        AspectRatio r = null;
-        for (AspectRatio ratio : mPreviewSizes.ratios()) {
-            r = ratio;
-            if (ratio.equals(Constants.DEFAULT_ASPECT_RATIO)) {
-                return ratio;
-            }
-        }
-        return r;
-    }
-
     void adjustCameraParameters() {
         // Supported preview sizes
         if (mPictureSizes.ratios().size() == 0) {
-            start();
             return;
         }
         SortedSet<Size> sizes = mPreviewSizes.sizes(mAspectRatio);
         if (sizes == null) { // Not supported
-            mAspectRatio = chooseAspectRatio();
+            mAspectRatio = AspectRatio.of(4, 3);
+            if (mPreviewSizes.sizes(mAspectRatio) == null)
+                mAspectRatio = findNeartoDefaultAspectRatio(mPreviewSizes);
             mPreview.updateAspectRatio(mAspectRatio);
             sizes = mPreviewSizes.sizes(mAspectRatio);
         }
-        if (mPictureSizes.sizes(mAspectRatio) == null)
-            return;
 
         Size size = chooseOptimalSize(sizes);
         // Always re-apply camera parameters
@@ -409,6 +407,23 @@ class Camera1 extends CameraViewImpl {
         }
     }
 
+    private AspectRatio findNeartoDefaultAspectRatio(SizeMap sizeMap) {
+        float minRation = Float.MAX_VALUE;
+        AspectRatio minAspectRatio = sizeMap.ratios().iterator().next();
+        for (AspectRatio ratio : sizeMap.ratios()) {
+            for (Size size : mPreviewSizes.sizes(ratio)) {
+                float currentRatio = Math.abs(1 - ((float) size.getWidth() / MAX_PREVIEW_WIDTH) *
+                        ((float) size.getHeight() / MAX_PREVIEW_HEIGHT));
+                if (currentRatio < minRation) {
+                    minRation = currentRatio;
+                    minAspectRatio = ratio;
+                }
+            }
+        }
+        return minAspectRatio;
+    }
+
+
     @SuppressWarnings("SuspiciousNameCombination")
     private Size chooseOptimalSize(SortedSet<Size> sizes) {
         if (!mPreview.isReady()) { // Not yet laid out
@@ -425,15 +440,18 @@ class Camera1 extends CameraViewImpl {
             desiredWidth = surfaceWidth;
             desiredHeight = surfaceHeight;
         }
-        Size result = null;
-        for (Size size : sizes) { // Iterate from small to large
-            if (desiredWidth <= size.getWidth() && desiredHeight <= size.getHeight()) {
-                return size;
 
+        float minRation = Float.MAX_VALUE;
+        Size suitSize = null;
+        for (Size size : sizes) { // Iterate from small to large
+            float currentRation = Math.abs(1 - (float) desiredWidth / size.getWidth() *
+                    (float) desiredHeight / size.getHeight());
+            if (currentRation < minRation) {
+                minRation = currentRation;
+                suitSize = size;
             }
-            result = size;
         }
-        return result;
+        return suitSize;
     }
 
     private void releaseCamera() {

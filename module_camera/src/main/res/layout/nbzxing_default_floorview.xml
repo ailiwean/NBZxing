@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/base_floor"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.ailiwean.core.view.LocationView
+        android:id="@+id/locView"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:alpha="0.7"
+        android:visibility="gone" />
+        
+    <com.ailiwean.core.view.ScanBarView
+        android:id="@+id/scanBarView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="70dp" />
+
+    <com.ailiwean.core.view.ScanLightView
+        android:id="@+id/lightView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="20dp" />
+
+    <View
+        android:id="@+id/scanRectView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:background="#1f000000" />
+
+</FrameLayout>

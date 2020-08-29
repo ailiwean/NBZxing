@@ -2,6 +2,7 @@ package com.ailiwean.core.helper;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
@@ -63,11 +64,15 @@ public class ScanHelper {
         avargPoint.y /= point.length;
         float preX = Config.scanRect.getPreX();
         float preY = Config.scanRect.getPreY();
-        float aspX = preX * Config.scanRatio / (float) Config.scanRect.getScanR().height();
-        float aspY = preY * Config.scanRatio / (float) Config.scanRect.getScanR().width();
-        float extraX = preX * (1 - Config.scanRatio) / 2;
-        float extraY = preY * (1 - Config.scanRatio) / 2;
-        return new PointF(preX - aspX * avargPoint.y - extraX, aspY * avargPoint.x + extraY);
+        float extraX = Config.scanRect.getExtraX();
+        float extraY = Config.scanRect.getExtraY();
+        float aspeX = (preX + extraX) / (float) Config.scanRect.getDataY();
+        float aspeY = (preY + extraY) / (float) Config.scanRect.getDataX();
+
+        float relatPointX = preX + extraX / 2 - (Config.scanRect.getScanR().top + avargPoint.y) * aspeX;
+        float relatPointY = (Config.scanRect.getScanR().left + avargPoint.x) * aspeY - extraY / 2;
+        return new PointF(relatPointX, relatPointY);
+
     }
 
     /***
@@ -92,11 +97,14 @@ public class ScanHelper {
         avargPoint.y /= point.length;
         float preX = Config.scanRect.getPreX();
         float preY = Config.scanRect.getPreY();
-        float aspX = preX * Config.scanRatio / (float) Config.scanRect.getScanRR().width();
-        float aspY = preY * Config.scanRatio / (float) Config.scanRect.getScanRR().height();
-        float extraX = preX * (1 - Config.scanRatio) / 2;
-        float extraY = preY * (1 - Config.scanRatio) / 2;
-        return new PointF(aspX * avargPoint.x + extraX, aspY * avargPoint.y + extraY);
+        float extraX = Config.scanRect.getExtraX();
+        float extraY = Config.scanRect.getExtraY();
+        float aspeX = (preX + extraX) / (float) Config.scanRect.getDataY();
+        float aspeY = (preY + extraY) / (float) Config.scanRect.getDataX();
+
+        float relatPointX = (Config.scanRect.getScanRR().left + avargPoint.x) * aspeX - extraX / 2;
+        float relatPointY = (Config.scanRect.getScanRR().top + avargPoint.y) * aspeY - extraY / 2;
+        return new PointF(relatPointX, relatPointY);
     }
 
 
@@ -126,14 +134,19 @@ public class ScanHelper {
      * @return
      */
     public static Rect getScanByteRect(int dataWidth, int dataHeight) {
+
+        if (Config.scanRect.getRect() == null)
+            return new Rect(0, 0, 0, 0);
+
+        //默认采集的数据
         if (dataWidth > dataHeight) {
+
             if (Config.scanRect.getScanR() == null) {
                 Config.scanRect.setScanR(new Rect());
-                Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().left * dataHeight);
-                Config.scanRect.getScanR().top = (int) (Config.scanRect.getRect().top * dataWidth);
-                Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().right * dataHeight);
-                Config.scanRect.getScanR().bottom = (int) (Config.scanRect.getRect().bottom * dataWidth);
-                Config.scanRect.setScanR(rotateRect(Config.scanRect.getScanR()));
+                Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().top * dataWidth);
+                Config.scanRect.getScanR().top = (int) ((1f - Config.scanRect.getRect().right) * dataHeight);
+                Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().bottom * dataWidth);
+                Config.scanRect.getScanR().bottom = (int) ((1f - (Config.scanRect.getRect().left)) * dataHeight);
             }
             return Config.scanRect.getScanR();
         } else {
@@ -154,6 +167,9 @@ public class ScanHelper {
     public static int getQrLenght(ResultPoint[] point) {
 
         if (Config.scanRect.getScanR() == null)
+            return 0;
+
+        if (point.length < 3)
             return 0;
 
         //计算中心点坐标

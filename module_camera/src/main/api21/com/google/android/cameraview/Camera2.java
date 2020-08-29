@@ -17,7 +17,6 @@
 package com.google.android.cameraview;
 
 import android.content.Context;
-import android.graphics.Camera;
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -212,15 +211,17 @@ class Camera2 extends CameraViewImpl {
     @Override
     boolean start() {
         synchronized (Camera2.class) {
-            if (isCameraOpened())
-                return true;
-            if (!chooseCameraIdByFacing()) {
+
+            if (!chooseCameraIdByFacing())
                 return false;
-            }
-            collectCameraInfo();
-            prepareImageReader();
-            startOpeningCamera();
-            return true;
+
+            if (!collectCameraInfo())
+                return false;
+
+            if (!prepareImageReader())
+                return false;
+
+            return startOpeningCamera();
         }
     }
 
@@ -358,7 +359,8 @@ class Camera2 extends CameraViewImpl {
     @Override
     void setDisplayOrientation(int displayOrientation) {
         mDisplayOrientation = displayOrientation;
-        mPreview.setDisplayOrientation(mDisplayOrientation);
+        if (mPreview != null)
+            mPreview.setDisplayOrientation(mDisplayOrientation);
     }
 
     @Override
@@ -454,11 +456,11 @@ class Camera2 extends CameraViewImpl {
      * <p>This rewrites {@link #mPreviewSizes}, {@link #mPictureSizes}, and optionally,
      * {@link #mAspectRatio}.</p>
      */
-    private void collectCameraInfo() {
+    private boolean collectCameraInfo() {
         StreamConfigurationMap map = mCameraCharacteristics.get(
                 CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
         if (map == null) {
-            return;
+            return false;
         }
 
         mPreviewSizes.clear();
@@ -471,7 +473,9 @@ class Camera2 extends CameraViewImpl {
         }
 
         mPictureSizes.clear();
-        collectPictureSizes(mPictureSizes, map);
+        for (android.util.Size size : map.getOutputSizes(ImageFormat.JPEG)) {
+            mPictureSizes.add(new Size(size.getWidth(), size.getHeight()));
+        }
         for (AspectRatio ratio : mPreviewSizes.ratios()) {
             if (!mPictureSizes.ratios().contains(ratio)) {
                 mPreviewSizes.remove(ratio);
@@ -479,53 +483,70 @@ class Camera2 extends CameraViewImpl {
         }
 
         if (!mPreviewSizes.ratios().contains(mAspectRatio)) {
-            mAspectRatio = mPreviewSizes.ratios().iterator().next();
-            mPreview.updateAspectRatio(mPreviewSizes.ratios().iterator().next());
+            //扫码没有16：9则取4:3
+            mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
+            //没有4：3则取最接近的
+            if (!mPreviewSizes.ratios().contains(mAspectRatio)) {
+                mAspectRatio = findNeartoDefaultAspectRatio(mPreviewSizes);
+                mPreview.updateAspectRatio(mAspectRatio);
+                return true;
+            }
+            mPreview.updateAspectRatio(mAspectRatio);
+            return true;
         }
-
+        return true;
     }
 
-    protected void collectPictureSizes(SizeMap sizes, StreamConfigurationMap map) {
-        for (android.util.Size size : map.getOutputSizes(ImageFormat.JPEG)) {
-            mPictureSizes.add(new Size(size.getWidth(), size.getHeight()));
+    private AspectRatio findNeartoDefaultAspectRatio(SizeMap sizeMap) {
+        float minRation = Float.MAX_VALUE;
+        AspectRatio minAspectRatio = sizeMap.ratios().iterator().next();
+        for (AspectRatio ratio : sizeMap.ratios()) {
+            for (Size size : mPreviewSizes.sizes(ratio)) {
+                float currentRatio = Math.abs(1 - ((float) size.getWidth() / MAX_PREVIEW_WIDTH) *
+                        ((float) size.getHeight() / MAX_PREVIEW_HEIGHT));
+                if (currentRatio < minRation) {
+                    minRation = currentRatio;
+                    minAspectRatio = ratio;
+                }
+            }
         }
+        return minAspectRatio;
     }
 
-    private void prepareImageReader() {
-        if (mImageReader != null) {
-            mImageReader.close();
-        }
-        Size largest = mPictureSizes.sizes(mAspectRatio).last();
-        mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
-                ImageFormat.JPEG, /* maxImages */ 2);
-        mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, null);
+    private boolean prepareImageReader() {
+        try {
 
-        Size prelargest = mPreviewSizes.sizes(mAspectRatio).last();
-        mYuvReader = ImageReader.newInstance(prelargest.getWidth(), prelargest.getHeight(),
-                ImageFormat.YUV_420_888, /* maxImages */ 2);
-        mYuvReader.setOnImageAvailableListener(mOnYuvAvailableListener, null);
+            if (mImageReader != null) {
+                mImageReader.close();
+            }
+            Size largest = mPictureSizes.sizes(mAspectRatio).last();
+            mImageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
+                    ImageFormat.JPEG, /* maxImages */ 2);
+            mImageReader.setOnImageAvailableListener(mOnImageAvailableListener, null);
+
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     /***
      * yuv数据回调
      */
-    private ImageReader.OnImageAvailableListener mOnYuvAvailableListener = new ImageReader.OnImageAvailableListener() {
-        @Override
-        public void onImageAvailable(ImageReader reader) {
-            mCallback.onPreviewByte(CameraHelper.readYuv(reader));
-        }
-    };
+    private ImageReader.OnImageAvailableListener mOnYuvAvailableListener = reader -> mCallback.onPreviewByte(CameraHelper.readYuv(reader));
 
 
     /**
      * <p>Starts opening a camera device.</p>
      * <p>The result will be processed in {@link #mCameraDeviceCallback}.</p>
      */
-    private void startOpeningCamera() {
+    private boolean startOpeningCamera() {
         try {
             mCameraManager.openCamera(mCameraId, mCameraDeviceCallback, null);
-        } catch (CameraAccessException e) {
+        } catch (Exception e) {
+            return false;
         }
+        return true;
     }
 
     /**
@@ -538,7 +559,13 @@ class Camera2 extends CameraViewImpl {
             if (!isCameraOpened() || !mPreview.isReady() || mImageReader == null) {
                 return;
             }
+
             Size previewSize = chooseOptimalSize();
+
+            mYuvReader = ImageReader.newInstance(previewSize.getWidth(), previewSize.getHeight(),
+                    ImageFormat.YUV_420_888, /* maxImages */ 2);
+            mYuvReader.setOnImageAvailableListener(mOnYuvAvailableListener, null);
+
             mPreview.setBufferSize(previewSize.getWidth(), previewSize.getHeight());
             Surface surface = mPreview.getSurface();
             try {
@@ -564,8 +591,12 @@ class Camera2 extends CameraViewImpl {
      */
     private Size chooseOptimalSize() {
         int surfaceLonger, surfaceShorter;
-        final int surfaceWidth = mPreview.getWidth();
-        final int surfaceHeight = mPreview.getHeight();
+        int surfaceWidth = mPreview.getWidth();
+        int surfaceHeight = mPreview.getHeight();
+        if (surfaceWidth == 0 || surfaceHeight == 0) {
+            surfaceWidth = MAX_PREVIEW_HEIGHT;
+            surfaceHeight = MAX_PREVIEW_WIDTH;
+        }
         if (surfaceWidth < surfaceHeight) {
             surfaceLonger = surfaceHeight;
             surfaceShorter = surfaceWidth;
@@ -575,14 +606,18 @@ class Camera2 extends CameraViewImpl {
         }
         SortedSet<Size> candidates = mPreviewSizes.sizes(mAspectRatio);
 
-        // Pick the smallest of those big enough
+        float minRation = Float.MAX_VALUE;
+        Size suitSize = null;
         for (Size size : candidates) {
-            if (size.getWidth() >= surfaceLonger && size.getHeight() >= surfaceShorter) {
-                return size;
+            float currentRation = Math.abs(1 - (float) surfaceLonger / size.getWidth() *
+                    (float) surfaceShorter / size.getHeight());
+            if (currentRation < minRation) {
+                minRation = currentRation;
+                suitSize = size;
             }
         }
         // If no size is big enough, pick the largest one.
-        return candidates.last();
+        return suitSize;
     }
 
     /**

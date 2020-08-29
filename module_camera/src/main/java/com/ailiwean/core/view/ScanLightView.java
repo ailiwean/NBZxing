@@ -15,13 +15,15 @@ import com.google.android.cameraview.R;
  *  DATE 2019/6/23
  *
  */
-public class ScanLightView extends FrameLayout implements LightViewCallBack {
+public class ScanLightView extends FrameLayout implements ScanLightViewCallBack {
 
     private TextView tv;
     private ImageView iv;
-    private LightClick lightClick;
 
-    private boolean isBright;
+    private boolean isOpen;
+
+    Runnable open;
+    Runnable close;
 
     public ScanLightView(Context context) {
         super(context);
@@ -43,81 +45,54 @@ public class ScanLightView extends FrameLayout implements LightViewCallBack {
         iv = v.findViewById(R.id.light_img);
         tv = v.findViewById(R.id.light_text);
         addView(v);
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggle();
-            }
-        });
-        inital();
+        setOnClickListener(v1 -> toggle());
     }
 
     public void toggle() {
-
         if (tv.getText().equals("轻触照亮"))
             open();
         else close();
-
     }
 
     private void open() {
-        isBright = true;
+        if (open != null)
+            open.run();
+        isOpen = true;
         tv.setText("轻触关闭");
-        if (lightClick != null)
-            lightClick.onClick(true);
         iv.setImageDrawable(getContext().getResources().getDrawable(R.drawable.light_open));
-
     }
 
     private void close() {
-        isBright = false;
+        if (close != null)
+            close.run();
+        isOpen = false;
         tv.setText("轻触照亮");
-        if (lightClick != null)
-            lightClick.onClick(false);
         iv.setImageDrawable(getContext().getResources().getDrawable(R.drawable.light_close));
 
     }
 
-    private void inital() {
-        close();
-        setVisibility(View.GONE);
-    }
-
-    public void setBright(boolean isBright) {
-        if (!isBright) {
-            setVisibility(View.VISIBLE);
-        } else if (!this.isBright) {
-            setVisibility(View.INVISIBLE);
-        }
-    }
 
     @Override
     public void lightBrighter() {
-        setBright(false);
+        setVisibility(View.VISIBLE);
     }
 
     @Override
     public void lightDark() {
-        setBright(true);
+        if (!isOpen)
+            setVisibility(View.GONE);
     }
 
     @Override
-    public void lightOpen() {
-
+    public void regLightOperator(Runnable open, Runnable close) {
+        this.open = open;
+        this.close = close;
     }
 
     @Override
-    public void lightClose() {
-
-    }
-
-
-    public interface LightClick {
-        void onClick(boolean isOpen);
-    }
-
-    public void regLightClick(LightClick click) {
-        this.lightClick = click;
+    public void cameraStartLaterInit() {
+        close();
+        setVisibility(View.GONE);
     }
 
 }

@@ -21,10 +21,10 @@
 
 两步搞定
 
- **step1.  自定义一个View继承ZxingCameraView**
+ **step1.  自定义一个View继承NBZxingView**
 			
 ```
-class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : ZxingCameraView(context, attributeSet, def) {
+class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
 	
     /***
      * 扫码结果回调
@@ -33,13 +33,7 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
     }
 
-    /***
-     * 可扩展顶层View
-     */
-    override fun provideFloorView(): View? {
-        return null
-    }
-
+  
     /***
      * 返回扫码类型
      * 1 ScanTypeConfig.HIGH_FREQUENCY 高频率格式(默认)
@@ -95,7 +89,7 @@ class CusZxingView @JvmOverloads constructor(context: Context, attributeSet: Att
 
 
 #### 图片资源解析
-在ZxingCameraView的子类中调用		
+在NBZxingView的子类中调用		
 	
 ```
   	parseFile(filePath: String);
@@ -119,7 +113,7 @@ protected open fun resultBackFile(content: String) {
 
 - 安装密码1234
 
-###### 😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
+###### 😊 <如果觉得还凑合不错，强烈请求来上一个star 。 开源不易，多多鼓励，感谢！>  😊
 
 ----
 

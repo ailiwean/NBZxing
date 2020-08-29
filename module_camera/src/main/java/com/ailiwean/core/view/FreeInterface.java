@@ -9,7 +9,7 @@ import android.view.View;
  * @Author: SWY
  * @CreateDate: 2020/8/23 10:45 PM
  */
-interface FreeInterface {
+public interface FreeInterface {
 
     /***
      * 提供一个扫码区域View, 将根据这个View剪裁数据
@@ -22,9 +22,9 @@ interface FreeInterface {
     ScanBarCallBack provideScanBarView();
 
     /***
-     * 提供一个手电筒View,需实现{@link LightViewCallBack}
+     * 提供一个手电筒View,需实现{@link ScanLightViewCallBack}
      */
-    LightViewCallBack provideLightView();
+    ScanLightViewCallBack provideLightView();
 
     /***
      * 提供一个定位点View, 需实现{@link ScanLocViewCallBack}

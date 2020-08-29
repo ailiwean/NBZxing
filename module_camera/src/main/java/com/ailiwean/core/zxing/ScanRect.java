@@ -18,13 +18,16 @@ public class ScanRect {
     private int preX;
     private int preY;
 
+    private int extraX;
+    private int extraY;
+
     private RectF r = new RectF();
     private Rect scanR = null;
     private Rect scanRR = null;
 
 
     /***
-     * 实际预览区域/总预览区域
+     * 采集数据的解析区域
      * @param r
      */
     public void setRect(RectF r) {
@@ -100,6 +103,24 @@ public class ScanRect {
 
     public ScanRect setPreY(int preY) {
         this.preY = preY;
+        return this;
+    }
+
+    public int getExtraX() {
+        return extraX;
+    }
+
+    public ScanRect setExtraX(int extraX) {
+        this.extraX = extraX;
+        return this;
+    }
+
+    public int getExtraY() {
+        return extraY;
+    }
+
+    public ScanRect setExtraY(int extraY) {
+        this.extraY = extraY;
         return this;
     }
 }

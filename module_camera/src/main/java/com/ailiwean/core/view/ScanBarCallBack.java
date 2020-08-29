@@ -7,7 +7,7 @@ package com.ailiwean.core.view;
  * @Author: SWY
  * @CreateDate: 2020/8/23 11:27 PM
  */
-public interface ScanBarCallBack {
+public interface ScanBarCallBack extends CameraStarLater {
 
     void startScanAnimator();
 

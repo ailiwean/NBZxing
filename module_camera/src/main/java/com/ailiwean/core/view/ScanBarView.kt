@@ -72,6 +72,10 @@ class ScanBarView @JvmOverloads constructor(context: Context, attributeSet: Attr
         startAnim()
     }
 
+    override fun cameraStartLaterInit() {
+
+    }
+
     override fun stopScanAnimator() {
         stopAnim()
     }

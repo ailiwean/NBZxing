@@ -21,7 +21,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     private val ableList = CopyOnWriteArrayList<PixsValuesAble>()
 
-    private var server: WorkThreadServer
+    private var server: WorkThreadServer = WorkThreadServer.createInstance()
 
     private var processClz: Class<out Any>? = null
     private var processDispatch: GrayScaleDispatch? = null
@@ -33,7 +33,6 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     init {
-        server = WorkThreadServer.createInstance()
         init()
         try {
             processClz = Class.forName(Config.GARY_SCALE_PATH)
@@ -73,7 +72,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     private fun executeToParse(data: ByteArray, dataWidth: Int, dataHeight: Int, isNative: Boolean, server: WorkThreadServer) {
-        val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight)
+        val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight) ?: return
         for (able in ableList) {
             server.post(TypeRunnable.create(if (isNative) TypeRunnable.NORMAL else TypeRunnable.SCALE) {
                 able.cusAction(data, dataWidth, dataHeight, isNative)
@@ -82,7 +81,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         }
     }
 
-    private fun generateGlobeYUVLuminanceSource(data: ByteArray?, dataWidth: Int, dataHeight: Int): PlanarYUVLuminanceSource {
+    private fun generateGlobeYUVLuminanceSource(data: ByteArray?, dataWidth: Int, dataHeight: Int): PlanarYUVLuminanceSource? {
         return ScanHelper.buildLuminanceSource(data, dataWidth, dataHeight, ScanHelper.getScanByteRect(dataWidth, dataHeight))
     }
 

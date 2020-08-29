@@ -1,16 +1,20 @@
 package com.ailiwean.core.view;
 
+import android.graphics.PointF;
+
 /**
  * @Package: com.ailiwean.core.view
- * @ClassName: ScanLocView
+ * @ClassName: LocationCallBack
  * @Description:
  * @Author: SWY
- * @CreateDate: 2020/8/23 11:44 PM
+ * @CreateDate: 2020/8/29 3:32 PM
  */
-interface ScanLocViewCallBack {
+public interface ScanLocViewCallBack extends CameraStarLater {
 
-    void startLocAnimator();
-
-    void regAnimtorEndRun(Runnable runnable);
+    /***
+     * @param qrPoint 二维码中心位置坐标，相对于FreeZxingView
+     * @param runnable 扫码结果回调
+     */
+    void toLocation(PointF qrPoint, Runnable runnable);
 
 }

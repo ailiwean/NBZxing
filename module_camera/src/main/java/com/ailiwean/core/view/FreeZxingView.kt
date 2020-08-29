@@ -1,11 +1,12 @@
 package com.ailiwean.core.view
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.ImageDecoder
+import android.graphics.PointF
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
@@ -14,10 +15,8 @@ import android.os.Message
 import android.provider.MediaStore
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import com.ailiwean.core.Config.*
 import com.ailiwean.core.Result
-import com.ailiwean.core.Utils
 import com.ailiwean.core.able.AbleManager
 import com.ailiwean.core.helper.VibrateHelper
 import com.ailiwean.core.zxing.BitmapLuminanceSource
@@ -29,9 +28,7 @@ import com.ailiwean.core.zxing.core.common.HybridBinarizer
 import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
 import com.google.android.cameraview.CameraView
-import com.google.android.cameraview.R
 import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.base_zxing_layout.view.*
 import java.io.File
 import java.lang.ref.WeakReference
 
@@ -45,6 +42,12 @@ import java.lang.ref.WeakReference
 abstract class FreeZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
         BaseCameraView(context, attributeSet, def), Handler.Callback, FreeInterface {
 
+    private val handleZX = HandleZX(this)
+
+    private var ableCollect: AbleManager? = null
+
+    private var busHandle: Handler? = null
+
     init {
 
         //使用后置相机
@@ -54,12 +57,26 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         this.setAspectRatio(AspectRatio.of(16, 9))
 
     }
+    
+    /***
+     * 自定义扫描条
+     */
+    private val scanBarView get() = provideScanBarView()
 
-    private val handleZX = HandleZX(this)
+    /**
+     *自定义收手电筒
+     */
+    private val lightView get() = provideLightView()
 
-    private var ableCollect: AbleManager? = null
+    /***
+     * 自定义定位点
+     */
+    private val locView get() = provideLocView()
 
-    private var busHandle: Handler? = null
+    /***
+     * 自定义解析区域
+     */
+    private val parseRect get() = provideParseRectView()
 
     /***
      * Handler结果回调
@@ -77,7 +94,10 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
 
             //环境亮度变换回调
             LIGHT_CHANGE -> {
-                lightView.setBright(it.obj.toString().toBoolean())
+                it.obj.toString().toBoolean().let {
+                    if (it) lightView.lightDark()
+                    else lightView.lightBrighter()
+                }
             }
 
             //放大回调
@@ -110,7 +130,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         ableCollect?.clear()
 
         //关闭扫码条动画
-        scan_bar.stopAnim()
+        scanBarView.stopScanAnimator()
 
         //播放音频
         VibrateHelper.playVibrate()
@@ -133,7 +153,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      */
     override fun onPause() {
         super.onPause()
-        scan_bar.stopAnim()
+        scanBarView.stopScanAnimator()
     }
 
     /***
@@ -149,42 +169,43 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      * 显示二维码位置, 动画播放完回调扫描结果
      */
     fun showQRLoc(point: PointF, content: String) {
-        qr_loc.visibility = View.VISIBLE
-        qr_loc.translationX = point.x - Utils.dp2px(25f)
-        qr_loc.translationY = point.y - Utils.dp2px(25f)
-        qr_loc.scaleX = 0f
-        qr_loc.scaleY = 0f
-        qr_loc.animate().scaleX(1f)
-                .scaleY(1f)
-                .setDuration(300)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        resultBack(content)
-                    }
-                })
-                .start()
-
+        locView.toLocation(point) {
+            resultBack(content)
+        }
     }
 
     /***
-     * 表层的View及一些配置初始化
+     * 相机启动后的一些配置初始化
      */
-    private fun topViewInitWithConfig() {
+    private fun cameraStartLaterConfig() {
 
-        scan_bar.startAnim()
-        qr_loc.visibility = View.INVISIBLE
-
+        //自定义
+        locView.cameraStartLaterInit()
+        //控件
+        scanBarView.cameraStartLaterInit()
+        //初始化
+        lightView.cameraStartLaterInit()
+        //设定扫码区域
+        post {
+            defineScanParseRect(parseRect)
+        }
+        //注册打开手关闭电筒功能
+        lightView.regLightOperator({
+            lightOperator(true)
+        }, {
+            lightOperator(false)
+        })
+        //扫码条开始播放动画
+        scanBarView.startScanAnimator()
         //重新装填AbleManager
         ableCollect?.init()
-
         //配置扫码类型
         initScanType()
-
         //重新接收数据
         handleZX.init()
-
         //音频资源加载
         VibrateHelper.playInit()
+
     }
 
     /***
@@ -204,22 +225,17 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     override fun onCameraOpenBack(camera: CameraView) {
         super.onCameraOpenBack(camera)
         clearFindViewByIdCache()
-        LayoutInflater.from(context).inflate(R.layout.base_zxing_layout, this, true)
-        topViewInitWithConfig()
+        LayoutInflater.from(context).inflate(provideFloorView(), this, true)
+        cameraStartLaterConfig()
     }
+
+    abstract fun provideFloorView(): Int
 
     /***
      * 配置扫码类型
      */
     private fun initScanType() {
         scanTypeConfig = getScanType()
-    }
-
-    /***
-     * 获取扫码类型
-     */
-    open fun getScanType(): ScanTypeConfig {
-        return ScanTypeConfig.HIGH_FREQUENCY
     }
 
     /***
@@ -324,9 +340,18 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         return uri ?: Uri.EMPTY
     }
 
+
+    /***
+     * 提供扫码类型
+     */
+    open fun getScanType(): ScanTypeConfig {
+        return ScanTypeConfig.HIGH_FREQUENCY
+    }
+
     /***
      * 全局Handler
      */
+
     class HandleZX constructor(view: Callback) : Handler() {
         var hasResult = false
         var viewReference: WeakReference<Callback>? = null
