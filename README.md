@@ -3,7 +3,8 @@
   
 ### 依赖
 
-[![](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qaXRwYWNrLmlvL3YvYWlsaXdlYW4vTkJaeGluZy5zdmc?x-oss-process=image/format,png)](https://jitpack.io/#ailiwean/NBZxing)    [[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-fIwVCQJ9-1598724809081)(https://jitpack.io/v/ailiwean/NBZxing-Scale.svg)]](https://jitpack.io/#ailiwean/NBZxing-Scale)
+[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://jitpack.io/#ailiwean/NBZxing)    [![](https://jitpack.io/v/ailiwean/NBZxing-Scale.svg)](https://jitpack.io/#ailiwean/NBZxing-Scale)
+
 
 
 ```
@@ -53,7 +54,8 @@
 
 | 😊  |  😊 |
 | ------------ | ------------ |
-|  请喝咖啡 | [(https://github.com/ailiwean/NBZxing/blob/master/qr_test/pay.png "pay")]  |
+|  请喝咖啡 | ![pay](https://github.com/ailiwean/NBZxing/blob/master/qr_test/pay.png "pay")  |
+
 
 
 
