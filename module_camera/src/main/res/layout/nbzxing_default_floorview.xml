@@ -11,7 +11,7 @@
         android:layout_height="45dp"
         android:alpha="0.7"
         android:visibility="gone" />
-        
+
     <com.ailiwean.core.view.ScanBarView
         android:id="@+id/scanBarView"
         android:layout_width="match_parent"

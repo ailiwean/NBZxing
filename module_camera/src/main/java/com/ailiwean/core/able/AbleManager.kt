@@ -65,7 +65,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
             return
         grayProcessHandler.removeCallbacksAndMessages(null)
         grayProcessHandler.post {
-            val newByte = processDispatch!!.dispatch(data, dataWidth, dataHeight)
+            val newByte = processDispatch!!.dispatch(data, dataWidth, dataHeight, Config.scanRect.scanR)
             if (newByte.isNotEmpty())
                 executeToParse(newByte, dataWidth, dataHeight, false, server)
         }

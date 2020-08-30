@@ -1,5 +1,7 @@
 package com.ailiwean.module_grayscale;
 
+import android.graphics.Rect;
+
 /**
  * @Package: com.ailiwean.module_grayscale
  * @ClassName: Dispatch
@@ -9,4 +11,6 @@ package com.ailiwean.module_grayscale;
  */
 interface Dispatch {
     byte[] dispatch(byte[] data, int width, int height);
+
+    byte[] dispatch(byte[] data, int width, int height, Rect rect);
 }

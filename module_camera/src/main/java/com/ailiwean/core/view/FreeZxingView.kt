@@ -15,6 +15,7 @@ import android.os.Message
 import android.provider.MediaStore
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import com.ailiwean.core.Config.*
 import com.ailiwean.core.Result
 import com.ailiwean.core.able.AbleManager
@@ -57,26 +58,26 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         this.setAspectRatio(AspectRatio.of(16, 9))
 
     }
-    
+
     /***
      * 自定义扫描条
      */
-    private val scanBarView get() = provideScanBarView()
+    private val scanBarView: ScanBarCallBack? get() = provideScanBarView()
 
     /**
      *自定义收手电筒
      */
-    private val lightView get() = provideLightView()
+    private val lightView: ScanLightViewCallBack? get() = provideLightView()
 
     /***
      * 自定义定位点
      */
-    private val locView get() = provideLocView()
+    private val locView: ScanLocViewCallBack? get() = provideLocView()
 
     /***
      * 自定义解析区域
      */
-    private val parseRect get() = provideParseRectView()
+    private val parseRect: View? get() = provideParseRectView()
 
     /***
      * Handler结果回调
@@ -95,8 +96,8 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
             //环境亮度变换回调
             LIGHT_CHANGE -> {
                 it.obj.toString().toBoolean().let {
-                    if (it) lightView.lightDark()
-                    else lightView.lightBrighter()
+                    if (it) lightView?.lightDark()
+                    else lightView?.lightBrighter()
                 }
             }
 
@@ -130,7 +131,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         ableCollect?.clear()
 
         //关闭扫码条动画
-        scanBarView.stopScanAnimator()
+        scanBarView?.stopScanAnimator()
 
         //播放音频
         VibrateHelper.playVibrate()
@@ -153,7 +154,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      */
     override fun onPause() {
         super.onPause()
-        scanBarView.stopScanAnimator()
+        scanBarView?.stopScanAnimator()
     }
 
     /***
@@ -169,7 +170,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      * 显示二维码位置, 动画播放完回调扫描结果
      */
     fun showQRLoc(point: PointF, content: String) {
-        locView.toLocation(point) {
+        locView?.toLocation(point) {
             resultBack(content)
         }
     }
@@ -180,23 +181,23 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     private fun cameraStartLaterConfig() {
 
         //自定义
-        locView.cameraStartLaterInit()
+        locView?.cameraStartLaterInit()
         //控件
-        scanBarView.cameraStartLaterInit()
+        scanBarView?.cameraStartLaterInit()
         //初始化
-        lightView.cameraStartLaterInit()
+        lightView?.cameraStartLaterInit()
         //设定扫码区域
         post {
             defineScanParseRect(parseRect)
         }
         //注册打开手关闭电筒功能
-        lightView.regLightOperator({
+        lightView?.regLightOperator({
             lightOperator(true)
         }, {
             lightOperator(false)
         })
         //扫码条开始播放动画
-        scanBarView.startScanAnimator()
+        scanBarView?.startScanAnimator()
         //重新装填AbleManager
         ableCollect?.init()
         //配置扫码类型

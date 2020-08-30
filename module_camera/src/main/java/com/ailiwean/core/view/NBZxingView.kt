@@ -25,19 +25,19 @@ open class NBZxingView @JvmOverloads constructor(context: Context, attributeSet:
         return R.layout.nbzxing_default_floorview
     }
 
-    override fun provideParseRectView(): View {
+    override fun provideParseRectView(): View? {
         return scanRectView
     }
 
-    override fun provideLightView(): ScanLightViewCallBack {
+    override fun provideLightView(): ScanLightViewCallBack? {
         return lightView
     }
 
-    override fun provideLocView(): ScanLocViewCallBack {
+    override fun provideLocView(): ScanLocViewCallBack? {
         return locView
     }
 
-    override fun provideScanBarView(): ScanBarCallBack {
+    override fun provideScanBarView(): ScanBarCallBack? {
         return scanBarView
     }
 

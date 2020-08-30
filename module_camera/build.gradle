@@ -34,9 +34,9 @@ android {
 }
 
 dependencies {
-//    implementation project(":module_grayscale")
+    implementation project(":module_grayscale")
     api "androidx.appcompat:appcompat:1.1.0"
-    implementation 'com.github.ailiwean:NBZxing-Scale:0.0.2'
+//    implementation 'com.github.ailiwean:NBZxing-Scale:0.0.2'
 }
 
 tasks.withType(JavaCompile) {

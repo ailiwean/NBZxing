@@ -1,5 +1,6 @@
 package com.ailiwean.module_grayscale
 
+import android.graphics.Rect
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -28,4 +29,14 @@ class GrayScaleDispatch : Dispatch {
                 data, width, height)
     }
 
+    override fun dispatch(data: ByteArray?, width: Int, height: Int, rect: Rect?): ByteArray {
+
+        if (rect == null || (rect.left == 0 && rect.right == 0) ||
+                rect.top == 0 && rect.bottom == 0)
+            return dispatch(data, width, height)
+
+        return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(
+                data, width, height, rect)
+
+    }
 }

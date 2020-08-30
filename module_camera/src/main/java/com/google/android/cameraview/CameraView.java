@@ -218,6 +218,9 @@ public class CameraView extends FrameLayout {
      */
     protected void defineScanParseRect(View view) {
 
+        if (view == null)
+            return;
+
         Config.scanRect.setScanR(null);
         Config.scanRect.setScanRR(null);
         Config.scanRect.setRect(null);
