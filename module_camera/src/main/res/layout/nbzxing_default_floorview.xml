@@ -27,8 +27,8 @@
 
     <View
         android:id="@+id/scanRectView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_gravity="center"
         android:background="#1f000000" />
 

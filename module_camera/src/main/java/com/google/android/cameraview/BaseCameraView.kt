@@ -166,7 +166,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         if (isShoudCreateOpen) {
             return
         }
-        if (checkPermissionCamera()) {
+        if (checkPermissionCamera() && !isCameraOpened) {
             openCameraBefore()
             openCamera()
         }
@@ -274,7 +274,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
      */
     fun proscribeCamera() {
         isProscribeCamera = true
-        closeCamera()
+        onCameraPause()
     }
 
     /***
@@ -282,6 +282,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
      */
     fun unProscibeCamera() {
         isProscribeCamera = false
-        openCamera()
+        onCameraResume()
     }
 }

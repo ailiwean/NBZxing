@@ -41,9 +41,7 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
         parseFile(string)
     }
 
-
     override fun resultBackFile(content: String) {
         Toast.makeText(context, content, Toast.LENGTH_LONG).show()
     }
-
 }

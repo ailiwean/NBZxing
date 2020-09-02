@@ -7,11 +7,9 @@
     android:layout_gravity="top"
     tools:ignore="ResourceName">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp">
-
 
         <TextView
             android:id="@+id/vLeftTextView"
