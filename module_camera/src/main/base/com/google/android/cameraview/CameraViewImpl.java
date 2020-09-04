@@ -104,7 +104,7 @@ abstract class CameraViewImpl {
     /**
      * 矩形区域测光变焦
      */
-    protected void rectMeteringWithFocus(Rect rect) {
+    protected void rectMeteringWithFocus() {
         
     }
 

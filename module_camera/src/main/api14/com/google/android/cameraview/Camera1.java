@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import androidx.collection.SparseArrayCompat;
@@ -37,7 +38,6 @@ import java.util.SortedSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-@SuppressWarnings("deprecation")
 class Camera1 extends CameraViewImpl {
 
     private static final int INVALID_CAMERA_ID = -1;
@@ -436,7 +436,7 @@ class Camera1 extends CameraViewImpl {
         int surfaceHeight = mPreview.getHeight();
         if (surfaceWidth == 0 || surfaceHeight == 0) {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             } catch (InterruptedException ignored) {
             } finally {
                 surfaceWidth = mPreview.getWidth();
@@ -575,30 +575,25 @@ class Camera1 extends CameraViewImpl {
 
 
     @Override
-    protected void rectMeteringWithFocus(Rect rect) {
+    protected void rectMeteringWithFocus() {
         synchronized (Camera1.class) {
             if (mCamera == null || mCamera.getParameters() == null)
                 return;
             if (mCamera.getParameters().getMaxNumMeteringAreas() == 0)
                 return;
-
-            if (Config.scanRect == null)
+            if (Config.scanRect == null || Config.scanRect.getRect() == null)
                 return;
 
-            int dataX = Config.scanRect.getDataX();
-            int dataY = Config.scanRect.getDataY();
+            int left = (int) (2000 * Config.scanRect.getRect().top) - 1000;
+            int top = (int) (2000 * (1 - Config.scanRect.getRect().right)) - 1000;
+            int right = (int) (2000 * Config.scanRect.getRect().bottom) - 1000;
+            int bottom = (int) (2000 * (1 - Config.scanRect.getRect().left)) - 1000;
 
-            float aspX = 2000f / dataX;
-            float aspY = 2000f / dataY;
-
-//            Rect realRect = new Rect((int) (rect.left * aspX) - 1000,
-//                    (int) (rect.top * aspY) - 1000,
-//                    (int) (rect.right * aspX) - 1000,
-//                    (int) (rect.bottom * aspY) - 1000);
-//
-//            List<Camera.Area> areas = Collections.singletonList(new Camera.Area(realRect, 1));
-//            mCamera.getParameters().setFocusAreas(areas);
-//            mCamera.getParameters().setMeteringAreas(areas);
+            Rect realRect = new Rect(left , top, right, bottom);
+            List<Camera.Area> areas = Collections.singletonList(new Camera.Area(realRect, 1000));
+            mCameraParameters.setFocusAreas(areas);
+            mCameraParameters.setMeteringAreas(areas);
+            mCamera.setParameters(mCameraParameters);
         }
     }
 }

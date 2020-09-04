@@ -1,4 +1,0 @@
-
-usquid:S14509"YRemove the "parameters" field and declare it as a local variable in the relevant methods.(«°Åúÿÿÿÿ
-rsquid:S00115>"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(œ•‰
-qsquid:S00115?"ZRename this constant name to match the regular expression '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'.(å¹³N
