@@ -16,6 +16,7 @@
 
 package com.google.android.cameraview;
 
+import android.graphics.Rect;
 import android.view.View;
 
 import androidx.annotation.FloatRange;
@@ -99,6 +100,13 @@ abstract class CameraViewImpl {
     abstract void setZoom(@FloatRange(from = 0, to = 1) float percent);
 
     abstract void lightOperator(boolean isOpen);
+
+    /**
+     * 矩形区域测光变焦
+     */
+    protected void rectMeteringWithFocus(Rect rect) {
+        
+    }
 
 }
 

@@ -594,6 +594,15 @@ class Camera2 extends CameraViewImpl {
         int surfaceWidth = mPreview.getWidth();
         int surfaceHeight = mPreview.getHeight();
         if (surfaceWidth == 0 || surfaceHeight == 0) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException ignored) {
+            } finally {
+                surfaceWidth = mPreview.getWidth();
+                surfaceHeight = mPreview.getHeight();
+            }
+        }
+        if (surfaceWidth == 0 || surfaceHeight == 0) {
             surfaceWidth = MAX_PREVIEW_HEIGHT;
             surfaceHeight = MAX_PREVIEW_WIDTH;
         }

@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
@@ -26,8 +25,8 @@ import com.google.android.cameraview.R;
 public class CameraZxingMaskView extends View {
 
     private Paint paint;
-    private Rect drawRect;
     private Rect clearRect;
+    private Rect[] drawRects;
     private float margin_left;
     private float margin_top;
     private float margin_right;
@@ -54,8 +53,16 @@ public class CameraZxingMaskView extends View {
         margin_bottom = typedArray.getDimension(R.styleable.CameraZxingMaskView_camera_clear_margin_bottom, 0f);
         bgColor = typedArray.getColor(R.styleable.CameraZxingMaskView_camera_maskBgColor, Color.parseColor("#1f000000"));
         paint.setColor(bgColor);
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         typedArray.recycle();
+    }
+
+    private Rect[] clearRect2Rect() {
+        Rect[] rects = new Rect[4];
+        rects[0] = new Rect(0, 0, getMeasuredWidth(), clearRect.top);
+        rects[1] = new Rect(0, clearRect.top, clearRect.left, clearRect.bottom);
+        rects[2] = new Rect(clearRect.right, clearRect.top, getMeasuredWidth(), clearRect.bottom);
+        rects[3] = new Rect(0, clearRect.bottom, getMeasuredWidth(), getMeasuredHeight());
+        return rects;
     }
 
     public void initPaint() {
@@ -67,10 +74,6 @@ public class CameraZxingMaskView extends View {
     protected void onFinishInflate() {
         super.onFinishInflate();
         post(() -> {
-            if (drawRect == null)
-                drawRect = new Rect(0, 0, getMeasuredWidth(), getMeasuredHeight());
-            if (clearRect != null)
-                return;
             ViewGroup viewGroup = (ViewGroup) getParent();
             View parseRectView = viewGroup.findViewById(id);
             if (parseRectView != null) {
@@ -92,6 +95,7 @@ public class CameraZxingMaskView extends View {
                         (int) (getMeasuredWidth() - margin_right),
                         (int) (getMeasuredHeight() - margin_bottom));
             }
+            drawRects = clearRect2Rect();
             invalidate();
         });
     }
@@ -99,15 +103,11 @@ public class CameraZxingMaskView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (drawRect != null)
-            canvas.drawRect(drawRect, paint);
-
-        if (clearRect != null) {
-            canvas.save();
-            canvas.clipRect(clearRect);
-            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-            canvas.restore();
-        }
+        if (clearRect == null)
+            return;
+        if (drawRects != null)
+            for (Rect rect : drawRects)
+                canvas.drawRect(rect, paint);
     }
 
     public void setClearRect(Rect rect) {

@@ -88,6 +88,7 @@ abstract class PreviewImpl {
             getView().setTranslationX((float) -(width - v.getMeasuredWidth()) / 2);
         if (height > v.getMeasuredHeight())
             getView().setTranslationY((float) -(height - v.getMeasuredHeight()) / 2);
+        cameraHandler.getLooper().getThread().interrupt();
     }
 
     int getWidth() {

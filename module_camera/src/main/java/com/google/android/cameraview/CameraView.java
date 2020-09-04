@@ -124,12 +124,12 @@ public class CameraView extends FrameLayout {
         }
         // Internal setup
         mCallbacks = new CallbackBridge();
-        if (Build.VERSION.SDK_INT < 21) {
-            mImpl = new Camera1(mCallbacks);
-        } else {
-            mImpl = new Camera2(mCallbacks, context);
-        }
-//        mImpl = new Camera1(mCallbacks, preview);
+//        if (Build.VERSION.SDK_INT < 21) {
+//            mImpl = new Camera1(mCallbacks);
+//        } else {
+//            mImpl = new Camera2(mCallbacks, context);
+//        }
+        mImpl = new Camera1(mCallbacks);
         // Attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView, defStyleAttr,
                 R.style.Widget_CameraView);
@@ -264,6 +264,8 @@ public class CameraView extends FrameLayout {
         }
         Config.scanRect.setPreX(oriWidth);
         Config.scanRect.setPreY(oriHeight);
+
+        mImpl.rectMeteringWithFocus(Config.scanRect.getScanR());
     }
 
     /***
@@ -305,6 +307,8 @@ public class CameraView extends FrameLayout {
 
     protected void provideCameraHandler(Handler handler) {
         this.cameraHandler = handler;
+        if (preview != null)
+            preview.setCameraHandle(cameraHandler);
     }
 
     protected PreviewImpl getPreviewImpl() {

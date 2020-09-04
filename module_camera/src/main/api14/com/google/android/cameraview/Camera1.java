@@ -17,16 +17,20 @@
 package com.google.android.cameraview;
 
 import android.annotation.SuppressLint;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.view.SurfaceHolder;
 
 import androidx.collection.SparseArrayCompat;
 
+import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.CameraHelper;
 import com.ailiwean.core.helper.LightHelper;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -99,6 +103,7 @@ class Camera1 extends CameraViewImpl {
             if (isCameraOpened())
                 return true;
             chooseCamera();
+
             if (mCameraId == INVALID_CAMERA_ID) {
                 return false;
             }
@@ -184,24 +189,26 @@ class Camera1 extends CameraViewImpl {
 
     @Override
     boolean setAspectRatio(AspectRatio ratio) {
-        if (mAspectRatio == null || !isCameraOpened()) {
-            // Handle this later when camera is opened
-            mAspectRatio = ratio;
-            return true;
-        } else if (!mAspectRatio.equals(ratio)) {
-            final Set<Size> sizes = mPreviewSizes.sizes(ratio);
-            if (sizes == null) {
-                return false;
-            } else {
-                mAspectRatio = ratio;
-                try {
-                    adjustCameraParameters();
-                } catch (Exception ignored) {
-                }
-                return true;
-            }
-        }
-        return false;
+        mAspectRatio = ratio;
+//        if (mAspectRatio == null || !isCameraOpened()) {
+//            // Handle this later when camera is opened
+//
+//            return true;
+//        } else if (!mAspectRatio.equals(ratio)) {
+//            final Set<Size> sizes = mPreviewSizes.sizes(ratio);
+//            if (sizes == null) {
+//                return false;
+//            } else {
+//                mAspectRatio = ratio;
+//                try {
+//                    adjustCameraParameters();
+//                } catch (Exception ignored) {
+//                }
+//                return true;
+//            }
+//        }
+//        return false;
+        return true;
     }
 
     @Override
@@ -367,7 +374,6 @@ class Camera1 extends CameraViewImpl {
         try {
             adjustCameraParameters();
         } catch (Exception ignored) {
-            return false;
         }
         mCamera.setDisplayOrientation(calcDisplayOrientation(mDisplayOrientation));
         mCallback.onCameraOpened();
@@ -423,16 +429,24 @@ class Camera1 extends CameraViewImpl {
         return minAspectRatio;
     }
 
-
-    @SuppressWarnings("SuspiciousNameCombination")
     private Size chooseOptimalSize(SortedSet<Size> sizes) {
-        if (!mPreview.isReady()) { // Not yet laid out
-            return sizes.first(); // Return the smallest size
-        }
         int desiredWidth;
         int desiredHeight;
-        final int surfaceWidth = mPreview.getWidth();
-        final int surfaceHeight = mPreview.getHeight();
+        int surfaceWidth = mPreview.getWidth();
+        int surfaceHeight = mPreview.getHeight();
+        if (surfaceWidth == 0 || surfaceHeight == 0) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException ignored) {
+            } finally {
+                surfaceWidth = mPreview.getWidth();
+                surfaceHeight = mPreview.getHeight();
+            }
+        }
+        if (surfaceWidth == 0 || surfaceHeight == 0) {
+            surfaceWidth = MAX_PREVIEW_HEIGHT;
+            surfaceHeight = MAX_PREVIEW_WIDTH;
+        }
         if (isLandscape(mDisplayOrientation)) {
             desiredWidth = surfaceHeight;
             desiredHeight = surfaceWidth;
@@ -559,4 +573,32 @@ class Camera1 extends CameraViewImpl {
         }
     }
 
+
+    @Override
+    protected void rectMeteringWithFocus(Rect rect) {
+        synchronized (Camera1.class) {
+            if (mCamera == null || mCamera.getParameters() == null)
+                return;
+            if (mCamera.getParameters().getMaxNumMeteringAreas() == 0)
+                return;
+
+            if (Config.scanRect == null)
+                return;
+
+            int dataX = Config.scanRect.getDataX();
+            int dataY = Config.scanRect.getDataY();
+
+            float aspX = 2000f / dataX;
+            float aspY = 2000f / dataY;
+
+//            Rect realRect = new Rect((int) (rect.left * aspX) - 1000,
+//                    (int) (rect.top * aspY) - 1000,
+//                    (int) (rect.right * aspX) - 1000,
+//                    (int) (rect.bottom * aspY) - 1000);
+//
+//            List<Camera.Area> areas = Collections.singletonList(new Camera.Area(realRect, 1));
+//            mCamera.getParameters().setFocusAreas(areas);
+//            mCamera.getParameters().setMeteringAreas(areas);
+        }
+    }
 }
