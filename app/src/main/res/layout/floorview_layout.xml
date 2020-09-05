@@ -1,9 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/base_floor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.ailiwean.core.view.LocationView
+        android:id="@+id/locView"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:alpha="0.7"
+        android:visibility="gone" />
 
+    <com.ailiwean.core.view.ScanBarView
+        android:id="@+id/scanBarView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_marginTop="70dp" />
 
-</LinearLayout>
+    <com.ailiwean.core.view.ScanLightView
+        android:id="@+id/lightView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="20dp" />
+
+    <FrameLayout
+        android:layout_width="185dp"
+        android:layout_height="185dp"
+        android:layout_gravity="center"
+        android:background="@drawable/frame_foreground">
+
+        <View
+            android:id="@+id/scanRectView"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center" />
+
+    </FrameLayout>
+
+    <com.ailiwean.core.view.CameraZxingMaskView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:camera_clearById="@id/scanRectView"
+        app:camera_maskBgColor="#5f000000" />
+
+</FrameLayout>

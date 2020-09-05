@@ -2,10 +2,12 @@ package com.android.NBZxing
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.Toast
-import com.ailiwean.core.view.NBZxingView
+import com.ailiwean.core.view.*
 import com.ailiwean.core.zxing.ScanTypeConfig
 import com.google.android.cameraview.AspectRatio
+import kotlinx.android.synthetic.main.floorview_layout.view.*
 
 
 /**
@@ -15,7 +17,7 @@ import com.google.android.cameraview.AspectRatio
  * @Author:         SWY
  * @CreateDate:     2020/4/30 4:06 PM
  */
-class CusScanView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
+class CusScanView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : FreeZxingView(context, attributeSet, def) {
 
     init {
         setAspectRatio(AspectRatio.of(16, 9))
@@ -42,6 +44,31 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     override fun resultBackFile(content: String) {
-        Toast.makeText(context, content, Toast.LENGTH_LONG).show()
+        if (content.isEmpty())
+            Toast.makeText(context, "未扫描到内容", Toast.LENGTH_SHORT).show()
+        else Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
     }
+
+    override fun provideFloorView(): Int {
+        return R.layout.floorview_layout
+    }
+
+
+    override fun provideParseRectView(): View? {
+        return scanRectView
+    }
+
+    override fun provideScanBarView(): ScanBarCallBack? {
+        return scanBarView
+    }
+
+    override fun provideLightView(): ScanLightViewCallBack? {
+        return lightView
+    }
+
+    override fun provideLocView(): ScanLocViewCallBack? {
+        return locView
+    }
+
+
 }

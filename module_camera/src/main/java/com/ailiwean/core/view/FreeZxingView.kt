@@ -313,9 +313,9 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
                         scanSucHelper()
                     }
                 } else {
-                    unProscibeCamera()
                     mainHand.post {
                         resultBackFile("")
+                        unProscibeCamera()
                     }
                 }
             }

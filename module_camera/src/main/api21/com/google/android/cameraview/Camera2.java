@@ -18,6 +18,7 @@ package com.google.android.cameraview;
 
 import android.content.Context;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -26,6 +27,7 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
+import android.hardware.camera2.params.MeteringRectangle;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
@@ -36,10 +38,12 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 
+import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.CameraHelper;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -876,4 +880,40 @@ class Camera2 extends CameraViewImpl {
 
     }
 
+    @Override
+    protected void rectMeteringWithFocus() {
+        synchronized (Camera2.class) {
+
+            if (mCamera == null || mCameraCharacteristics == null)
+                return;
+
+            Integer maxNum = mCameraCharacteristics.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF);
+            if (maxNum == null || maxNum <= 0)
+                return;
+
+            if (Config.scanRect == null || Config.scanRect.getRect() == null)
+                return;
+
+            Rect rect = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+            if (rect == null)
+                rect = new Rect(0, 0, 1, 1);
+
+            int dataWidth = rect.width() - 1;
+            int dataHeight = rect.height() - 1;
+            int left = (int) (Config.scanRect.getRect().top * dataWidth);
+            int top = (int) ((1f - Config.scanRect.getRect().right) * dataHeight);
+            int right = (int) (Config.scanRect.getRect().bottom * dataWidth);
+            int bottom = (int) ((1f - (Config.scanRect.getRect().left)) * dataHeight);
+            Rect realRect = new Rect(left, top, right, bottom);
+
+            try {
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS,
+                        new MeteringRectangle[]{new MeteringRectangle(realRect, 1000)});
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS,
+                        new MeteringRectangle[]{new MeteringRectangle(realRect, 1000)});
+                mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
+            } catch (Exception ignored) {
+            }
+        }
+    }
 }
