@@ -900,17 +900,18 @@ class Camera2 extends CameraViewImpl {
 
             int dataWidth = rect.width() - 1;
             int dataHeight = rect.height() - 1;
+
             int left = (int) (Config.scanRect.getRect().top * dataWidth);
             int top = (int) ((1f - Config.scanRect.getRect().right) * dataHeight);
             int right = (int) (Config.scanRect.getRect().bottom * dataWidth);
             int bottom = (int) ((1f - (Config.scanRect.getRect().left)) * dataHeight);
             Rect realRect = new Rect(left, top, right, bottom);
+            MeteringRectangle[] meteringRectangles = new MeteringRectangle[]{new MeteringRectangle(realRect, 1000)};
 
             try {
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS,
-                        new MeteringRectangle[]{new MeteringRectangle(realRect, 1000)});
-                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS,
-                        new MeteringRectangle[]{new MeteringRectangle(realRect, 1000)});
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AWB_REGIONS, meteringRectangles);
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, meteringRectangles);
+                mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_REGIONS, meteringRectangles);
                 mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
             } catch (Exception ignored) {
             }
