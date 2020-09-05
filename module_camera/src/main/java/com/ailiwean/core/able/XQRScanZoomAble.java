@@ -2,6 +2,7 @@ package com.ailiwean.core.able;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
@@ -22,6 +23,8 @@ import com.ailiwean.core.zxing.core.qrcode.detector.Detector;
 public class XQRScanZoomAble extends XQRScanAble {
 
     long zoomTime = 0;
+
+    int lastLenght = 0;
 
     XQRScanZoomAble(Handler handler) {
         super(handler);
@@ -52,13 +55,21 @@ public class XQRScanZoomAble extends XQRScanAble {
             return;
         points = decoderResult.getPoints();
         int lenght = ScanHelper.getQrLenght(points);
-        if (lenght < Config.scanRect.getPreX() / 3 * 2) {
-            //自动变焦时间间隔为500ms
-            if (System.currentTimeMillis() - zoomTime < 500)
-                return;
-            Message.obtain(handler, Config.AUTO_ZOOM, Config.currentZoom + 0.07 + "")
-                    .sendToTarget();
-            zoomTime = System.currentTimeMillis();
+
+        //自动变焦时间间隔为500ms
+        if (System.currentTimeMillis() - zoomTime < 500)
+            return;
+        if (lenght < lastLenght * 0.8f) {
+            Config.currentZoom = 0;
+        } else if (lenght < Config.scanRect.getPreX() / 3 * 2) {
+            Config.currentZoom += 0.07;
         }
+
+        zoomTime = System.currentTimeMillis();
+        lastLenght = lenght;
+
+        Message.obtain(handler, Config.AUTO_ZOOM, Config.currentZoom + "")
+                .sendToTarget();
+
     }
 }

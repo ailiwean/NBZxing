@@ -27,16 +27,19 @@
         android:layout_marginBottom="20dp" />
 
     <FrameLayout
-        android:layout_width="185dp"
-        android:layout_height="185dp"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/frame_foreground">
 
         <View
             android:id="@+id/scanRectView"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:layout_gravity="center" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="5dp" />
 
     </FrameLayout>
 
