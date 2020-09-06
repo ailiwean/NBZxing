@@ -9,7 +9,7 @@
 
 ```
 	        implementation 'com.github.ailiwean:NBZxing:0.0.25'
-		//若需要使用灰度算法增强库，再次添加以下依赖//纯java超轻量
+		//若需要使用灰度算法增强库，再次添加以下依赖(纯java超轻量，两个同时依赖包体积只增大约400kb)
 		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.3'
 ```
 [NBZxing-Scale](https://github.com/ailiwean/NBZxing-Scale "NBZxing-Scale")
