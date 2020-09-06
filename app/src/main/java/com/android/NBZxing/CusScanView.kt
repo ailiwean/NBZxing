@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.floorview_layout.view.*
  * @Author:         SWY
  * @CreateDate:     2020/4/30 4:06 PM
  */
-class CusScanView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : FreeZxingView(context, attributeSet, def) {
+class CusScanView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
 
     init {
         setAspectRatio(AspectRatio.of(16, 9))
@@ -48,27 +48,4 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
             Toast.makeText(context, "未扫描到内容", Toast.LENGTH_SHORT).show()
         else Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
     }
-
-    override fun provideFloorView(): Int {
-        return R.layout.floorview_layout
-    }
-
-
-    override fun provideParseRectView(): View? {
-        return scanRectView
-    }
-
-    override fun provideScanBarView(): ScanBarCallBack? {
-        return scanBarView
-    }
-
-    override fun provideLightView(): ScanLightViewCallBack? {
-        return lightView
-    }
-
-    override fun provideLocView(): ScanLocViewCallBack? {
-        return locView
-    }
-
-
 }

@@ -22,7 +22,7 @@ import com.google.android.cameraview.R;
  * @Author: SWY
  * @CreateDate: 2020/9/2 9:48 AM
  */
-public class CameraZxingMaskView extends View {
+public class MaskView extends View {
 
     private Paint paint;
     private Rect clearRect;
@@ -34,24 +34,24 @@ public class CameraZxingMaskView extends View {
     private int id;
     private int bgColor;
 
-    public CameraZxingMaskView(Context context) {
+    public MaskView(Context context) {
         this(context, null);
     }
 
-    public CameraZxingMaskView(Context context, @Nullable AttributeSet attrs) {
+    public MaskView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CameraZxingMaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public MaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initPaint();
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CameraZxingMaskView);
-        id = typedArray.getResourceId(R.styleable.CameraZxingMaskView_camera_clearById, 0);
-        margin_left = typedArray.getDimension(R.styleable.CameraZxingMaskView_camera_clear_margin_left, 0f);
-        margin_top = typedArray.getDimension(R.styleable.CameraZxingMaskView_camera_clear_margin_top, 0f);
-        margin_right = typedArray.getDimension(R.styleable.CameraZxingMaskView_camera_clear_margin_right, 0f);
-        margin_bottom = typedArray.getDimension(R.styleable.CameraZxingMaskView_camera_clear_margin_bottom, 0f);
-        bgColor = typedArray.getColor(R.styleable.CameraZxingMaskView_camera_maskBgColor, Color.parseColor("#1f000000"));
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.MaskView);
+        id = typedArray.getResourceId(R.styleable.MaskView_camera_clearById, 0);
+        margin_left = typedArray.getDimension(R.styleable.MaskView_camera_clear_margin_left, 0f);
+        margin_top = typedArray.getDimension(R.styleable.MaskView_camera_clear_margin_top, 0f);
+        margin_right = typedArray.getDimension(R.styleable.MaskView_camera_clear_margin_right, 0f);
+        margin_bottom = typedArray.getDimension(R.styleable.MaskView_camera_clear_margin_bottom, 0f);
+        bgColor = typedArray.getColor(R.styleable.MaskView_camera_maskBgColor, Color.parseColor("#1f000000"));
         paint.setColor(bgColor);
         typedArray.recycle();
     }

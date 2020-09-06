@@ -10,7 +10,7 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <declare-styleable name="CameraView">
         <!--
           Set this to true if you want the CameraView to adjust its bounds to preserve the aspect
@@ -55,7 +55,7 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="CameraZxingMaskView">
+    <declare-styleable name="MaskView" tools:ignore="ResourceName">
 
         <attr name="camera_clearById" format="reference" />
         <attr name="camera_maskBgColor" format="color" />
