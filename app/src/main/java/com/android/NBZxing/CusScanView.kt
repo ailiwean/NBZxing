@@ -36,7 +36,7 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
      * 5 ScanTypeConfig.ONE_DIMENSION 所有一维码格式
      */
     override fun getScanType(): ScanTypeConfig {
-        return ScanTypeConfig.ONLY_QR_CODE
+        return ScanTypeConfig.HIGH_FREQUENCY
     }
 
     fun toParse(string: String) {

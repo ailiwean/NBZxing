@@ -57,6 +57,8 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         //设定相机数据选取比例
         this.setAspectRatio(AspectRatio.of(16, 9))
 
+        //配置扫码类型
+        initScanType()
     }
 
     /***
@@ -200,8 +202,6 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         scanBarView?.startScanAnimator()
         //重新装填AbleManager
         ableCollect?.init()
-        //配置扫码类型
-        initScanType()
         //重新接收数据
         handleZX.init()
         //音频资源加载

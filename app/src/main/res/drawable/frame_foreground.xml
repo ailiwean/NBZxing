@@ -10,6 +10,6 @@
         android:translateY="-4.32">
         <path
             android:fillColor="#1296db"
-            android:pathData="M64,64v896h896V64H64zM0,0h1024v1024H0V0z" />
+            android:pathData="M50,80v896h923V50H50zM0,0h1024v1024H0V0z" />
     </group>
 </vector>
