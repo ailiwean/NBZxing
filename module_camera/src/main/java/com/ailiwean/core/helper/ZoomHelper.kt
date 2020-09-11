@@ -14,15 +14,18 @@ import com.google.android.cameraview.BaseCameraView
  */
 object ZoomHelper {
 
-    var currentPercent: Float = 0f
+    var currentOnce: Float = 0f
 
     @SuppressLint("ClickableViewAccessibility")
     fun toAutoZoom(view: BaseCameraView) {
-        Config.currentZoom = 0f
         view.setOnTouchListener(object : OnGestureListener(view.context) {
             override fun onStepFingerChange(total: Float, offset: Float) {
-                currentPercent += offset / 500
-                view.setZoom(currentPercent.let {
+
+                if (currentOnce == 0f)
+                    currentOnce = Config.currentZoom
+
+                currentOnce += offset / 10000
+                view.setZoom(currentOnce.let {
                     when {
                         it > 1f -> 1f
                         it < 0f -> 0f
@@ -32,13 +35,11 @@ object ZoomHelper {
             }
 
             override fun onDoubleClick() {
-                if (currentPercent < 1f)
-                    currentPercent = 1f
-                else currentPercent = 0f
-                view.setZoom(currentPercent)
+                view.setZoom(Config.currentZoom + 0.05f)
             }
 
             override fun onStepEnd() {
+                currentOnce = 0f
             }
 
         })

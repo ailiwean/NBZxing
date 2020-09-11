@@ -45,10 +45,10 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     fun init() {
         ableList.clear()
         ableList.add(XQRScanZoomAble(handler))
-        ableList.add(XQRScanFastAble(handler))
         ableList.add(XQRScanAbleRotate(handler))
         ableList.add(LighSolveAble(handler))
         //    ableList.add(GrayscaleStrengAble(handler))
+        //    ableList.add(XQRScanFastAble(handler))
     }
 
     public override fun cusAction(data: ByteArray, dataWidth: Int, dataHeight: Int) {

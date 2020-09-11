@@ -204,12 +204,12 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     /***
      * 数字变焦
      */
-    fun setZoom(@FloatRange(from = 0.0, to = 1.0) percent: Float) {
-        if (percent >= 1f)
-            mImpl.toZoomMax()
-        else if (percent <= 0f)
-            mImpl.toZoomMin()
-        else mImpl.setZoom(percent)
+    fun setZoom(percent: Float) {
+        when {
+            percent >= 1f -> mImpl.toZoomMax()
+            percent <= 0f -> mImpl.toZoomMin()
+            else -> mImpl.setZoom(percent)
+        }
         //捕获当前倍率
         Config.currentZoom = percent.let {
             when {
