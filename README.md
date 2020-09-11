@@ -1,5 +1,5 @@
 #  NBZxing
- 一个稳定完善的扫码库，几行代码既可接入，完美适配各种分辨率无拉伸，可插拔式自定义UI
+ 一个稳定完善的扫码库，几行代码既可接入，完美适配各种分辨率无拉伸，可插拔式自定义UI 。
   
 ### 依赖
 
@@ -8,9 +8,9 @@
 
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.23'
-		//若需要使用灰度算法增强库，再次添加以下依赖//纯java超轻量
-		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.2'
+	        implementation 'com.github.ailiwean:NBZxing:0.0.25'
+		//若需要使用灰度算法增强库，再次添加以下依赖(纯java超轻量，两个同时依赖包体积只增大约400kb)
+		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.3'
 ```
 [NBZxing-Scale](https://github.com/ailiwean/NBZxing-Scale "NBZxing-Scale")
 
@@ -43,13 +43,9 @@
 |  浅色 | ![浅色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/test_gray.png "浅色")  |
 
 
-#### 下版预期
-
--  `二维码生成`
-
 #### 联系我
 
-`微信： 17391961576`   `QQ:  1581209979`
+`QQ群:  444236054`欢迎进群交流
 
 
 | 😊  |  😊 |
