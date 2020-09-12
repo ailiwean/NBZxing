@@ -38,18 +38,11 @@ public class XQRScanZoomAble extends XQRScanAble {
         DetectorResult decoderResult = null;
         ResultPoint[] points;
         try {
-            decoderResult = new Detector(source.getGlobaBinary().getBlackMatrix()).detect(null);
-        } catch (NotFoundException | FormatException e) {
+            decoderResult = new Detector(source.getHybridBinary().getBlackMatrix()).detect(null);
+        } catch (NotFoundException e) {
             e.printStackTrace();
-        }
-        if (decoderResult == null) {
-            try {
-                decoderResult = new Detector(source.getHybridBinary().getBlackMatrix()).detect(null);
-            } catch (NotFoundException e) {
-                e.printStackTrace();
-            } catch (FormatException e) {
-                e.printStackTrace();
-            }
+        } catch (FormatException e) {
+            e.printStackTrace();
         }
         if (decoderResult == null)
             return;

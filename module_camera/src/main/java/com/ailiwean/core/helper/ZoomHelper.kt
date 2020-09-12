@@ -35,7 +35,7 @@ object ZoomHelper {
             }
 
             override fun onDoubleClick() {
-                view.setZoom(Config.currentZoom + 0.05f)
+                view.setZoom(Config.currentZoom + 0.025f)
             }
 
             override fun onStepEnd() {

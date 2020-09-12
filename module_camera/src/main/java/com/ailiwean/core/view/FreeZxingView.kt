@@ -50,6 +50,8 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     private var busHandle: Handler? = null
 
     init {
+        //初始化全局参数
+        initConfig()
 
         //使用后置相机
         facing = FACING_BACK
