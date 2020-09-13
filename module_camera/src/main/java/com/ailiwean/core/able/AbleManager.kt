@@ -2,6 +2,7 @@ package com.ailiwean.core.able
 
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Log
 import com.ailiwean.core.Config
 import com.ailiwean.core.TypeRunnable
 import com.ailiwean.core.WorkThreadServer
@@ -47,8 +48,9 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         ableList.add(XQRScanZoomAble(handler))
         ableList.add(XQRScanAbleRotate(handler))
         ableList.add(LighSolveAble(handler))
-        //    ableList.add(GrayscaleStrengAble(handler))
-        //    ableList.add(XQRScanFastAble(handler))
+//        ableList.add(XQRScanAble(handler))
+//        ableList.add(GrayscaleStrengAble(handler))
+//        ableList.add(XQRScanFastAble(handler))
     }
 
     public override fun cusAction(data: ByteArray, dataWidth: Int, dataHeight: Int) {

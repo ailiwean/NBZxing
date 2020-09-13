@@ -29,6 +29,7 @@ import com.ailiwean.core.zxing.core.common.HybridBinarizer
 import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
 import com.google.android.cameraview.CameraView
+import com.google.android.cameraview.R
 import kotlinx.android.synthetic.*
 import java.io.File
 import java.lang.ref.WeakReference
@@ -228,7 +229,14 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     override fun onCameraOpenBack(camera: CameraView) {
         super.onCameraOpenBack(camera)
         clearFindViewByIdCache()
-        LayoutInflater.from(context).inflate(provideFloorView(), this, true)
+        findViewById<View>(R.id.provideViewId)?.let {
+            removeView(it)
+        }
+        LayoutInflater.from(context).inflate(provideFloorView(), this, false)
+                .let {
+                    it.id = R.id.provideViewId
+                    addView(it)
+                }
         cameraStartLaterConfig()
     }
 

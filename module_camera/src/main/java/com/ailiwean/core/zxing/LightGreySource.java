@@ -4,7 +4,6 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.os.Environment;
-import android.util.Log;
 
 import com.ailiwean.core.zxing.core.InvertedLuminanceSource;
 import com.ailiwean.core.zxing.core.LuminanceSource;
@@ -30,59 +29,102 @@ public class LightGreySource extends LuminanceSource {
         this.delegate = delegate;
     }
 
-    static long startTime = 0L;
+    static long startTime = System.currentTimeMillis();
 
-    public static void toPut(byte[] nv21, int w, int h) {
+    public static int stepX = 2;
+    public static int stepY = 2;
 
-        if (System.currentTimeMillis() - startTime > 5000) {
-            startTime = System.currentTimeMillis();
+    public synchronized void toPut(byte[] nv21, int w, int h) {
 
-            File file = new File(Environment.getExternalStorageDirectory(), "YUV_处理前.jpg");
-            File file0 = new File(Environment.getExternalStorageDirectory(), "YUV_处理后.jpg");
+        if (System.currentTimeMillis() - startTime < 5000) {
+            return;
+        }
 
-            if (file.exists()) {
-                file.delete();
-            }
+        startTime = System.currentTimeMillis();
 
+
+        File file = new File(Environment.getExternalStorageDirectory(), "YUV_处理前.jpg");
+        File file0 = new File(Environment.getExternalStorageDirectory(), "YUV_处理后.jpg");
+
+        if (file.exists()) {
+            file.delete();
             try {
                 file.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
 
-            if (file0.exists()) {
-                file.delete();
-            }
 
+        if (file0.exists()) {
+            file.delete();
             try {
                 file0.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
 
-            byte[] cropNv21 = new byte[nv21.length / 2 * 3];
+        byte[] cropNv21 = new byte[nv21.length / 2 * 3];
 
-            for (int i = 0; i < w * h; i++) {
-                cropNv21[i] = nv21[i];
-            }
-            for (int i = 0; i < w * h / 2; i++) {
+        for (int i = 0; i < w * h; i++) {
+            cropNv21[i] = nv21[i];
+        }
+        for (int i = 0; i < w * h / 2; i++) {
+            if (nv21.length + i < cropNv21.length)
                 cropNv21[nv21.length + i] = (byte) 0b10000001;
+        }
+
+        System.arraycopy(cropNv21, 0, cropNv21, 0, w * h);
+
+        YuvImage yuvImage = new YuvImage(cropNv21, ImageFormat.NV21, w, h, null);
+
+        try {
+            yuvImage.compressToJpeg(new Rect(0, 0, w, h), 100, new FileOutputStream(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+//            int offset = (int) (Math.random() * 100);
+//            for (int i = 0; i < w; i++) {
+//                for (int j = 0; j < w; j++) {
+//                    if (i + offset < w && j + offset < w)
+//                        cropNv21[i * w + j] = cropNv21[(i + offset) * w + j + offset];
+//                    else cropNv21[i * w + j] = (byte) 255;
+//                }
+//            }
+
+        for (int step_h = 0; step_h + stepX < h; step_h += stepY) {
+            for (int step_w = 0; step_w + stepX < w; step_w += stepX) {
+                int count = 0;
+                int avage = 0;
+                int min = Integer.MAX_VALUE;
+                for (int y_ = step_h; y_ < step_h + stepY; y_++) {
+                    for (int x_ = step_w; x_ < step_w + stepX; x_++) {
+                        if ((cropNv21[y_ * w + x_] & 0xff) < 130)
+                            count++;
+                        avage += cropNv21[y_ * w + x_] & 0xff;
+
+                        if (min > (cropNv21[y_ * w + x_] & 0xff))
+                            min = cropNv21[y_ * w + x_] & 0xff;
+                    }
+                }
+                if (count == 0) {
+                    continue;
+                }
+                avage /= stepX * stepY;
+                for (int y_ = step_h; y_ < step_h + stepY; y_++) {
+                    for (int x_ = step_w; x_ < step_w + stepX; x_++) {
+                        cropNv21[y_ * w + x_] = (byte) (min / 3 * 2);
+                    }
+                }
             }
-            System.arraycopy(cropNv21, 0, cropNv21, 0, w * h);
+        }
 
-            YuvImage yuvImage = new YuvImage(cropNv21, ImageFormat.NV21, w, h, null);
+//            for (int i = 0; i < w * h; i++)
+//                cropNv21[i] = (byte) (byte) (255 * Math.pow((cropNv21[i] & 0xff) / 255f, 0.8f));
 
-            try {
-                yuvImage.compressToJpeg(new Rect(0, 0, w, h), 100, new FileOutputStream(file));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
 
-            short random = (short) (Math.random() * 4 + 3);
-            for (int i = 0; i < w * h; i++) {
-                cropNv21[i] = (byte) (255 * Math.pow((cropNv21[i] & 0xff) / 255f, 0.4f));
-
-            }
 //            for (int step_h = 0; step_h + stepX < h; step_h += stepY) {
 //                for (int step_w = 0; step_w + stepX < w; step_w += stepX) {
 //                    int avage = 0;
@@ -101,15 +143,34 @@ public class LightGreySource extends LuminanceSource {
 //                        }
 //                    }
 //                }
+//            }
 
-            YuvImage yuvImage2 = new YuvImage(cropNv21, ImageFormat.NV21, w, h, null);
-            try {
-                yuvImage2.compressToJpeg(new Rect(0, 0, w, h), 100, new FileOutputStream(file0));
+//            for (int step_h = 0; step_h + stepX < h; step_h += stepY) {
+//                for (int step_w = 0; step_w + stepX < w; step_w += stepX) {
+//                    int avage = 0;
+//                    for (int y = step_h; y < step_h + stepY; y++) {
+//                        for (int x = step_w; x < step_w + stepX; x++) {
+//                            avage += cropNv21[y * w + x] & 0xff;
+//                        }
+//                    }
+//                    avage /= stepY * stepX;
+//                    for (int y = step_h; y < step_h + stepY; y++) {
+//                        for (int x = step_w; x < step_w + stepX; x++) {
+//
+//                            if ((cropNv21[y * w + x] & 0xff) > avage * 0.95f) {
+//                                cropNv21[y * w + x] = (byte) 250;
+//                            } else cropNv21[y * w + x] = (byte) 5;
+//                        }
+//                    }
+//                }
+//            }
 
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+        YuvImage yuvImage2 = new YuvImage(cropNv21, ImageFormat.NV21, w, h, null);
+        try {
+            yuvImage2.compressToJpeg(new Rect(0, 0, w, h), 100, new FileOutputStream(file0));
 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
 
     }

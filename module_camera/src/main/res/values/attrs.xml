@@ -66,4 +66,6 @@
 
     </declare-styleable>
 
+    <item name="provideViewId" type="id" tools:ignore="ResourceName" />
+
 </resources>

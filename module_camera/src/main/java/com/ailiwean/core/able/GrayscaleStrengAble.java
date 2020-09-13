@@ -31,6 +31,10 @@ class GrayscaleStrengAble extends PixsValuesAble {
     protected void needParseDeploy(PlanarYUVLuminanceSource source) {
         if (result != null)
             return;
+
+//        if (!isNative)
+//            return;
+
         i++;
         if (i % 2 != 1) {
             return;

@@ -42,7 +42,7 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
 
     // This class uses 5x5 blocks to compute local luminance, where each block is 8x8 pixels.
     // So this is the smallest dimension in each axis we can accept.
-    private static final int BLOCK_SIZE_POWER = 2;
+    private static final int BLOCK_SIZE_POWER = 5;
     private static final int BLOCK_SIZE = 1 << BLOCK_SIZE_POWER; // ...0100...00
     private static final int BLOCK_SIZE_MASK = BLOCK_SIZE - 1;   // ...0011...11
     private static final int MINIMUM_DIMENSION = BLOCK_SIZE * 5;
