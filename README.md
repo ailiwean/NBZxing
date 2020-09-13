@@ -8,9 +8,9 @@
 
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.0.25'
-		//若需要使用灰度算法增强库，再次添加以下依赖(纯java超轻量，两个同时依赖包体积只增大约400kb)
-		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.3'
+	        implementation 'com.github.ailiwean:NBZxing:0.0.26'
+		//若需要使用灰度算法增强库，再次添加以下依赖(纯java超轻量，两个同时依赖,包体积只增大约400kb,混淆后仅200k)
+		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.4'
 ```
 [NBZxing-Scale](https://github.com/ailiwean/NBZxing-Scale "NBZxing-Scale")
 
@@ -41,6 +41,7 @@
 | 暗色  | ![暗色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_dart.png "暗色")  |
 |  曝光 |  ![曝光](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_light.png "曝光") |
 |  浅色 | ![浅色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/test_gray.png "浅色")  |
+|  间断 | ![间断](https://github.com/ailiwean/NBZxing/blob/master/qr_test/test_inter.png "间断")  |
 
 
 #### 联系我
