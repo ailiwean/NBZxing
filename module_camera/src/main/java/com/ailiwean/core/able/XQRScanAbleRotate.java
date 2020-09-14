@@ -38,7 +38,7 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         binaryBitmap = ScanHelper.byteToBinaryBitmap(data, dataWidth, dataHeight);
         result = reader.decode(binaryBitmap);
         if (result != null) {
-            Message.obtain(handler, Config.SCAN_RESULT, covertResultRotate(result)).sendToTarget();
+            sendMessage(Config.SCAN_RESULT, covertResultRotate(result));
         }
     }
 

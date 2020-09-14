@@ -42,7 +42,7 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
 
     // This class uses 5x5 blocks to compute local luminance, where each block is 8x8 pixels.
     // So this is the smallest dimension in each axis we can accept.
-    private static final int BLOCK_SIZE_POWER = 3;
+    private static final int BLOCK_SIZE_POWER = 1;
     private static final int BLOCK_SIZE = 1 << BLOCK_SIZE_POWER; // ...0100...00
     private static final int BLOCK_SIZE_MASK = BLOCK_SIZE - 1;   // ...0011...11
     private static final int MINIMUM_DIMENSION = BLOCK_SIZE * 5;
@@ -85,6 +85,7 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
             if ((height & BLOCK_SIZE_MASK) != 0) {
                 subHeight++;
             }
+
             int[][] blackPoints = calculateBlackPoints(luminances, subWidth, subHeight, width, height);
 
             BitMatrix newMatrix = new BitMatrix(width, height);

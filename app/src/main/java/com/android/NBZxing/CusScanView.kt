@@ -2,12 +2,10 @@ package com.android.NBZxing
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.Toast
-import com.ailiwean.core.view.*
+import com.ailiwean.core.view.NBZxingView
 import com.ailiwean.core.zxing.ScanTypeConfig
 import com.google.android.cameraview.AspectRatio
-import kotlinx.android.synthetic.main.floorview_layout.view.*
 
 
 /**
@@ -36,7 +34,7 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
      * 5 ScanTypeConfig.ONE_DIMENSION 所有一维码格式
      */
     override fun getScanType(): ScanTypeConfig {
-        return ScanTypeConfig.ONLY_QR_CODE
+        return ScanTypeConfig.HIGH_FREQUENCY
     }
 
     fun toParse(string: String) {

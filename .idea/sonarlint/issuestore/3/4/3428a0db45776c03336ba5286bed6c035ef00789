@@ -1,0 +1,8 @@
+
+Msquid:S1444"1Make this "public static currentZoom" field final(ˆİüÿÿÿÿ
+Ksquid:S1444!"4Make this "public static scanTypeConfig" field final(£€à›
+Esquid:S1444$".Make this "public static scanRect" field final(§ÅÔ’
+Š"squid:ClassVariableVisibilityCheck"WMake currentZoom a static final constant or non-public and provide accessors if needed.(ˆİüÿÿÿÿ
+ˆ"squid:ClassVariableVisibilityCheck!"ZMake scanTypeConfig a static final constant or non-public and provide accessors if needed.(£€à›
+Qsquid:S1118":Add a private constructor to hide the implicit public one.(Óùÿ¿
+‚"squid:ClassVariableVisibilityCheck$"TMake scanRect a static final constant or non-public and provide accessors if needed.(§ÅÔ’

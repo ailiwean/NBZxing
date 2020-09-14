@@ -2,7 +2,6 @@ package com.ailiwean.core.able
 
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Log
 import com.ailiwean.core.Config
 import com.ailiwean.core.TypeRunnable
 import com.ailiwean.core.WorkThreadServer
@@ -34,7 +33,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     init {
-        init()
+        loadAbility()
         try {
             processClz = Class.forName(Config.GARY_SCALE_PATH)
         } catch (e: Exception) {
@@ -43,13 +42,13 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
             processDispatch = processClz?.newInstance() as GrayScaleDispatch?
     }
 
-    fun init() {
+    fun loadAbility() {
         ableList.clear()
-        ableList.add(XQRScanCrudeAble(handler))
-        ableList.add(XQRScanFineAble(handler))
-        ableList.add(XQRScanZoomAble(handler))
-        ableList.add(XQRScanAbleRotate(handler))
-        ableList.add(LighSolveAble(handler))
+        ableList.add(XQRScanCrudeAble(handlerHolder.get()))
+        ableList.add(XQRScanFineAble(handlerHolder.get()))
+        ableList.add(XQRScanZoomAble(handlerHolder.get()))
+        ableList.add(XQRScanAbleRotate(handlerHolder.get()))
+        ableList.add(LighSolveAble(handlerHolder.get()))
 //        ableList.add(XQRScanAble(handler))
 //        ableList.add(GrayscaleStrengAble(handler))
 //        ableList.add(XQRScanFastAble(handler))
@@ -95,11 +94,15 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         }
     }
 
-    fun release() {
+    override fun release() {
+        ableList.forEach {
+             it.release()
+        }
         ableList.clear()
         server.quit()
         if (processClz == null)
             return
+        grayProcessHandler.removeCallbacksAndMessages(null)
         grayProcessHandler.looper.quit()
     }
 

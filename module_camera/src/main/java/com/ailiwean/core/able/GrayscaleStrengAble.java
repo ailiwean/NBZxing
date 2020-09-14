@@ -43,8 +43,8 @@ class GrayscaleStrengAble extends PixsValuesAble {
         //浅色二维码增强
         result = toLaunchParse(new HybridBinarizer(new LightGreySource(source)));
 
-        if (result != null) {
-            Message.obtain(handler, Config.SCAN_RESULT, covertResult(result)).sendToTarget();
+        if (result != null && !"".equals(result.getText())) {
+            sendMessage(Config.SCAN_RESULT, covertResult(result));
         }
     }
 

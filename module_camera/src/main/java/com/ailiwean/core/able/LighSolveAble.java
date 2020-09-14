@@ -32,13 +32,11 @@ public class LighSolveAble extends PixsValuesAble {
         int avDark = LightHelper.getAvDark(data, dataWidth, dataHeight);
         if (avDark > STANDVALUES && !isBright) {
             isBright = true;
-            Message.obtain(handler, Config.LIGHT_CHANGE, true)
-                    .sendToTarget();
+            sendMessage(Config.LIGHT_CHANGE, true);
         }
         if (avDark < STANDVALUES && isBright) {
             isBright = false;
-            Message.obtain(handler, Config.LIGHT_CHANGE, false)
-                    .sendToTarget();
+            sendMessage(Config.LIGHT_CHANGE, false);
         }
     }
 }

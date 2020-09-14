@@ -1,12 +1,16 @@
 package com.ailiwean.core.able;
 
 import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 
 import com.ailiwean.core.zxing.CustomMultiFormatReader;
 import com.ailiwean.core.zxing.core.Binarizer;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.Result;
+
+import java.lang.ref.WeakReference;
 
 /**
  * @Package: com.ailiwean.core.able
@@ -17,13 +21,13 @@ import com.ailiwean.core.zxing.core.Result;
  */
 public abstract class PixsValuesAble {
 
-    Handler handler;
+    WeakReference<Handler> handlerHolder;
     boolean isNative;
 
     CustomMultiFormatReader reader = CustomMultiFormatReader.getInstance();
 
     public PixsValuesAble(Handler handler) {
-        this.handler = handler;
+        this.handlerHolder = new WeakReference<>(handler);
     }
 
     /***
@@ -50,4 +54,18 @@ public abstract class PixsValuesAble {
     Result toLaunchParse(Binarizer binarizer) {
         return reader.decode(new BinaryBitmap(binarizer));
     }
+
+    protected void sendMessage(int type, Object obj) {
+        if (handlerHolder != null && handlerHolder.get() != null) {
+            Message.obtain(handlerHolder.get(), type, obj)
+                    .sendToTarget();
+        }
+    }
+
+    public void release() {
+        handlerHolder.clear();
+        handlerHolder = null;
+    }
+
+
 }

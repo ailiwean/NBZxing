@@ -29,8 +29,8 @@ public class XQRScanFineAble extends PixsValuesAble {
         if (result != null)
             return;
         result = toLaunchParse(source.getHybridBinaryFine());
-        if (result != null) {
-            Message.obtain(handler, Config.SCAN_RESULT, covertResult(result)).sendToTarget();
+        if (result != null && !"".equals(result.getText())) {
+            sendMessage(Config.SCAN_RESULT, covertResult(result));
         }
     }
 

@@ -1,0 +1,7 @@
+
+К squid:ForLoopCounterChangedCheck╬"XRefactor the code in order to not assign to this loop counter from within the loop body.(√в▀г¤    
+lsquid:S14503"URemove the "matrix" field and declare it as a local variable in the relevant methods.(╥рд▐
+К squid:ForLoopCounterChangedCheck╬"XRefactor the code in order to not assign to this loop counter from within the loop body.(√в▀г¤    
+К squid:ForLoopCounterChangedCheck╬"XRefactor the code in order to not assign to this loop counter from within the loop body.(√в▀г¤    
+Psquid:S2168A"9Remove this dangerous instance of double-checked locking.(Н█ни
+К squid:ForLoopCounterChangedCheck╬"XRefactor the code in order to not assign to this loop counter from within the loop body.(√в▀г¤    

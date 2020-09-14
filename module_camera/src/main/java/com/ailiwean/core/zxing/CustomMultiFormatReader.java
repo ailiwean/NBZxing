@@ -1,5 +1,7 @@
 package com.ailiwean.core.zxing;
 
+import android.util.Log;
+
 import com.ailiwean.core.Config;
 import com.ailiwean.core.zxing.core.BarcodeFormat;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
@@ -9,6 +11,8 @@ import com.ailiwean.core.zxing.core.Reader;
 import com.ailiwean.core.zxing.core.ReaderException;
 import com.ailiwean.core.zxing.core.Result;
 import com.ailiwean.core.zxing.core.aztec.AztecReader;
+import com.ailiwean.core.zxing.core.common.HybridBinarizer;
+import com.ailiwean.core.zxing.core.common.HybridBinarizerCrude;
 import com.ailiwean.core.zxing.core.common.HybridBinarizerFine;
 import com.ailiwean.core.zxing.core.datamatrix.DataMatrixReader;
 import com.ailiwean.core.zxing.core.maxicode.MaxiCodeReader;
@@ -45,12 +49,7 @@ public class CustomMultiFormatReader implements Reader {
      */
     @Override
     public Result decode(BinaryBitmap image) {
-        try {
-            return decodeInternal(image);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return decodeInternal(image);
     }
 
     /**
@@ -161,7 +160,7 @@ public class CustomMultiFormatReader implements Reader {
         }
     }
 
-    private Result decodeInternal(BinaryBitmap image) throws NotFoundException {
+    private Result decodeInternal(BinaryBitmap image) {
         if (readers != null) {
             for (Reader reader : readers) {
                 try {
@@ -176,7 +175,7 @@ public class CustomMultiFormatReader implements Reader {
                 }
             }
         }
-        throw NotFoundException.getNotFoundInstance();
+        return null;
     }
 
 

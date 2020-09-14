@@ -1,5 +1,6 @@
 package com.ailiwean.core.view
 
+import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -8,12 +9,10 @@ import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.graphics.PointF
 import android.net.Uri
-import android.os.Build
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Message
+import android.os.*
 import android.provider.MediaStore
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import com.ailiwean.core.Config.*
@@ -44,13 +43,10 @@ import java.lang.ref.WeakReference
 abstract class FreeZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
         BaseCameraView(context, attributeSet, def), Handler.Callback, FreeInterface {
 
-    private val handleZX = HandleZX(this)
-
     private var ableCollect: AbleManager? = null
 
-    private var busHandle: Handler? = null
-
     init {
+
         //初始化全局参数
         initConfig()
 
@@ -84,34 +80,45 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      */
     private val parseRect: View? get() = provideParseRectView()
 
+
+    private val busHandle by lazy {
+        val thread = HandlerThread("BusHandle")
+        thread.start()
+        BusHandler(this, thread.looper)
+    }
+
     /***
      * Handler结果回调
      */
-    override fun handleMessage(it: Message): Boolean {
-        when (it.what) {
+    override fun handleMessage(m: Message): Boolean {
 
-            //扫码结果回调
-            SCAN_RESULT -> {
-                scanSucHelper()
-                if (it.obj is Result) {
-                    showQRLoc((it.obj as Result).pointF, it.obj.toString())
+        val message = Message.obtain(m)
+
+        post {
+
+            when (message.what) {
+
+                //扫码结果回调
+                SCAN_RESULT -> {
+                    scanSucHelper()
+                    if (message.obj is Result) {
+                        showQRLoc((message.obj as Result).pointF, message.obj.toString())
+                    }
                 }
-            }
 
-            //环境亮度变换回调
-            LIGHT_CHANGE -> {
-                it.obj.toString().toBoolean().let {
-                    if (it) lightView?.lightDark()
+                //环境亮度变换回调
+                LIGHT_CHANGE -> {
+                    if (message.obj.toString().toBoolean()) lightView?.lightDark()
                     else lightView?.lightBrighter()
                 }
-            }
 
-            //放大回调
-            AUTO_ZOOM -> {
-                setZoom(it.obj.toString().toFloat())
+                //放大回调
+                AUTO_ZOOM -> {
+                    setZoom(message.obj.toString().toFloat())
+                }
             }
-
         }
+
         return true
     }
 
@@ -151,7 +158,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      */
     override fun onCreate() {
         super.onCreate()
-        ableCollect = AbleManager.createInstance(handleZX)
+        ableCollect = AbleManager.createInstance(busHandle)
     }
 
     /***
@@ -159,6 +166,9 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      */
     override fun onPause() {
         super.onPause()
+        busHandle.enable(false)
+        busHandle.removeCallbacksAndMessages(null)
+        ableCollect?.clear()
         scanBarView?.stopScanAnimator()
     }
 
@@ -167,8 +177,8 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      */
     override fun onDestroy() {
         super.onDestroy()
+        busHandle.looper.quit()
         ableCollect?.release()
-        busHandle?.looper?.quit()
     }
 
     /***
@@ -204,9 +214,9 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         //扫码条开始播放动画
         scanBarView?.startScanAnimator()
         //重新装填AbleManager
-        ableCollect?.init()
+        ableCollect?.loadAbility()
         //重新接收数据
-        handleZX.init()
+        busHandle.enable(true)
         //音频资源加载
         VibrateHelper.playInit()
 
@@ -250,15 +260,6 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     }
 
     /***
-     * 初始化业务Handler
-     */
-    private fun initBusHandle() {
-        val handlerThread = HandlerThread(System.currentTimeMillis().toString())
-        handlerThread.start()
-        busHandle = Handler(handlerThread.looper)
-    }
-
-    /***
      * File转Bitmap详见{@link #parseBitmap}
      */
     protected fun parseFile(filePath: String) {
@@ -272,10 +273,8 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         if (!file.exists())
             return
 
-        if (busHandle == null)
-            initBusHandle()
-
-        busHandle?.post {
+        busHandle.removeCallbacksAndMessages(null)
+        busHandle.post {
             val bitmap: Bitmap = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, getMediaUriFromPath(context, filePath)))
                         .copy(Bitmap.Config.RGB_565, false)
@@ -296,9 +295,9 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
 
         if (bitmap == null)
             return
-        if (busHandle == null)
-            initBusHandle()
-        busHandle?.post {
+
+        busHandle.removeCallbacksAndMessages(null)
+        busHandle.post {
             bitmap.apply {
                 if (config != Bitmap.Config.RGB_565
                         && config != Bitmap.Config.ARGB_8888) {
@@ -360,32 +359,33 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     }
 
     /***
-     * 全局Handler
+     * 业务Handler
      */
 
-    class HandleZX constructor(view: Callback) : Handler() {
+    class BusHandler constructor(view: Callback, loop: Looper) : Handler(loop) {
         var hasResult = false
         var viewReference: WeakReference<Callback>? = null
 
         init {
-            this@HandleZX.viewReference = WeakReference(view)
+            this@BusHandler.viewReference = WeakReference(view)
         }
 
         override fun handleMessage(msg: Message?) {
-            if (hasResult)
+            if (!hasResult)
                 return
             msg?.apply {
-                if (msg.what == SCAN_RESULT)
-                    hasResult = true
-                this@HandleZX.viewReference?.get()?.let {
-                    it.handleMessage(msg)
+                if (msg.what == SCAN_RESULT) {
+                    enable(false)
+                    removeCallbacksAndMessages(null)
                 }
+                this@BusHandler.viewReference?.get()?.handleMessage(msg)
             }
         }
 
-        fun init() {
-            hasResult = false
+        fun enable(enable: Boolean) {
+            hasResult = enable
         }
+
     }
 
 }
