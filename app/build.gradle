@@ -17,8 +17,8 @@ android {
         applicationId "com.android.NBZxing"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 13
-        versionName "1.13"
+        versionCode 14
+        versionName "1.14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         compileOptions {
@@ -28,7 +28,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

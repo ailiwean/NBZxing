@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+#mapping文件列出混淆前后的映射
+-printmapping mapping.txt
+-keep public class com.ailiwean.module_grayscale.GrayScaleDispatch

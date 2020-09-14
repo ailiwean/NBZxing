@@ -2,7 +2,6 @@ package com.ailiwean.core.able
 
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Log
 import com.ailiwean.core.Config
 import com.ailiwean.core.TypeRunnable
 import com.ailiwean.core.WorkThreadServer
@@ -45,6 +44,8 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     fun init() {
         ableList.clear()
+        ableList.add(XQRScanCrudeAble(handler))
+        ableList.add(XQRScanFineAble(handler))
         ableList.add(XQRScanZoomAble(handler))
         ableList.add(XQRScanAbleRotate(handler))
         ableList.add(LighSolveAble(handler))

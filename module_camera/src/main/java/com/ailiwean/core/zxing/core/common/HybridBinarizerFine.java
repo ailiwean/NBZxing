@@ -38,11 +38,11 @@ import com.ailiwean.core.zxing.core.NotFoundException;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class HybridBinarizer extends GlobalHistogramBinarizer {
+public final class HybridBinarizerFine extends GlobalHistogramBinarizer {
 
     // This class uses 5x5 blocks to compute local luminance, where each block is 8x8 pixels.
     // So this is the smallest dimension in each axis we can accept.
-    private static final int BLOCK_SIZE_POWER = 3;
+    private static final int BLOCK_SIZE_POWER = 2;
     private static final int BLOCK_SIZE = 1 << BLOCK_SIZE_POWER; // ...0100...00
     private static final int BLOCK_SIZE_MASK = BLOCK_SIZE - 1;   // ...0011...11
     private static final int MINIMUM_DIMENSION = BLOCK_SIZE * 5;
@@ -50,7 +50,7 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
 
     private BitMatrix matrix;
 
-    public HybridBinarizer(LuminanceSource source) {
+    public HybridBinarizerFine(LuminanceSource source) {
         super(source);
     }
 
@@ -99,7 +99,7 @@ public final class HybridBinarizer extends GlobalHistogramBinarizer {
 
     @Override
     public Binarizer createBinarizer(LuminanceSource source) {
-        return new HybridBinarizer(source);
+        return new HybridBinarizerFine(source);
     }
 
     /**
