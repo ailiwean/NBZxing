@@ -1,6 +1,7 @@
 package com.ailiwean.module_grayscale;
 
 import android.graphics.Rect;
+import android.util.Log;
 
 /**
  * @Package: com.ailiwean.module_grayscale

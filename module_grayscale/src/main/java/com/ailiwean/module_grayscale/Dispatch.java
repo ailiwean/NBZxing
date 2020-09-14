@@ -10,6 +10,7 @@ import android.graphics.Rect;
  * @CreateDate: 2020/8/9 6:31 PM
  */
 interface Dispatch {
+
     byte[] dispatch(byte[] data, int width, int height);
 
     byte[] dispatch(byte[] data, int width, int height, Rect rect);

@@ -5,44 +5,30 @@ import android.os.Message;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
-import com.ailiwean.core.zxing.LightGreySource;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.Result;
-import com.ailiwean.core.zxing.core.common.HybridBinarizer;
+
 
 /**
  * @Package: com.ailiwean.core.able
- * @ClassName: GammaAble
+ * @ClassName: QRScanAble
  * @Description:
  * @Author: SWY
- * @CreateDate: 2020/8/7 6:05 PM
+ * @CreateDate: 2020/4/23 10:18 AM
  */
-class GrayscaleStrengAble extends PixsValuesAble {
-
-    public GrayscaleStrengAble(Handler handler) {
-        super(handler);
-    }
+public class XQRScanFineAble extends PixsValuesAble {
 
     protected Result result;
 
-    int i = -1;
+    XQRScanFineAble(Handler handler) {
+        super(handler);
+    }
 
     @Override
     protected void needParseDeploy(PlanarYUVLuminanceSource source) {
         if (result != null)
             return;
-
-//        if (!isNative)
-//            return;
-
-        i++;
-        if (i % 2 != 1) {
-            return;
-        }
-
-        //浅色二维码增强
-        result = toLaunchParse(new HybridBinarizer(new LightGreySource(source)));
-
+        result = toLaunchParse(source.getHybridBinaryFine());
         if (result != null) {
             Message.obtain(handler, Config.SCAN_RESULT, covertResult(result)).sendToTarget();
         }
@@ -54,5 +40,4 @@ class GrayscaleStrengAble extends PixsValuesAble {
         result_.setPointF(ScanHelper.rotatePoint(result.getResultPoints()));
         return result_;
     }
-
 }

@@ -118,14 +118,18 @@ class RespectScaleQueue<T extends TypeRunnable> implements BlockingQueue<T>, jav
      */
     @Override
     public T take() throws InterruptedException {
-        if (takeIndex++ % ratio == 0) {
-            T t = normalQueue.take();
-            if (t == null)
+        if (takeIndex++ % ratio != 0) {
+            T t = null;
+            if (normalQueue.size() != 0)
+                t = normalQueue.take();
+            else if (scaleQueue.size() != 0)
                 t = scaleQueue.take();
             return t;
         } else {
-            T t = scaleQueue.take();
-            if (t == null)
+            T t = null;
+            if (scaleQueue.size() != 0)
+                t = scaleQueue.take();
+            else if (normalQueue.size() != 0)
                 t = normalQueue.take();
             return t;
         }
@@ -133,7 +137,7 @@ class RespectScaleQueue<T extends TypeRunnable> implements BlockingQueue<T>, jav
 
     @Override
     public T poll(long timeout, TimeUnit unit) throws InterruptedException {
-        if (pollIndex++ % ratio == 0)
+        if (pollIndex++ % ratio != 0)
             return normalQueue.poll(timeout, unit);
         else return scaleQueue.poll(timeout, unit);
     }

@@ -77,7 +77,6 @@ class Camera2 extends CameraViewImpl {
 
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
-
             mCamera = camera;
             mCallback.onCameraOpened();
             startCaptureSession();
@@ -95,11 +94,13 @@ class Camera2 extends CameraViewImpl {
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
-            Log.e(TAG, "onError: " + camera.getId() + " (" + error + ")");
+            restart();
             mCamera = null;
         }
 
     };
+
+    boolean isTrue;
 
     private final CameraCaptureSession.StateCallback mSessionCallback
             = new CameraCaptureSession.StateCallback() {
@@ -113,18 +114,17 @@ class Camera2 extends CameraViewImpl {
             updateAutoFocus();
             updateFlash();
             try {
-                mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(),
+                CaptureRequest request = mPreviewRequestBuilder.build();
+                mCaptureSession.setRepeatingRequest(request,
                         mCaptureCallback, null);
-            } catch (CameraAccessException e) {
-                Log.e(TAG, "Failed to start camera preview because it couldn't access camera", e);
-            } catch (IllegalStateException e) {
-                Log.e(TAG, "Failed to start camera preview.", e);
+            } catch (Exception e) {
+                restart();
             }
         }
 
         @Override
         public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-            Log.e(TAG, "Failed to configure capture session.");
+            restart();
         }
 
         @Override
@@ -147,8 +147,8 @@ class Camera2 extends CameraViewImpl {
                 mCaptureSession.capture(mPreviewRequestBuilder.build(), this, null);
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER,
                         CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_IDLE);
-            } catch (CameraAccessException e) {
-                Log.e(TAG, "Failed to run precapture sequence.", e);
+            } catch (Exception e) {
+                restart();
             }
         }
 
@@ -264,8 +264,7 @@ class Camera2 extends CameraViewImpl {
         }
         mFacing = facing;
         if (isCameraOpened()) {
-            stop();
-            start();
+            restart();
         }
     }
 
@@ -314,8 +313,9 @@ class Camera2 extends CameraViewImpl {
                 try {
                     mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(),
                             mCaptureCallback, null);
-                } catch (CameraAccessException e) {
+                } catch (Exception e) {
                     mAutoFocus = !mAutoFocus; // Revert
+                    restart();
                 }
             }
         }
@@ -339,8 +339,9 @@ class Camera2 extends CameraViewImpl {
                 try {
                     mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(),
                             mCaptureCallback, null);
-                } catch (CameraAccessException e) {
+                } catch (Exception e) {
                     mFlash = saved; // Revert
+                    restart();
                 }
             }
         }
@@ -380,10 +381,13 @@ class Camera2 extends CameraViewImpl {
     @Override
     void setZoom(float percent) {
         synchronized (Camera2.class) {
+            if (!isCameraOpened())
+                return;
             try {
                 mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, CameraHelper.getZoomRect(mCameraCharacteristics, percent));
                 mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
             } catch (Exception e) {
+                restart();
             }
         }
     }
@@ -391,6 +395,8 @@ class Camera2 extends CameraViewImpl {
     @Override
     void lightOperator(boolean isOpen) {
         synchronized (Camera2.class) {
+            if (!isCameraOpened())
+                return;
             if (isOpen)
                 setFlash(Constants.FLASH_TORCH);
             else setFlash(Constants.FLASH_OFF);
@@ -450,7 +456,7 @@ class Camera2 extends CameraViewImpl {
             // We treat it as facing back.
             mFacing = Constants.FACING_BACK;
             return true;
-        } catch (CameraAccessException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -581,9 +587,8 @@ class Camera2 extends CameraViewImpl {
                         , mYuvReader.getSurface()
                         ),
                         mSessionCallback, null);
-            } catch (CameraAccessException ignored) {
-                stop();
-                start();
+            } catch (Exception ignored) {
+                restart();
             }
         }
     }
@@ -600,7 +605,7 @@ class Camera2 extends CameraViewImpl {
         if (surfaceWidth == 0 || surfaceHeight == 0) {
             try {
                 Thread.sleep(2000);
-            } catch (InterruptedException ignored) {
+            } catch (Exception ignored) {
             } finally {
                 surfaceWidth = mPreview.getWidth();
                 surfaceHeight = mPreview.getHeight();
@@ -703,8 +708,8 @@ class Camera2 extends CameraViewImpl {
         try {
             mCaptureCallback.setState(PictureCaptureCallback.STATE_LOCKING);
             mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback, null);
-        } catch (CameraAccessException e) {
-            Log.e(TAG, "Failed to lock focus.", e);
+        } catch (Exception e) {
+            restart();
         }
     }
 
@@ -763,8 +768,8 @@ class Camera2 extends CameraViewImpl {
                             unlockFocus();
                         }
                     }, null);
-        } catch (CameraAccessException e) {
-            Log.e(TAG, "Cannot capture a still picture.", e);
+        } catch (Exception e) {
+            restart();
         }
     }
 
@@ -789,9 +794,19 @@ class Camera2 extends CameraViewImpl {
             mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback,
                     null);
             mCaptureCallback.setState(PictureCaptureCallback.STATE_PREVIEW);
-        } catch (CameraAccessException e) {
-            Log.e(TAG, "Failed to restart camera preview.", e);
+        } catch (Exception e) {
+            restart();
         }
+    }
+
+    private void restart() {
+        stop();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        start();
     }
 
     /**

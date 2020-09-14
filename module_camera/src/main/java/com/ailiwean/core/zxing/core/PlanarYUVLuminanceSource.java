@@ -20,6 +20,8 @@ import android.util.Log;
 
 import com.ailiwean.core.zxing.core.common.GlobalHistogramBinarizer;
 import com.ailiwean.core.zxing.core.common.HybridBinarizer;
+import com.ailiwean.core.zxing.core.common.HybridBinarizerCrude;
+import com.ailiwean.core.zxing.core.common.HybridBinarizerFine;
 
 /**
  * This object extends LuminanceSource around an array of YUV data returned from the camera driver,
@@ -177,12 +179,12 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
     }
 
     Binarizer hybridBinary;
-
-    Binarizer globaBinary;
+    Binarizer hybridBinaryCurde;
+    Binarizer hybridBinaryFine;
 
     public Binarizer getHybridBinary() {
         if (hybridBinary == null) {
-            synchronized (yuvData) {
+            synchronized (HybridBinarizer.class) {
                 if (hybridBinary == null)
                     hybridBinary = new HybridBinarizer(this);
             }
@@ -190,13 +192,25 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
         return hybridBinary;
     }
 
-    public Binarizer getGlobaBinary() {
-        if (globaBinary == null) {
-            synchronized (matrix) {
-                if (globaBinary == null)
-                    globaBinary = new GlobalHistogramBinarizer(this);
+    public Binarizer getHybridBinaryCurde() {
+        if (hybridBinaryCurde == null) {
+            synchronized (HybridBinarizerCrude.class) {
+                if (hybridBinaryCurde == null)
+                    hybridBinaryCurde = new HybridBinarizerCrude(this);
             }
         }
-        return globaBinary;
+        return hybridBinaryCurde;
     }
+
+    public Binarizer getHybridBinaryFine() {
+        if (hybridBinaryFine == null) {
+            synchronized (HybridBinarizerFine.class) {
+                if (hybridBinaryFine == null)
+                    hybridBinaryFine = new HybridBinarizerFine(this);
+            }
+        }
+        return hybridBinaryFine;
+    }
+
+
 }

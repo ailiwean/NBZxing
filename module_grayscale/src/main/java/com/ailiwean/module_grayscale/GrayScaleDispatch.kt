@@ -15,6 +15,7 @@ import kotlin.collections.ArrayList
 class GrayScaleDispatch : Dispatch {
 
     private var grayScaleProcess = ArrayList<Dispatch>()
+
     var random = Random()
 
     init {
@@ -22,6 +23,8 @@ class GrayScaleDispatch : Dispatch {
         grayScaleProcess.add(OverBrightScale())
         grayScaleProcess.add(OverDarkScale())
         grayScaleProcess.add(RevGrayScale())
+        grayScaleProcess.add(InterruptGrayScale())
+        grayScaleProcess.add(OverlyGrayScale())
     }
 
     override fun dispatch(data: ByteArray?, width: Int, height: Int): ByteArray {

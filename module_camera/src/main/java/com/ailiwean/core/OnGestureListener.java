@@ -83,6 +83,9 @@ public abstract class OnGestureListener implements View.OnTouchListener {
         //一根手指离开重置
         if (event.getActionMasked() == MotionEvent.ACTION_POINTER_UP) {
             distance = 0;
+        }
+
+        if (event.getActionMasked() == MotionEvent.ACTION_UP) {
             onStepEnd();
         }
 
