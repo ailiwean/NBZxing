@@ -28,9 +28,16 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        debug {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
     }
 }
 
@@ -39,9 +46,9 @@ dependencies {
     api "androidx.appcompat:appcompat:1.1.0"
     implementation 'com.zhihu.android:matisse:0.5.3-beta3'
     api "com.github.bumptech.glide:glide:4.11.0"
-//    implementation 'com.github.ailiwean:NBZxing:0.0.7'
-//    api 'com.google.zxing:core:3.3.3'
-//    implementation 'com.github.ailiwean:NBZxing:0.0.21'
+//
+//    implementation 'com.github.ailiwean:NBZxing-Scale:0.0.3'
+//    implementation 'com.github.ailiwean:NBZxing:0.0.25'
     //   implementation 'me.devilsen:czxing:1.0.11'
 
 }
