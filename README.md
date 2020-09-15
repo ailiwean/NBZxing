@@ -1,6 +1,11 @@
 #  NBZxing
  一个稳定完善的扫码库，几行代码既可接入，完美适配各种分辨率无拉伸，可插拔式自定义UI 。
   
+  
+# 看这里 #  
+  发现java的zxing条码有些问题，密集情况的二维码总是扫成条码 ，这两天在研究源码，等这个问题解决后会放出一个版本， 大家有需要可以等那个版本。 
+    
+  
 ### 依赖
 
 [![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://jitpack.io/#ailiwean/NBZxing)    [![](https://jitpack.io/v/ailiwean/NBZxing-Scale.svg)](https://jitpack.io/#ailiwean/NBZxing-Scale)

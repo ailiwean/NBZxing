@@ -61,8 +61,6 @@ public class XQRScanZoomAble extends XQRScanAble {
         zoomTime = System.currentTimeMillis();
         lastLenght = lenght;
 
-        Message.obtain(handler, Config.AUTO_ZOOM, Config.currentZoom + "")
-                .sendToTarget();
-
+        sendMessage(Config.AUTO_ZOOM, Config.currentZoom + "");
     }
 }
