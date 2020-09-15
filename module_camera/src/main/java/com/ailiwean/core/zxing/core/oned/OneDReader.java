@@ -116,8 +116,11 @@ public abstract class OneDReader implements Reader {
         }
 
         int middle = height / 2;
+        int hitCount = 0;
+        Result lastResult = null;
         for (int x = 0; x < maxLines; x++) {
 
+            Result currentResult = null;
             // Scanning from the middle out. Determine which row we're looking at next:
             int rowStepsAboveOrBelow = (x + 1) / 2;
             boolean isAbove = (x & 0x01) == 0; // i.e. is x even?
@@ -164,11 +167,20 @@ public abstract class OneDReader implements Reader {
                             points[1] = new ResultPoint(width - points[1].getX() - 1, points[1].getY());
                         }
                     }
-                    return result;
+                    currentResult = result;
                 } catch (ReaderException re) {
                     // continue -- just couldn't decode this row
                 }
             }
+            if (lastResult != null && currentResult != null &&
+                    lastResult.getText().equals(currentResult.getText())) {
+                hitCount++;
+            } else {
+                hitCount = 0;
+            }
+            lastResult = currentResult;
+            if (hitCount >= Math.max(3, image.getHeight() >> 7))
+                return lastResult;
         }
 
         throw NotFoundException.getNotFoundInstance();
