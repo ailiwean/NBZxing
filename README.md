@@ -2,13 +2,16 @@
  一个稳定完善的扫码库，几行代码既可接入，完美适配各种分辨率无拉伸，可插拔式自定义UI 。
   
   
-# 看这里 #  
-  发现java的zxing条码有些问题，密集情况的二维码总是扫成条码 ，这两天在研究源码，等这个问题解决后会放出一个版本， 大家有需要可以等那个版本。 
-    
-  
+# 亮点 #  
+       
+ - 基于google-cameraView调整优化，大量机型测试，可稳定流畅启动关闭相机
+ - Camera2-Camera1分别实现扫码, 高版本默认走Camera2， 低版本Camera1， Camera2启动失败走Camera1
+ - 灰度算法处理， 可应付一些特殊场景二维码并可拓展
+ - zxing源码修改，彻底解决复杂二维码扫出一堆不相干数字问题  
+     
 ### 依赖
 
-[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://jitpack.io/#ailiwean/NBZxing)    [![](https://jitpack.io/v/ailiwean/NBZxing-Scale.svg)](https://jitpack.io/#ailiwean/NBZxing-Scale)
+[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://.io/#ailiwean/NBZxing)    [![](https://jitpack.io/v/ailiwean/NBZxing-Scale.svg)](https://jitpack.io/#ailiwean/NBZxing-Scale)
 
 
 
