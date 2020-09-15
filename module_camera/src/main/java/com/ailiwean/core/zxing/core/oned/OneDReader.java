@@ -16,6 +16,8 @@
 
 package com.ailiwean.core.zxing.core.oned;
 
+import android.util.Log;
+
 import com.ailiwean.core.zxing.core.BinaryBitmap;
 import com.ailiwean.core.zxing.core.ChecksumException;
 import com.ailiwean.core.zxing.core.DecodeHintType;
@@ -31,6 +33,7 @@ import com.ailiwean.core.zxing.core.common.BitArray;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.LongFunction;
 
 /**
  * Encapsulates functionality and implementation that is common to all families
@@ -179,7 +182,7 @@ public abstract class OneDReader implements Reader {
                 hitCount = 0;
             }
             lastResult = currentResult;
-            if (hitCount >= Math.max(3, image.getHeight() >> 7))
+            if (hitCount >= Math.min(15, image.getHeight() >> 6))
                 return lastResult;
         }
 

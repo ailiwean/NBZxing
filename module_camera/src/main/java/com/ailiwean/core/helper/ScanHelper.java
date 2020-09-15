@@ -9,6 +9,7 @@ import com.ailiwean.core.zxing.core.BinaryBitmap;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.ResultPoint;
 import com.ailiwean.core.zxing.core.common.HybridBinarizer;
+import com.ailiwean.core.zxing.core.common.HybridBinarizerFine;
 
 /**
  * @Package: com.ailiwean.core.helper
@@ -25,7 +26,7 @@ public class ScanHelper {
     public static BinaryBitmap byteToBinaryBitmap(byte[] bytes, int dataWidth, int dataHeight) {
         Rect rect = getScanByteRect(dataWidth, dataHeight);
         PlanarYUVLuminanceSource source = buildLuminanceSource(bytes, dataWidth, dataHeight, rect);
-        return new BinaryBitmap(new HybridBinarizer(source));
+        return new BinaryBitmap(new HybridBinarizerFine(source));
     }
 
     /***

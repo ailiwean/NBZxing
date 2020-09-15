@@ -71,7 +71,7 @@ public final class MultiFormatOneDReader extends OneDReader {
          readers.add(new CodaBarReader());
       }
       if (possibleFormats.contains(BarcodeFormat.RSS_14)) {
-         readers.add(new RSS14Reader());
+       //  readers.add(new RSS14Reader());
       }
       if (possibleFormats.contains(BarcodeFormat.RSS_EXPANDED)) {
         readers.add(new RSSExpandedReader());
@@ -84,7 +84,7 @@ public final class MultiFormatOneDReader extends OneDReader {
       readers.add(new Code93Reader());
       readers.add(new Code128Reader());
       readers.add(new ITFReader());
-      readers.add(new RSS14Reader());
+     // readers.add(new RSS14Reader());
       readers.add(new RSSExpandedReader());
     }
     this.readers = readers.toArray(EMPTY_ONED_ARRAY);
