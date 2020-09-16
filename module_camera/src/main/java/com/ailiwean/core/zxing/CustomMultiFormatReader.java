@@ -166,7 +166,7 @@ public class CustomMultiFormatReader implements Reader {
                 try {
                     if (!(image.getBinarizer() instanceof HybridBinarizerFine) &&
                             reader instanceof OneDReader)
-                        return null;
+                        continue;
                     return reader.decode(image, hints);
                 } catch (ReaderException re) {
                     // continue
