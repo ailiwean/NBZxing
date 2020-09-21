@@ -9,14 +9,10 @@
  - 灰度算法处理， 可应付一些特殊场景二维码并可拓展
  - zxing源码修改，彻底解决复杂二维码扫出一堆不相干数字问题  
      
-**说明**
- 仅 **AndroidX** 不提供support，有需要自己改也没多少。
-     
 ### 依赖
 
-[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://.io/#ailiwean/NBZxing)    [![](https://jitpack.io/v/ailiwean/NBZxing-Scale.svg)](https://jitpack.io/#ailiwean/NBZxing-Scale)
+[![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://.io/#ailiwean/NBZxing)    [![](https://jitpack.io/v/ailiwean/NBZxing-Scale.svg)](https://jitpack.io/#ailiwean/NBZxing-Scale)   [![](https://travis-ci.com/ailiwean/NBZxing.svg?branch=master)](https://travis-ci.com/ailiwean/NBZxing.svg?branch=master)      [![API](https://img.shields.io/badge/API-16%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=16)
 
-[![](https://travis-ci.com/ailiwean/NBZxing.svg?branch=master)](https://travis-ci.com/ailiwean/NBZxing.svg?branch=master)
 
 
 
@@ -28,8 +24,10 @@
 ```
 [NBZxing-Scale](https://github.com/ailiwean/NBZxing-Scale "NBZxing-Scale")
 
-**注意：库中已经包含zxing源码无需再次依赖**
-
+#### 说明
+- **仅AndroidX** 不提供support，有需要自己改也没多少。
+- **库中已经包含zxing源码无需再次依赖**
+    
 -------
 
 ### WIKI
