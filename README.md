@@ -9,9 +9,15 @@
  - 灰度算法处理， 可应付一些特殊场景二维码并可拓展
  - zxing源码修改，彻底解决复杂二维码扫出一堆不相干数字问题  
      
+**说明**
+ 仅 **AndroidX** 不提供support，有需要自己改也没多少。
+     
 ### 依赖
 
 [![](https://jitpack.io/v/ailiwean/NBZxing.svg)](https://.io/#ailiwean/NBZxing)    [![](https://jitpack.io/v/ailiwean/NBZxing-Scale.svg)](https://jitpack.io/#ailiwean/NBZxing-Scale)
+
+[![](https://travis-ci.com/ailiwean/NBZxing.svg?branch=master)](https://travis-ci.com/ailiwean/NBZxing.svg?branch=master)
+
 
 
 
