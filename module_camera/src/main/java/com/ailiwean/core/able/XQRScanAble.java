@@ -28,7 +28,7 @@ public class XQRScanAble extends PixsValuesAble {
     protected void needParseDeploy(PlanarYUVLuminanceSource source) {
         if (result != null)
             return;
-        result = toLaunchParse(source.getHybridBinary());
+      //  result = toLaunchParse(source.getHybridBinary());
         if (result != null && !"".equals(result.getText())) {
             sendMessage(Config.SCAN_RESULT, covertResult(result));
         }

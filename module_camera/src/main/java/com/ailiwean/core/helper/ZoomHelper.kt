@@ -18,6 +18,7 @@ object ZoomHelper {
 
     @SuppressLint("ClickableViewAccessibility")
     fun toAutoZoom(view: BaseCameraView) {
+        Config.currentZoom = 0f
         view.setOnTouchListener(object : OnGestureListener(view.context) {
             override fun onStepFingerChange(total: Float, offset: Float) {
 

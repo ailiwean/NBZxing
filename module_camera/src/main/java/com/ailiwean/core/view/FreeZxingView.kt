@@ -1,20 +1,16 @@
 package com.ailiwean.core.view
 
-import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
-import android.graphics.PointF
+import android.graphics.*
 import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.Toast
 import com.ailiwean.core.Config.*
 import com.ailiwean.core.Result
 import com.ailiwean.core.able.AbleManager
@@ -46,8 +42,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     private var ableCollect: AbleManager? = null
 
     init {
-
-        //初始化全局参数
+        //初始化配置参数
         initConfig()
 
         //使用后置相机
@@ -116,11 +111,19 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
                 AUTO_ZOOM -> {
                     setZoom(message.obj.toString().toFloat())
                 }
+
+                //实时位置
+                RT_LOCATION -> {
+                    Toast.makeText(context, "showPoint", Toast.LENGTH_SHORT).show()
+                    locView?.toLocation(message.obj as PointF) {}
+                    invalidate()
+                }
             }
         }
 
         return true
     }
+
 
     /***
      * 相机采集数据实时回调
@@ -194,7 +197,6 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      * 相机启动后的一些配置初始化
      */
     private fun cameraStartLaterConfig() {
-
         //自定义
         locView?.cameraStartLaterInit()
         //控件
@@ -219,7 +221,6 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         busHandle.enable(true)
         //音频资源加载
         VibrateHelper.playInit()
-
     }
 
     /***

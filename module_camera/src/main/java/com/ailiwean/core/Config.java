@@ -27,6 +27,10 @@ public class Config {
     //自动缩放
     public static final int AUTO_ZOOM = 2;
 
+    //实时位置
+    public static final int RT_LOCATION = 3;
+
+
     //###############################################
 
     //扫码类型

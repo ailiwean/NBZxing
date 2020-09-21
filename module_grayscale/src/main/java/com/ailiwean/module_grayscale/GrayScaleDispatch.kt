@@ -23,7 +23,7 @@ class GrayScaleDispatch : Dispatch {
         grayScaleProcess.add(OverBrightScale())
         grayScaleProcess.add(OverDarkScale())
         grayScaleProcess.add(RevGrayScale())
-        grayScaleProcess.add(InterruptGrayScale())
+        //grayScaleProcess.add(InterruptGrayScale())
         grayScaleProcess.add(OverlyGrayScale())
     }
 

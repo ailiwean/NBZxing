@@ -49,6 +49,9 @@ public class XQRScanZoomAble extends XQRScanAble {
         points = decoderResult.getPoints();
         int lenght = ScanHelper.getQrLenght(points);
 
+        if (points != null && points.length >= 3)
+            sendMessage(Config.RT_LOCATION, ScanHelper.rotatePoint(points));
+
         //自动变焦时间间隔为500ms
         if (System.currentTimeMillis() - zoomTime < 500)
             return;
