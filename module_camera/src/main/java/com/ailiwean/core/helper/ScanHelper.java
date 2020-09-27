@@ -2,14 +2,11 @@ package com.ailiwean.core.helper;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.util.Log;
+import android.graphics.RectF;
 
 import com.ailiwean.core.Config;
-import com.ailiwean.core.zxing.core.BinaryBitmap;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.ResultPoint;
-import com.ailiwean.core.zxing.core.common.HybridBinarizer;
-import com.ailiwean.core.zxing.core.common.HybridBinarizerFine;
 
 /**
  * @Package: com.ailiwean.core.helper
@@ -21,27 +18,66 @@ import com.ailiwean.core.zxing.core.common.HybridBinarizerFine;
 public class ScanHelper {
 
     /***
-     * 字节转BinaryBitmap
-     */
-    public static BinaryBitmap byteToBinaryBitmap(byte[] bytes, int dataWidth, int dataHeight) {
-        Rect rect = getScanByteRect(dataWidth, dataHeight);
-        PlanarYUVLuminanceSource source = buildLuminanceSource(bytes, dataWidth, dataHeight, rect);
-        return new BinaryBitmap(new HybridBinarizerFine(source));
-    }
-
-    /***
      * 旋转矩形 -90
      * @param rect
      * @return
      */
-    private static Rect rotateRect(Rect rect) {
-        Rect rect1 = new Rect();
+    public static RectF rotateUnCloseWise(RectF rect) {
+        RectF rect1 = new RectF();
         rect1.left = rect.top;
         rect1.top = rect.left;
         rect1.right = rect.bottom;
         rect1.bottom = rect.right;
         return rect1;
     }
+
+    private static RectF adapterRect(RectF rect) {
+        RectF rect1 = new RectF();
+        rect1.top = rect.left;
+        rect1.right = rect.bottom;
+        rect1.bottom = rect.right;
+        rect1.left = rect.top;
+        return rect1;
+    }
+
+    public static RectF adapter90(RectF rect) {
+        rect = adapterRect(rect);
+        RectF rect1 = new RectF();
+        rect1.left = 1 - rect.right;
+        rect1.top = rect.top;
+        rect1.right = 1 - rect.left;
+        rect1.bottom = rect.bottom;
+        return rect1;
+    }
+
+    public static RectF adapter270(RectF rectF) {
+        rectF = adapterRect(rectF);
+        RectF rect1 = new RectF();
+        rect1.left = rectF.left;
+        rect1.top = 1 - rectF.bottom;
+        rect1.right = rectF.right;
+        rect1.bottom = 1 - rectF.top;
+        return rect1;
+    }
+
+    public static Rect copyRect(Rect rect) {
+        Rect result = new Rect();
+        result.left = rect.left;
+        result.top = rect.top;
+        result.right = rect.right;
+        result.bottom = rect.bottom;
+        return result;
+    }
+
+    public static RectF copyRect(RectF rectF) {
+        RectF result = new RectF();
+        result.left = rectF.left;
+        result.top = rectF.top;
+        result.right = rectF.right;
+        result.bottom = rectF.bottom;
+        return result;
+    }
+
 
     /***
      * 二维码坐标转换屏幕坐标
@@ -67,13 +103,31 @@ public class ScanHelper {
         float preY = Config.scanRect.getPreY();
         float extraX = Config.scanRect.getExtraX();
         float extraY = Config.scanRect.getExtraY();
-        float aspeX = (preX + extraX) / (float) Config.scanRect.getDataY();
-        float aspeY = (preY + extraY) / (float) Config.scanRect.getDataX();
 
-        float relatPointX = preX + extraX / 2 - (Config.scanRect.getScanR().top + avargPoint.y) * aspeX;
-        float relatPointY = (Config.scanRect.getScanR().left + avargPoint.x) * aspeY - extraY / 2;
+        float aspeX, aspeY;
+
+        if (Config.is90() || Config.is270()) {
+            aspeX = (preX + extraX) / (float) Config.scanRect.getDataX();
+            aspeY = (preY + extraY) / (float) Config.scanRect.getDataY();
+        } else {
+            aspeX = (preX + extraX) / (float) Config.scanRect.getDataY();
+            aspeY = (preY + extraY) / (float) Config.scanRect.getDataX();
+        }
+
+        float relatPointX, relatPointY;
+
+        if (Config.is90()) {
+            relatPointX = (Config.scanRect.getScanR().left + avargPoint.x) * aspeX - extraX / 2;
+            relatPointY = (Config.scanRect.getScanR().top + avargPoint.y) * aspeY - extraY / 2;
+        } else if (Config.is270()) {
+            relatPointX = preX - (Config.scanRect.getScanR().left + avargPoint.x) * aspeX + extraX / 2;
+            relatPointY = preY - (Config.scanRect.getScanR().top + avargPoint.y) * aspeY + extraY / 2;
+        } else {
+            relatPointX = preX + extraX / 2 - (Config.scanRect.getScanR().top + avargPoint.y) * aspeX;
+            relatPointY = (Config.scanRect.getScanR().left + avargPoint.x) * aspeY - extraY / 2;
+        }
+
         return new PointF(relatPointX, relatPointY);
-
     }
 
     /***
@@ -100,11 +154,31 @@ public class ScanHelper {
         float preY = Config.scanRect.getPreY();
         float extraX = Config.scanRect.getExtraX();
         float extraY = Config.scanRect.getExtraY();
-        float aspeX = (preX + extraX) / (float) Config.scanRect.getDataY();
-        float aspeY = (preY + extraY) / (float) Config.scanRect.getDataX();
 
-        float relatPointX = (Config.scanRect.getScanRR().left + avargPoint.x) * aspeX - extraX / 2;
-        float relatPointY = (Config.scanRect.getScanRR().top + avargPoint.y) * aspeY - extraY / 2;
+        float aspeX, aspeY;
+
+        if (Config.is90() || Config.is270()) {
+            aspeX = (preX + extraX) / (float) Config.scanRect.getDataX();
+            aspeY = (preY + extraY) / (float) Config.scanRect.getDataY();
+        } else {
+            aspeX = (preX + extraX) / (float) Config.scanRect.getDataY();
+            aspeY = (preY + extraY) / (float) Config.scanRect.getDataX();
+        }
+
+        float relatPointX, relatPointY;
+
+        if (Config.is90()) {
+            relatPointX = (Config.scanRect.getScanRR().top + avargPoint.y) * aspeX - extraX / 2;
+            relatPointY = (Config.scanRect.getScanRR().left - avargPoint.x +
+                    Config.scanRect.getScanRR().width()) * aspeY - extraY / 2;
+        } else if (Config.is270()) {
+            relatPointX = preX - (Config.scanRect.getScanRR().top + avargPoint.y) * aspeX + extraX / 2;
+            relatPointY = preY - (Config.scanRect.getScanRR().left - avargPoint.x +
+                    Config.scanRect.getScanRR().width()) * aspeY + extraY / 2;
+        } else {
+            relatPointX = (Config.scanRect.getScanRR().left + avargPoint.x) * aspeX - extraX / 2;
+            relatPointY = (Config.scanRect.getScanRR().top + avargPoint.y) * aspeY - extraY / 2;
+        }
         return new PointF(relatPointX, relatPointY);
     }
 
@@ -136,29 +210,34 @@ public class ScanHelper {
      */
     public static Rect getScanByteRect(int dataWidth, int dataHeight) {
 
-        if (Config.scanRect.getRect() == null)
+        try {
+            if (Config.scanRect.getRect() == null)
+                return new Rect(0, 0, 0, 0);
+
+            RectF cropRect = Config.scanRect.getRect();
+
+            //默认采集的数据
+            if (dataWidth > dataHeight) {
+                if (Config.scanRect.getScanR() == null) {
+                    Config.scanRect.setScanR(new Rect());
+                    Config.scanRect.getScanR().left = (int) (cropRect.top * dataWidth);
+                    Config.scanRect.getScanR().top = (int) ((1f - cropRect.right) * dataHeight);
+                    Config.scanRect.getScanR().right = (int) (cropRect.bottom * dataWidth);
+                    Config.scanRect.getScanR().bottom = (int) ((1f - (cropRect.left)) * dataHeight);
+                }
+                return Config.scanRect.getScanR();
+            } else {
+                if (Config.scanRect.getScanRR() == null) {
+                    Config.scanRect.setScanRR(new Rect());
+                    Config.scanRect.getScanRR().left = (int) (cropRect.left * dataWidth);
+                    Config.scanRect.getScanRR().top = (int) (cropRect.top * dataHeight);
+                    Config.scanRect.getScanRR().right = (int) (cropRect.right * dataWidth);
+                    Config.scanRect.getScanRR().bottom = (int) (cropRect.bottom * dataHeight);
+                }
+                return Config.scanRect.getScanRR();
+            }
+        } catch (Exception e) {
             return new Rect(0, 0, 0, 0);
-
-        //默认采集的数据
-        if (dataWidth > dataHeight) {
-
-            if (Config.scanRect.getScanR() == null) {
-                Config.scanRect.setScanR(new Rect());
-                Config.scanRect.getScanR().left = (int) (Config.scanRect.getRect().top * dataWidth);
-                Config.scanRect.getScanR().top = (int) ((1f - Config.scanRect.getRect().right) * dataHeight);
-                Config.scanRect.getScanR().right = (int) (Config.scanRect.getRect().bottom * dataWidth);
-                Config.scanRect.getScanR().bottom = (int) ((1f - (Config.scanRect.getRect().left)) * dataHeight);
-            }
-            return Config.scanRect.getScanR();
-        } else {
-            if (Config.scanRect.getScanRR() == null) {
-                Config.scanRect.setScanRR(new Rect());
-                Config.scanRect.getScanRR().left = (int) (Config.scanRect.getRect().left * dataWidth);
-                Config.scanRect.getScanRR().top = (int) (Config.scanRect.getRect().top * dataHeight);
-                Config.scanRect.getScanRR().right = (int) (Config.scanRect.getRect().right * dataWidth);
-                Config.scanRect.getScanRR().bottom = (int) (Config.scanRect.getRect().bottom * dataHeight);
-            }
-            return Config.scanRect.getScanRR();
         }
     }
 

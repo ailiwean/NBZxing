@@ -182,7 +182,7 @@ public abstract class OneDReader implements Reader {
                 hitCount = 0;
             }
             lastResult = currentResult;
-            if (hitCount >= Math.min(15, image.getHeight() >> 6))
+            if (hitCount > 2)
                 return lastResult;
         }
 

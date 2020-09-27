@@ -18,6 +18,7 @@ package com.google.android.cameraview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.PointF;
 import android.graphics.RectF;
@@ -27,6 +28,7 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -104,7 +106,7 @@ public class CameraView extends FrameLayout {
 
     private boolean mAdjustViewBounds;
 
-    private final DisplayOrientationDetector mDisplayOrientationDetector;
+    protected final DisplayOrientationDetector mDisplayOrientationDetector;
 
     public CameraView(Context context) {
         this(context, null);
@@ -129,6 +131,7 @@ public class CameraView extends FrameLayout {
         } else {
             mImpl = new Camera2(mCallbacks, context);
         }
+//        mImpl = new Camera1(mCallbacks);
         // Attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView, defStyleAttr,
                 R.style.Widget_CameraView);
@@ -175,8 +178,6 @@ public class CameraView extends FrameLayout {
         super.onDetachedFromWindow();
     }
 
-    RectF r = new RectF();
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (isInEditMode()) {
@@ -190,7 +191,9 @@ public class CameraView extends FrameLayout {
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
         AspectRatio ratio = getAspectRatio();
-        if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {
+        if (getContext().getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
+            Config.displayOrientation = 0;
             ratio = ratio.inverse();
         }
         assert ratio != null;
@@ -220,6 +223,8 @@ public class CameraView extends FrameLayout {
         if (view == null)
             return;
 
+        RectF r = new RectF();
+
         Config.scanRect.setScanR(null);
         Config.scanRect.setScanRR(null);
         Config.scanRect.setRect(null);
@@ -228,8 +233,13 @@ public class CameraView extends FrameLayout {
         int oriWidth = getMeasuredWidth();
 
         AspectRatio ratio = getAspectRatio();
-        if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {
+        if (getContext().getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
+            Config.displayOrientation = 0;
             ratio = ratio.inverse();
+        } else {
+            if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() != 0)
+                Config.displayOrientation = mDisplayOrientationDetector.getLastKnownDisplayOrientation();
         }
 
         if (ratio == null)
@@ -346,6 +356,10 @@ public class CameraView extends FrameLayout {
         removeAllViews();
         initPreView();
     }
+
+    public void closeCameraBefore() {
+    }
+
 
     /**
      * Open a camera device and start showing camera preview. This is typically called from

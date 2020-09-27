@@ -90,11 +90,10 @@ public final class HybridBinarizerCrude extends GlobalHistogramBinarizer {
             BitMatrix newMatrix = new BitMatrix(width, height);
             calculateThresholdForBlock(luminances, subWidth, subHeight, width, height, blackPoints, newMatrix);
             matrix = newMatrix;
+            return matrix;
         } else {
-            // If the image is too small, fall back to the global histogram approach.
-            matrix = super.getBlackMatrix();
+            return null;
         }
-        return matrix;
     }
 
     @Override

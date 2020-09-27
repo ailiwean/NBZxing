@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
-import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -173,6 +172,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     }
 
     protected fun onCameraPause() {
+        closeCameraBefore()
         closeCamera()
         isShoudCreateOpen = false
     }

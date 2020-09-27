@@ -19,7 +19,7 @@ package com.google.android.cameraview;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
-import android.hardware.camera2.CameraAccessException;
+import android.graphics.RectF;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
@@ -32,7 +32,6 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
 
@@ -40,10 +39,10 @@ import androidx.annotation.NonNull;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.CameraHelper;
+import com.ailiwean.core.helper.ScanHelper;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -909,17 +908,23 @@ class Camera2 extends CameraViewImpl {
             if (Config.scanRect == null || Config.scanRect.getRect() == null)
                 return;
 
-            Rect rect = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
-            if (rect == null)
-                rect = new Rect(0, 0, 1, 1);
+            Rect dateRect = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+            if (dateRect == null)
+                dateRect = new Rect(0, 0, 1, 1);
 
-            int dataWidth = rect.width() - 1;
-            int dataHeight = rect.height() - 1;
+            int dataWidth = dateRect.width() - 1;
+            int dataHeight = dateRect.height() - 1;
 
-            int left = (int) (Config.scanRect.getRect().top * dataWidth);
-            int top = (int) ((1f - Config.scanRect.getRect().right) * dataHeight);
-            int right = (int) (Config.scanRect.getRect().bottom * dataWidth);
-            int bottom = (int) ((1f - (Config.scanRect.getRect().left)) * dataHeight);
+            RectF cropRect = ScanHelper.copyRect(Config.scanRect.getRect());
+            cropRect.left += (cropRect.right - cropRect.left) / 4;
+            cropRect.right -= (cropRect.right - cropRect.left) / 4;
+            cropRect.top += (cropRect.bottom - cropRect.top) / 4;
+            cropRect.bottom -= (cropRect.bottom - cropRect.top) / 4;
+
+            int left = (int) (cropRect.top * dataWidth);
+            int top = (int) ((1f - cropRect.right) * dataHeight);
+            int right = (int) (cropRect.bottom * dataWidth);
+            int bottom = (int) ((1f - cropRect.left) * dataHeight);
             Rect realRect = new Rect(left, top, right, bottom);
             MeteringRectangle[] meteringRectangles = new MeteringRectangle[]{new MeteringRectangle(realRect, 1000)};
 

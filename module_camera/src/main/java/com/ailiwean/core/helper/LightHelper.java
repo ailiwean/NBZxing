@@ -16,7 +16,7 @@ public class LightHelper {
     static long lastRecordTime = System.currentTimeMillis();
 
     //扫描间隔
-    static int waitScanTime = 300;
+    static int waitScanTime = 500;
 
     static int lastAvDark = 0;
 

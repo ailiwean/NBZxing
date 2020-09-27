@@ -18,21 +18,21 @@ package com.google.android.cameraview;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
-import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ailiwean.core.Config;
+import com.ailiwean.core.Utils;
 
 @TargetApi(14)
 class TextureViewPreview extends PreviewImpl {
 
     private final TextureView mTextureView;
-
     private int mDisplayOrientation;
 
     TextureViewPreview(Context context, ViewGroup parent) {
@@ -65,6 +65,7 @@ class TextureViewPreview extends PreviewImpl {
 
             }
         });
+
     }
 
     @TargetApi(15)
@@ -74,36 +75,6 @@ class TextureViewPreview extends PreviewImpl {
         Config.scanRect.setDataY(heightData);
         if (getSurfaceTexture() != null)
             getSurfaceTexture().setDefaultBufferSize(widthData, heightData);
-        else {
-            TextureView.SurfaceTextureListener listener = mTextureView.getSurfaceTextureListener();
-            mTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
-                @Override
-                public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                    if (listener != null)
-                        listener.onSurfaceTextureAvailable(surface, width, height);
-                    getSurfaceTexture().setDefaultBufferSize(widthData, heightData);
-                }
-
-                @Override
-                public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-                    if (listener != null)
-                        listener.onSurfaceTextureSizeChanged(surface, width, height);
-                }
-
-                @Override
-                public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-                    if (listener != null)
-                        return listener.onSurfaceTextureDestroyed(surface);
-                    return false;
-                }
-
-                @Override
-                public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-                    if (listener != null)
-                        listener.onSurfaceTextureUpdated(surface);
-                }
-            });
-        }
     }
 
     @Override
@@ -138,11 +109,16 @@ class TextureViewPreview extends PreviewImpl {
     }
 
     /**
-     * Configures the transform matrix for TextureView based on {@link #mDisplayOrientation} and
+     * Configures the transform matrix for TextureView based on {@link Config} and
      * the surface size.
      */
     void configureTransform() {
         Matrix matrix = new Matrix();
+
+        if (Utils.getContext().getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE && mDisplayOrientation == 0)
+            mDisplayOrientation = Config.displayOrientation;
+
         if (mDisplayOrientation % 180 == 90) {
             final int width = getWidth();
             final int height = getHeight();

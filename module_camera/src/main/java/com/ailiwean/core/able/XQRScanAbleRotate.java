@@ -1,12 +1,18 @@
 package com.ailiwean.core.able;
 
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
+import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.Result;
+import com.ailiwean.core.zxing.core.common.HybridBinarizerFine;
+
+import static com.ailiwean.core.helper.ScanHelper.buildLuminanceSource;
+import static com.ailiwean.core.helper.ScanHelper.getScanByteRect;
 
 /**
  * @Package: com.ailiwean.core.able
@@ -23,7 +29,7 @@ public class XQRScanAbleRotate extends PixsValuesAble {
     XQRScanAbleRotate(Handler handler) {
         super(handler);
     }
-    
+
     @Override
     public void cusAction(byte[] data, int dataWidth, int dataHeight) {
         if (result != null && !isNative)
@@ -34,9 +40,10 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         dataWidth += dataHeight;
         dataHeight = dataWidth - dataHeight;
         dataWidth -= dataHeight;
-        //先生产扫码需要的BinaryBitmap
-        binaryBitmap = ScanHelper.byteToBinaryBitmap(data, dataWidth, dataHeight);
-        result = reader.decode(binaryBitmap);
+
+        Rect rect = getScanByteRect(dataWidth, dataHeight);
+        PlanarYUVLuminanceSource source = buildLuminanceSource(data, dataWidth, dataHeight, rect);
+        result = toLaunchParse(new HybridBinarizerFine(source));
         if (result != null) {
             sendMessage(Config.SCAN_RESULT, covertResultRotate(result));
         }

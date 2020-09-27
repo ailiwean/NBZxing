@@ -1,6 +1,5 @@
 package com.ailiwean.core.view
 
-import android.app.Activity
 import android.content.ContentUris
 import android.content.Context
 import android.database.Cursor
@@ -12,7 +11,6 @@ import android.net.Uri
 import android.os.*
 import android.provider.MediaStore
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import com.ailiwean.core.Config.*

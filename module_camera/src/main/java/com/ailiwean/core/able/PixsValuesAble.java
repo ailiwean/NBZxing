@@ -2,7 +2,6 @@ package com.ailiwean.core.able;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.ailiwean.core.zxing.CustomMultiFormatReader;
 import com.ailiwean.core.zxing.core.Binarizer;

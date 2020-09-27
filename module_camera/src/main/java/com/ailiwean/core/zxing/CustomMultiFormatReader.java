@@ -1,7 +1,5 @@
 package com.ailiwean.core.zxing;
 
-import android.util.Log;
-
 import com.ailiwean.core.Config;
 import com.ailiwean.core.zxing.core.BarcodeFormat;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
@@ -11,7 +9,6 @@ import com.ailiwean.core.zxing.core.Reader;
 import com.ailiwean.core.zxing.core.ReaderException;
 import com.ailiwean.core.zxing.core.Result;
 import com.ailiwean.core.zxing.core.aztec.AztecReader;
-import com.ailiwean.core.zxing.core.common.HybridBinarizer;
 import com.ailiwean.core.zxing.core.common.HybridBinarizerCrude;
 import com.ailiwean.core.zxing.core.common.HybridBinarizerFine;
 import com.ailiwean.core.zxing.core.datamatrix.DataMatrixReader;
@@ -20,7 +17,6 @@ import com.ailiwean.core.zxing.core.oned.MultiFormatOneDReader;
 import com.ailiwean.core.zxing.core.oned.OneDReader;
 import com.ailiwean.core.zxing.core.pdf417.PDF417Reader;
 import com.ailiwean.core.zxing.core.qrcode.QRCodeReader;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -164,10 +160,14 @@ public class CustomMultiFormatReader implements Reader {
         if (readers != null) {
             for (Reader reader : readers) {
                 try {
-                    if (!(image.getBinarizer() instanceof HybridBinarizerFine) &&
-                            reader instanceof OneDReader)
-                        continue;
-                    return reader.decode(image, hints);
+
+                    if (!(reader instanceof OneDReader))
+                        return reader.decode(image, hints);
+                    
+                    if (image.getBinarizer() instanceof HybridBinarizerFine ||
+                            image.getBinarizer() instanceof HybridBinarizerCrude)
+                        return reader.decode(image, hints);
+
                 } catch (ReaderException re) {
                     // continue
                 } catch (Exception ignored) {

@@ -45,10 +45,10 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     fun loadAbility() {
         ableList.clear()
         ableList.add(XQRScanCrudeAble(handlerHolder.get()))
-        ableList.add(XQRScanFineAble(handlerHolder.get()))
         ableList.add(XQRScanZoomAble(handlerHolder.get()))
         ableList.add(XQRScanAbleRotate(handlerHolder.get()))
         ableList.add(LighSolveAble(handlerHolder.get()))
+//        ableList.add(XQRScanFineAble(handlerHolder.get()))
 //        ableList.add(XQRScanAble(handler))
 //        ableList.add(GrayscaleStrengAble(handler))
 //        ableList.add(XQRScanFastAble(handler))
@@ -96,7 +96,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     override fun release() {
         ableList.forEach {
-             it.release()
+            it.release()
         }
         ableList.clear()
         server.quit()

@@ -31,7 +31,7 @@ public class WorkThreadServer {
                     new ThreadPoolExecutor.DiscardOldestPolicy());
         else executor = new RespectScalePool(
                 corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
-                RespectScaleQueue.create(maximumPoolSize / 3 * 2, maximumPoolSize / 3),
+                RespectScaleQueue.create(maximumPoolSize / 2, maximumPoolSize / 2),
                 new RespectScalePool.RespectScalePolicy());
     }
 

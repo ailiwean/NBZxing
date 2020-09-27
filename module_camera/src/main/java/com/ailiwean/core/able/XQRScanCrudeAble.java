@@ -1,7 +1,6 @@
 package com.ailiwean.core.able;
 
 import android.os.Handler;
-import android.os.Message;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;

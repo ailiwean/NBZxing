@@ -3,6 +3,9 @@ package com.ailiwean.core.zxing;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.ailiwean.core.Config;
+import com.ailiwean.core.helper.ScanHelper;
+
 /**
  * @Package: com.ailiwean.core.zxing
  * @ClassName: ScanRect
@@ -31,8 +34,20 @@ public class ScanRect {
      * @param r
      */
     public void setRect(RectF r) {
+        //默认适配的是90度，也就是手机垂直方向拿着
+        //朝左倾斜90
+        if (Config.is90() && r != null) {
+            r = ScanHelper.adapter90(r);
+        }
+        //朝右倾斜90
+        if (Config.is270() && r != null) {
+            r = ScanHelper.adapter270(r);
+        }
+
         this.r = r;
+
         scanR = null;
+        scanRR = null;
     }
 
     /***

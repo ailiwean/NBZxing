@@ -35,12 +35,29 @@ public class Config {
     //扫码区域
     public static ScanRect scanRect;
 
+
+    public static int displayOrientation;
+
     //灰度算法类路径
     public static final String GARY_SCALE_PATH = "com.ailiwean.module_grayscale.GrayScaleDispatch";
 
     public static void initConfig() {
         currentZoom = 0f;
+        displayOrientation = 0;
         scanRect = new ScanRect();
+    }
+
+    //屏幕方向
+    public static boolean is0() {
+        return displayOrientation == 0;
+    }
+
+    public static boolean is90() {
+        return displayOrientation == 90;
+    }
+
+    public static boolean is270() {
+        return displayOrientation == 270;
     }
 
 }
