@@ -215,6 +215,9 @@ class Camera2 extends CameraViewImpl {
     boolean start() {
         synchronized (Camera2.class) {
 
+            if (isCameraOpened())
+                return true;
+
             if (!chooseCameraIdByFacing())
                 return false;
 

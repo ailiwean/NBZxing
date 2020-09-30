@@ -16,15 +16,7 @@ public class WorkThreadServer {
     private ThreadPoolExecutor executor;
 
     private WorkThreadServer() {
-        boolean hasGrayScale;
-        try {
-            Class.forName(Config.GARY_SCALE_PATH);
-            hasGrayScale = true;
-        } catch (ClassNotFoundException e) {
-            hasGrayScale = false;
-        }
-
-        if (!hasGrayScale)
+        if (!Config.hasDepencidesScale())
             executor = new ThreadPoolExecutor(
                     corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
                     new ArrayBlockingQueue<>(maximumPoolSize, true),

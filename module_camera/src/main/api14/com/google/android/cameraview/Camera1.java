@@ -100,8 +100,10 @@ class Camera1 extends CameraViewImpl {
     @Override
     boolean start() {
         synchronized (Camera1.class) {
+
             if (isCameraOpened())
                 return true;
+
             chooseCamera();
 
             if (mCameraId == INVALID_CAMERA_ID) {

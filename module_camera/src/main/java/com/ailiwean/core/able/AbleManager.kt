@@ -34,11 +34,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     init {
         loadAbility()
-        try {
-            processClz = Class.forName(Config.GARY_SCALE_PATH)
-        } catch (e: Exception) {
-        }
-        if (processClz != null)
+        if (Config.hasDepencidesScale())
             processDispatch = processClz?.newInstance() as GrayScaleDispatch?
     }
 
