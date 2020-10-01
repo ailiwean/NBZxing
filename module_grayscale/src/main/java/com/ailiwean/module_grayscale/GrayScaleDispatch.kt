@@ -23,8 +23,9 @@ class GrayScaleDispatch : Dispatch {
         grayScaleProcess.add(OverBrightScale())
         grayScaleProcess.add(OverDarkScale())
         grayScaleProcess.add(RevGrayScale())
-        grayScaleProcess.add(InterruptGrayScale())
         grayScaleProcess.add(OverlyGrayScale())
+        grayScaleProcess.add(InterruptGrayScale())
+//        grayScaleProcess.add(ReductionAreaScale(this))
     }
 
     override fun dispatch(data: ByteArray?, width: Int, height: Int): ByteArray {
@@ -40,6 +41,6 @@ class GrayScaleDispatch : Dispatch {
 
         return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(
                 data, width, height, rect)
-
     }
+
 }

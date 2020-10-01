@@ -11,12 +11,6 @@ import android.graphics.Rect;
  */
 class InterruptGrayScale implements Dispatch {
 
-    OverDarkScale overDarkScale;
-
-    public InterruptGrayScale() {
-        overDarkScale = new OverDarkScale();
-    }
-
     //结构元素步长
     private int stepX = 3;
     private int stepY = 3;
@@ -41,9 +35,8 @@ class InterruptGrayScale implements Dispatch {
                 for (int y_ = step_h; y_ < step_h + stepY; y_++) {
                     for (int x_ = step_w; x_ < step_w + stepX; x_++) {
                         if ((newByte[y_ * width + x_] & 0xff) > avage)
-                            newByte[y_ * width + x_] = (byte) ((avage & 0xff) / 2);
-                        else newByte[y_ * width + x_] = (byte) ((newByte[y_ * width + x_] & 0xff)
-                                / 2);
+                            newByte[y_ * width + x_] = (byte) ((avage & 0xff));
+                        else newByte[y_ * width + x_] = (byte) (newByte[y_ * width + x_] & 0xff);
                     }
                 }
             }
@@ -73,13 +66,12 @@ class InterruptGrayScale implements Dispatch {
                 for (int y_ = step_h; y_ < step_h + stepY; y_++) {
                     for (int x_ = step_w; x_ < step_w + stepX; x_++) {
                         if ((newByte[y_ * width + x_] & 0xff) > avage)
-                            newByte[y_ * width + x_] = (byte) ((avage & 0xff) / 2);
-                        else newByte[y_ * width + x_] = (byte) ((newByte[y_ * width + x_] & 0xff)
-                                / 2);
+                            newByte[y_ * width + x_] = (byte) ((avage & 0xff));
+                        else newByte[y_ * width + x_] = (byte) (newByte[y_ * width + x_] & 0xff);
                     }
                 }
             }
         }
-        return overDarkScale.dispatch(data, width, height, rect);
+        return newByte;
     }
 }

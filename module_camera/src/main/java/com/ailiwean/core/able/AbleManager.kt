@@ -34,8 +34,10 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     init {
         loadAbility()
-        if (Config.hasDepencidesScale())
+        if (Config.hasDepencidesScale()) {
+            processClz = Class.forName(Config.GARY_SCALE_PATH)
             processDispatch = processClz?.newInstance() as GrayScaleDispatch?
+        }
     }
 
     fun loadAbility() {
@@ -46,7 +48,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         ableList.add(LighSolveAble(handlerHolder.get()))
 //        ableList.add(XQRScanFineAble(handlerHolder.get()))
 //        ableList.add(XQRScanAble(handler))
-//        ableList.add(GrayscaleStrengAble(handler))
+//        ableList.add(GrayscaleStrengAble(handlerHolder.get()))
 //        ableList.add(XQRScanFastAble(handler))
     }
 

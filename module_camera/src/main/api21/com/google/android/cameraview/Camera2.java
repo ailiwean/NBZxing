@@ -386,8 +386,10 @@ class Camera2 extends CameraViewImpl {
             if (!isCameraOpened())
                 return;
             try {
-                mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, CameraHelper.getZoomRect(mCameraCharacteristics, percent));
+                Rect showRect = CameraHelper.getZoomRect(mCameraCharacteristics, percent);
+                mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, showRect);
                 mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
+                rectMeteringWithFocus(showRect);
             } catch (Exception e) {
                 restart();
             }
@@ -899,6 +901,19 @@ class Camera2 extends CameraViewImpl {
 
     @Override
     protected void rectMeteringWithFocus() {
+
+        if (mCamera == null || mCameraCharacteristics == null)
+            return;
+
+        Integer maxNum = mCameraCharacteristics.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF);
+        if (maxNum == null || maxNum <= 0)
+            return;
+
+        Rect dateRect = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+        rectMeteringWithFocus(dateRect);
+    }
+
+    protected void rectMeteringWithFocus(Rect dateRect) {
         synchronized (Camera2.class) {
 
             if (mCamera == null || mCameraCharacteristics == null)
@@ -911,7 +926,6 @@ class Camera2 extends CameraViewImpl {
             if (Config.scanRect == null || Config.scanRect.getRect() == null)
                 return;
 
-            Rect dateRect = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
             if (dateRect == null)
                 dateRect = new Rect(0, 0, 1, 1);
 
@@ -924,10 +938,10 @@ class Camera2 extends CameraViewImpl {
             cropRect.top += (cropRect.bottom - cropRect.top) / 4;
             cropRect.bottom -= (cropRect.bottom - cropRect.top) / 4;
 
-            int left = (int) (cropRect.top * dataWidth);
-            int top = (int) ((1f - cropRect.right) * dataHeight);
-            int right = (int) (cropRect.bottom * dataWidth);
-            int bottom = (int) ((1f - cropRect.left) * dataHeight);
+            int left = (int) (cropRect.top * dataWidth) + dateRect.left;
+            int top = (int) ((1f - cropRect.right) * dataHeight) + dateRect.top;
+            int right = (int) (cropRect.bottom * dataWidth) + dateRect.left;
+            int bottom = (int) ((1f - cropRect.left) * dataHeight) + dateRect.top;
             Rect realRect = new Rect(left, top, right, bottom);
             MeteringRectangle[] meteringRectangles = new MeteringRectangle[]{new MeteringRectangle(realRect, 1000)};
 
@@ -940,4 +954,5 @@ class Camera2 extends CameraViewImpl {
             }
         }
     }
+
 }

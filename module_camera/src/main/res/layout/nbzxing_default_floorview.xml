@@ -19,18 +19,18 @@
         android:layout_height="400dp"
         android:layout_marginTop="70dp" />
 
-    <View
-        android:id="@+id/scanRectView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center" />
-
-
     <com.ailiwean.core.view.MaskView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:camera_clearById="@id/scanRectView"
         app:camera_maskBgColor="#5f000000" />
+
+    <View
+        android:id="@+id/scanRectView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center|top" />
+
 
     <com.ailiwean.core.view.ScanLightView
         android:id="@+id/lightView"
