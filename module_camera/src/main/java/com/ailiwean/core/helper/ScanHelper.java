@@ -80,6 +80,62 @@ public class ScanHelper {
 
 
     /***
+     * 放大矩形
+     */
+    public static RectF scaleRectF(RectF rectF, float ratio) {
+
+        RectF newRectF = copyRect(rectF);
+
+        newRectF.left = newRectF.left - (ratio - 1f) * newRectF.width() / 2;
+        newRectF.top = newRectF.top - (ratio - 1f) * newRectF.height() / 2;
+        newRectF.right = newRectF.right + (ratio - 1f) * newRectF.width() / 2;
+        newRectF.bottom = newRectF.bottom + (ratio - 1f) * newRectF.height() / 2;
+
+        if (newRectF.left < 0 || newRectF.left > 1)
+            newRectF.left = newRectF.left < 0 ? 0 : 1;
+
+        if (newRectF.top < 0 || newRectF.top > 1)
+            newRectF.top = newRectF.top < 0 ? 0 : 1;
+
+        if (newRectF.right < 0 || newRectF.right > 1)
+            newRectF.right = newRectF.right < 0 ? 0 : 1;
+
+        if (newRectF.bottom < 0 || newRectF.bottom > 1)
+            newRectF.bottom = newRectF.bottom < 0 ? 0 : 1;
+
+        return newRectF;
+    }
+
+
+    /***
+     * 放大矩形
+     */
+    public static Rect scaleRect(Rect rect, float ratio, int maxWidth, int maxHeight) {
+
+        Rect newRect = copyRect(rect);
+
+        newRect.left = (int) (newRect.left - (ratio - 1f) * newRect.width() / 2);
+        newRect.top = (int) (newRect.top - (ratio - 1f) * newRect.height() / 2);
+        newRect.right = (int) (newRect.right + (ratio - 1f) * newRect.width() / 2);
+        newRect.bottom = (int) (newRect.bottom + (ratio - 1f) * newRect.height() / 2);
+
+        if (newRect.left < 0 || newRect.left > maxWidth)
+            newRect.left = newRect.left < 0 ? 0 : maxWidth;
+
+        if (newRect.top < 0 || newRect.top > maxHeight)
+            newRect.top = newRect.top < 0 ? 0 : maxHeight;
+
+        if (newRect.right < 0 || newRect.right > maxWidth)
+            newRect.right = newRect.right < 0 ? 0 : maxWidth;
+
+        if (newRect.bottom < 0 || newRect.bottom > maxHeight)
+            newRect.bottom = newRect.bottom < 0 ? 0 : maxHeight;
+
+        return newRect;
+    }
+
+
+    /***
      * 二维码坐标转换屏幕坐标
      * @param point
      * @return

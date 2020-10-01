@@ -58,6 +58,6 @@ class ReductionAreaScale implements Dispatch {
 
             }
         }
-        return newByte;
+        return dispatch.dispatch(newByte, width, height, rect);
     }
 }

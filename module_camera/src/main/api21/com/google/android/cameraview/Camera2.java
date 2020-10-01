@@ -32,6 +32,7 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
 
@@ -42,7 +43,9 @@ import com.ailiwean.core.helper.CameraHelper;
 import com.ailiwean.core.helper.ScanHelper;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -943,8 +946,9 @@ class Camera2 extends CameraViewImpl {
             int right = (int) (cropRect.bottom * dataWidth) + dateRect.left;
             int bottom = (int) ((1f - cropRect.left) * dataHeight) + dateRect.top;
             Rect realRect = new Rect(left, top, right, bottom);
-            MeteringRectangle[] meteringRectangles = new MeteringRectangle[]{new MeteringRectangle(realRect, 1000)};
 
+            MeteringRectangle meteringRectangle = new MeteringRectangle(realRect, 1000);
+            MeteringRectangle[] meteringRectangles = new MeteringRectangle[]{meteringRectangle};
             try {
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AWB_REGIONS, meteringRectangles);
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, meteringRectangles);
@@ -952,6 +956,7 @@ class Camera2 extends CameraViewImpl {
                 mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
             } catch (Exception ignored) {
             }
+
         }
     }
 
