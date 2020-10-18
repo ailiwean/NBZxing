@@ -1,1 +1,3 @@
 -keep public class com.ailiwean.module_grayscale.GrayScaleDispatch
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}

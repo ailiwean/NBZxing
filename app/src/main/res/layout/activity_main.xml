@@ -12,5 +12,4 @@
 
     <include layout="@layout/tool_title" />
 
-
 </FrameLayout>

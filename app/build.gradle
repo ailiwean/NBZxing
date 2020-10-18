@@ -16,9 +16,9 @@ android {
     defaultConfig {
         applicationId "com.android.NBZxing"
         minSdkVersion 17
-        targetSdkVersion 29
-        versionCode 15
-        versionName "1.15"
+        targetSdkVersion 27
+        versionCode 17
+        versionName "1.21"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         compileOptions {
@@ -46,6 +46,7 @@ dependencies {
     api "androidx.appcompat:appcompat:1.1.0"
     implementation 'com.zhihu.android:matisse:0.5.3-beta3'
     api "com.github.bumptech.glide:glide:4.11.0"
+    api 'com.tencent.bugly:crashreport:3.2.3'
 //
 //    implementation 'com.github.ailiwean:NBZxing-Scale:0.0.3'
 //    implementation 'com.github.ailiwean:NBZxing:0.0.25'

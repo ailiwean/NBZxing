@@ -2,6 +2,7 @@ package com.android.NBZxing
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -9,15 +10,25 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import com.zhihu.matisse.engine.impl.GlideEngine
 
-class MainActivity : AppCompatActivity() {
+class ScanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+//        requestWindowFeature(Window.FEATURE_NO_TITLE)
+//        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+//                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+//                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+//        }
         setContentView(R.layout.activity_main)
         findViewById<CusScanView>(R.id.zxingview)
                 .synchLifeStart(this)
@@ -28,10 +39,13 @@ class MainActivity : AppCompatActivity() {
 //                .commit();
     }
 
-    fun initView() {
+    companion object {
+        fun startSelf(context: Context) {
+            context.startActivity(Intent(context, ScanActivity::class.java))
+        }
+    }
 
-        findViewById<View>(R.id.vToolBar)
-                .setBackgroundColor(Color.parseColor("#2f000000"))
+    fun initView() {
 
         findViewById<TextView>(R.id.vTitle).text = "扫一扫"
 

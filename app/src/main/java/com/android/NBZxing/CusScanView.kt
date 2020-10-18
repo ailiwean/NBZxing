@@ -17,10 +17,6 @@ import com.google.android.cameraview.AspectRatio
  */
 class CusScanView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
 
-    init {
-        setAspectRatio(AspectRatio.of(16, 9))
-    }
-
     override fun resultBack(content: String) {
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
     }

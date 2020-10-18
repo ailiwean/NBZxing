@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
  * @Author:         SWY
  * @CreateDate:     2020/8/9 6:33 PM
  */
-class GrayScaleDispatch : Dispatch {
+object GrayScaleDispatch : Dispatch {
 
     private var grayScaleProcess = ArrayList<Dispatch>()
 
@@ -28,6 +28,10 @@ class GrayScaleDispatch : Dispatch {
         grayScaleProcess.add(ReductionAreaScale(this))
     }
 
+    fun getScaleList(): List<Dispatch> {
+        return grayScaleProcess
+    }
+    
     override fun dispatch(data: ByteArray?, width: Int, height: Int): ByteArray {
         return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(
                 data, width, height)

@@ -115,8 +115,9 @@ class TextureViewPreview extends PreviewImpl {
     void configureTransform() {
         Matrix matrix = new Matrix();
 
-        if (Utils.getContext().getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE && mDisplayOrientation == 0)
+        if (Utils.INSTANCE.getContext() != null &&
+                Utils.INSTANCE.getContext().getResources().getConfiguration().orientation ==
+                        Configuration.ORIENTATION_LANDSCAPE && mDisplayOrientation == 0)
             mDisplayOrientation = Config.displayOrientation;
 
         if (mDisplayOrientation % 180 == 90) {

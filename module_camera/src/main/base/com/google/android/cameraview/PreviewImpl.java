@@ -35,9 +35,9 @@ abstract class PreviewImpl {
 
     private Callback mCallback;
 
-    private int mWidth;
+    private volatile int mWidth;
 
-    private int mHeight;
+    private volatile int mHeight;
 
     void setCallback(Callback callback) {
         mCallback = callback;
@@ -86,7 +86,11 @@ abstract class PreviewImpl {
             getView().setTranslationX((float) -(width - v.getMeasuredWidth()) / 2);
         if (height > v.getMeasuredHeight())
             getView().setTranslationY((float) -(height - v.getMeasuredHeight()) / 2);
-        cameraHandler.getLooper().getThread().interrupt();
+
+        if (cameraHandler != null &&
+                cameraHandler.getLooper().getThread().getState() == Thread.State.TIMED_WAITING)
+            cameraHandler.getLooper().getThread().interrupt();
+
     }
 
     int getWidth() {
@@ -98,10 +102,12 @@ abstract class PreviewImpl {
     }
 
     /***
-     * 当相机测量出的不支持设定的， 则提供一个支持的参数
+     * 同步比例
      * @param aspectRatio
      */
     public void updateAspectRatio(AspectRatio aspectRatio) {
+        mWidth = 0;
+        mHeight = 0;
         if (getView().getParent() instanceof CameraView) {
             ((CameraView) getView().getParent()).setAspectRatio(aspectRatio);
         }
