@@ -96,13 +96,11 @@ class Camera2 extends CameraViewImpl {
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
-            restart();
             mCamera = null;
+            restart();
         }
 
     };
-
-    boolean isTrue;
 
     private final CameraCaptureSession.StateCallback mSessionCallback
             = new CameraCaptureSession.StateCallback() {
@@ -217,7 +215,6 @@ class Camera2 extends CameraViewImpl {
     @Override
     boolean start() {
         synchronized (Camera2.class) {
-
             if (isCameraOpened())
                 return true;
 
@@ -391,7 +388,6 @@ class Camera2 extends CameraViewImpl {
             try {
                 Rect showRect = CameraHelper.getZoomRect(mCameraCharacteristics, percent);
                 mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, showRect);
-                mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
                 rectMeteringWithFocus(showRect);
             } catch (Exception e) {
                 restart();
@@ -500,7 +496,7 @@ class Camera2 extends CameraViewImpl {
         }
 
         if (!mPreviewSizes.ratios().contains(mAspectRatio)) {
-            //扫码没有16：9则取4:3
+            //扫码没有设置的则取4:3
             mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
             //没有4：3则取最接近的
             if (!mPreviewSizes.ratios().contains(mAspectRatio)) {

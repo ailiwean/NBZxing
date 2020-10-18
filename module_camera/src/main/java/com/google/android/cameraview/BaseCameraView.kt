@@ -1,10 +1,6 @@
 package com.google.android.cameraview
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
@@ -36,7 +32,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         Utils.init(context)
         autoFocus = true
         adjustViewBounds = false
-        this.setAspectRatio(AspectRatio.of(4, 3))
         this.addCallback(object : Callback() {
 
             var hasFloorView = false
@@ -118,6 +113,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
                 }
                 if (isShoudCreateOpen) {
                     onCreate()
+                    onResume()
                     onCameraCreate()
                 } else {
                     onResume()
@@ -153,11 +149,11 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     private fun onCameraCreate() {
         if (!isShoudCreateOpen)
             return
-        if (checkPermissionCamera()) {
+        if (Utils.checkPermissionCamera(context)) {
             openCameraBefore()
             openCamera()
         } else {
-            requstPermission()
+            Utils.requstPermission(context)
         }
     }
 
@@ -165,7 +161,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         if (isShoudCreateOpen) {
             return
         }
-        if (checkPermissionCamera() && !isCameraOpened) {
+        if (Utils.checkPermissionCamera(context) && !isCameraOpened) {
             openCameraBefore()
             openCamera()
         }
@@ -242,37 +238,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
     override fun onDestroy() {
         cameraHandler.looper.quit()
-    }
-
-    fun checkPermissionCamera(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context.checkSelfPermission(
-                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-        } else {
-            return true
-        }
-    }
-
-    fun checkPermissionRW(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context.checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
-            context.checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
-        } else {
-            return true
-        }
-    }
-
-    fun requstPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            (context as? Activity)?.requestPermissions(arrayOf(Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-            ), 200)
-        }
     }
 
     /***

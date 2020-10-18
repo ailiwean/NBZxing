@@ -57,11 +57,12 @@ public class VibrateHelper {
              */
             soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
         }
-        voiceId = soundPool.load(Utils.getContext(), R.raw.scan, 1);
+        voiceId = soundPool.load(Utils.INSTANCE.getContext(), R.raw.scan, 1);
     }
 
     public static void playVibrate() {
-        RxVibrateTool.vibrateOnce(Utils.getContext(), VIBRATE_DURATION);
+        if (Utils.INSTANCE.getContext() != null)
+            RxVibrateTool.vibrateOnce(Utils.INSTANCE.getContext(), VIBRATE_DURATION);
     }
 
     /**

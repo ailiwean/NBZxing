@@ -7,6 +7,7 @@ import com.ailiwean.core.TypeRunnable
 import com.ailiwean.core.WorkThreadServer
 import com.ailiwean.core.helper.ScanHelper
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource
+import com.ailiwean.module_grayscale.Dispatch
 import com.ailiwean.module_grayscale.GrayScaleDispatch
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -23,8 +24,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     private var server: WorkThreadServer = WorkThreadServer.createInstance()
 
-    private var processClz: Class<out Any>? = null
-    private var processDispatch: GrayScaleDispatch? = null
+    private var processDispatch: Dispatch? = null
 
     private val grayProcessHandler by lazy {
         Handler(HandlerThread("GrayProcessThread")
@@ -35,8 +35,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     init {
         loadAbility()
         if (Config.hasDepencidesScale()) {
-            processClz = Class.forName(Config.GARY_SCALE_PATH)
-            processDispatch = processClz?.newInstance() as GrayScaleDispatch?
+            processDispatch = GrayScaleDispatch
         }
     }
 
@@ -62,7 +61,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     private fun grayscaleProcess(data: ByteArray, dataWidth: Int, dataHeight: Int) {
-        if (processClz == null)
+        if (processDispatch == null)
             return
         grayProcessHandler.removeCallbacksAndMessages(null)
         grayProcessHandler.post {
@@ -98,7 +97,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         }
         ableList.clear()
         server.quit()
-        if (processClz == null)
+        if (processDispatch == null)
             return
         grayProcessHandler.removeCallbacksAndMessages(null)
         grayProcessHandler.looper.quit()

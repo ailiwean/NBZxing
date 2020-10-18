@@ -34,7 +34,7 @@ public class ScanRect {
      * @param r
      */
     public void setRect(RectF r) {
-        //默认适配的是90度，也就是手机垂直方向拿着
+        //默认适配的是0度，也就是手机垂直方向拿着
         //朝左倾斜90
         if (Config.is90() && r != null) {
             r = ScanHelper.adapter90(r);

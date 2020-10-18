@@ -1,34 +1,26 @@
 package com.ailiwean.core.view
 
-import android.content.ContentUris
 import android.content.Context
-import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.graphics.PointF
-import android.net.Uri
-import android.os.*
-import android.provider.MediaStore
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Looper
+import android.os.Message
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import com.ailiwean.core.Config.*
 import com.ailiwean.core.Result
 import com.ailiwean.core.able.AbleManager
+import com.ailiwean.core.helper.ImgparseHelper
 import com.ailiwean.core.helper.VibrateHelper
-import com.ailiwean.core.zxing.BitmapLuminanceSource
-import com.ailiwean.core.zxing.CustomMultiFormatReader
 import com.ailiwean.core.zxing.ScanTypeConfig
-import com.ailiwean.core.zxing.core.BinaryBitmap
-import com.ailiwean.core.zxing.core.common.GlobalHistogramBinarizer
-import com.ailiwean.core.zxing.core.common.HybridBinarizer
 import com.google.android.cameraview.AspectRatio
 import com.google.android.cameraview.BaseCameraView
 import com.google.android.cameraview.CameraView
 import com.google.android.cameraview.R
 import kotlinx.android.synthetic.*
-import java.io.File
 import java.lang.ref.WeakReference
 
 /**
@@ -50,9 +42,6 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
 
         //使用后置相机
         facing = FACING_BACK
-
-        //设定相机数据选取比例
-        this.setAspectRatio(AspectRatio.of(16, 9))
 
         //配置扫码类型
         initScanType()
@@ -83,6 +72,11 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         val thread = HandlerThread("BusHandle")
         thread.start()
         BusHandler(this, thread.looper)
+    }
+
+    //设定相机数据选取比例
+    override fun provideAspectRatio(): AspectRatio {
+        return AspectRatio.of(16, 9)
     }
 
     /***
@@ -209,6 +203,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         }, {
             lightOperator(false)
         })
+        lightOperator(false)
         //扫码条开始播放动画
         scanBarView?.startScanAnimator()
         //重新装填AbleManager
@@ -258,28 +253,15 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     }
 
     /***
-     * File转Bitmap详见{@link #parseBitmap}
+     * File转Bitmap
      */
     protected fun parseFile(filePath: String) {
 
         proscribeCamera()
 
-        if (!checkPermissionRW())
-            return
-
-        val file = File(filePath)
-        if (!file.exists())
-            return
-
         busHandle.removeCallbacksAndMessages(null)
         busHandle.post {
-            val bitmap: Bitmap = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, getMediaUriFromPath(context, filePath)))
-                        .copy(Bitmap.Config.RGB_565, false)
-            } else
-                BitmapFactory.decodeFile(filePath))
-                    ?: return@post
-            parseBitmap(bitmap)
+            onParseResult(ImgparseHelper.parseFile(filePath))
         }
     }
 
@@ -291,63 +273,26 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
 
         proscribeCamera()
 
-        if (bitmap == null)
-            return
-
         busHandle.removeCallbacksAndMessages(null)
         busHandle.post {
-            bitmap.apply {
-                if (config != Bitmap.Config.RGB_565
-                        && config != Bitmap.Config.ARGB_8888) {
-                    if (isMutable)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            config = Bitmap.Config.RGB_565
-                        } else {
-                            copy(Bitmap.Config.RGB_565, false)
-                        }
-                    else
-                        copy(Bitmap.Config.RGB_565, false)
-                }
-                val source = BitmapLuminanceSource(this)
-                var result = CustomMultiFormatReader.getInstance()
-                        .decode(BinaryBitmap(GlobalHistogramBinarizer(source)))
-                if (result == null)
-                    result = CustomMultiFormatReader.getInstance()
-                            .decode(BinaryBitmap(HybridBinarizer(source)))
-                if (result != null) {
-                    mainHand.post {
-                        resultBackFile(result.text)
-                        scanSucHelper()
-                    }
-                } else {
-                    mainHand.post {
-                        resultBackFile("")
-                        unProscibeCamera()
-                    }
-                }
+            onParseResult(ImgparseHelper.parseBitmap(bitmap))
+        }
+    }
+
+    private fun onParseResult(result: com.ailiwean.core.zxing.core.Result?) {
+
+        if (result != null) {
+            mainHand.post {
+                resultBackFile(result.text)
+                scanSucHelper()
+            }
+        } else {
+            mainHand.post {
+                resultBackFile("")
+                unProscibeCamera()
             }
         }
     }
-
-    /***
-     * path转Uri兼容Android10
-     */
-    private fun getMediaUriFromPath(context: Context, path: String): Uri {
-        val mediaUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        val cursor: Cursor? = context.contentResolver.query(mediaUri,
-                null,
-                MediaStore.Images.Media.DISPLAY_NAME + "= ?", arrayOf(path.substring(path.lastIndexOf("/") + 1)),
-                null)
-        var uri: Uri? = null
-        cursor?.let {
-            it.moveToFirst()
-            uri = ContentUris.withAppendedId(mediaUri,
-                    it.getLong(it.getColumnIndex(MediaStore.Images.Media._ID)))
-        }
-        cursor?.close()
-        return uri ?: Uri.EMPTY
-    }
-
 
     /***
      * 提供扫码类型
@@ -359,7 +304,6 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     /***
      * 业务Handler
      */
-
     class BusHandler constructor(view: Callback, loop: Looper) : Handler(loop) {
         var hasResult = false
         var viewReference: WeakReference<Callback>? = null

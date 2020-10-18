@@ -46,6 +46,7 @@ public class ScanLightView extends FrameLayout implements ScanLightViewCallBack 
         tv = v.findViewById(R.id.light_text);
         addView(v);
         setOnClickListener(v1 -> toggle());
+        setVisibility(View.GONE);
     }
 
     public void toggle() {
@@ -70,7 +71,6 @@ public class ScanLightView extends FrameLayout implements ScanLightViewCallBack 
         iv.setImageDrawable(getContext().getResources().getDrawable(R.drawable.light_close));
 
     }
-
 
     @Override
     public void lightBrighter() {

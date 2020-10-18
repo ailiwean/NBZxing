@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.os.Build;
@@ -124,6 +125,7 @@ public class CameraView extends FrameLayout {
             mDisplayOrientationDetector = null;
             return;
         }
+        setBackgroundColor(Color.BLACK);
         // Internal setup
         mCallbacks = new CallbackBridge();
         if (Build.VERSION.SDK_INT < 21) {
@@ -137,12 +139,7 @@ public class CameraView extends FrameLayout {
                 R.style.Widget_CameraView);
         mAdjustViewBounds = a.getBoolean(R.styleable.CameraView_android_adjustViewBounds, false);
         setFacing(a.getInt(R.styleable.CameraView_facing, FACING_BACK));
-        String aspectRatio = a.getString(R.styleable.CameraView_aspectRatio);
-        if (aspectRatio != null) {
-            setAspectRatio(AspectRatio.parse(aspectRatio));
-        } else {
-            setAspectRatio(Constants.DEFAULT_ASPECT_RATIO);
-        }
+        setAspectRatio(provideAspectRatio());
         setAutoFocus(a.getBoolean(R.styleable.CameraView_autoFocus, true));
         setFlash(a.getInt(R.styleable.CameraView_flash, Constants.FLASH_AUTO));
         a.recycle();
@@ -451,6 +448,10 @@ public class CameraView extends FrameLayout {
     public int getFacing() {
         //noinspection WrongConstant
         return mImpl.getFacing();
+    }
+
+    protected AspectRatio provideAspectRatio() {
+        return Constants.DEFAULT_ASPECT_RATIO;
     }
 
     /**

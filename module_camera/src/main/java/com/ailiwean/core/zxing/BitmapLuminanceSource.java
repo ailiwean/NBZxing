@@ -8,19 +8,13 @@ import com.ailiwean.core.zxing.core.LuminanceSource;
 
 /***
  *  Created by SWY
- *  DATE 2019/6/3
- *
- *  author Vondear
- *  定义解析Bitmap LuminanceSource
- *
  */
 public class BitmapLuminanceSource extends LuminanceSource {
 
-    private byte bitmapPixels[];
+    private byte[] bitmapPixels;
 
     public BitmapLuminanceSource(Bitmap bitmap) {
         super(bitmap.getWidth(), bitmap.getHeight());
-        // 首先，要取得该图片的像素数组内容
         int[] data = new int[bitmap.getWidth() * bitmap.getHeight()];
         this.bitmapPixels = new byte[bitmap.getWidth() * bitmap.getHeight()];
         bitmap.getPixels(data, 0, getWidth(), 0, 0, getWidth(), getHeight());
