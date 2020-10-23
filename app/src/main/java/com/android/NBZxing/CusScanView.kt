@@ -38,7 +38,7 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
     }
 
     override fun provideAspectRatio(): AspectRatio {
-        return AspectRatio.of(1, 1)
+        return AspectRatio.of(16, 9)
     }
 
     override fun resultBackFile(content: String) {

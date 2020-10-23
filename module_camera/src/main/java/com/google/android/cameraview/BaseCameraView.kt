@@ -180,6 +180,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         if (isCameraOpened) {
             closeCameraBefore()
             openCameraBefore()
+            cameraHandler.removeCallbacksAndMessages(null)
             cameraHandler.post {
                 stop()
                 start()

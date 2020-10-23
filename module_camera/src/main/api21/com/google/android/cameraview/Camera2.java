@@ -174,7 +174,7 @@ class Camera2 extends CameraViewImpl {
 
     private CameraCharacteristics mCameraCharacteristics;
 
-    CameraDevice mCamera;
+    volatile CameraDevice mCamera;
 
     CameraCaptureSession mCaptureSession;
 
@@ -253,9 +253,7 @@ class Camera2 extends CameraViewImpl {
 
     @Override
     boolean isCameraOpened() {
-        synchronized (Camera2.class) {
-            return mCamera != null;
-        }
+        return mCamera != null;
     }
 
     @Override

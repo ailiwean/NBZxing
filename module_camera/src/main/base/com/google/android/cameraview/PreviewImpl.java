@@ -78,15 +78,16 @@ abstract class PreviewImpl {
         mWidth = width;
         mHeight = height;
         View v = (View) getView().getParent();
-        getView().setTranslationX(0);
-        getView().setTranslationY(0);
-        if (v == null)
-            return;
-        if (width > v.getMeasuredWidth())
-            getView().setTranslationX((float) -(width - v.getMeasuredWidth()) / 2);
-        if (height > v.getMeasuredHeight())
-            getView().setTranslationY((float) -(height - v.getMeasuredHeight()) / 2);
-
+        v.post(() -> {
+            getView().setTranslationX(0);
+            getView().setTranslationY(0);
+            if (v == null)
+                return;
+            if (width > v.getMeasuredWidth())
+                getView().setTranslationX((float) -(width - v.getMeasuredWidth()) / 2);
+            if (height > v.getMeasuredHeight())
+                getView().setTranslationY((float) -(height - v.getMeasuredHeight()) / 2);
+        });
         if (cameraHandler != null &&
                 cameraHandler.getLooper().getThread().getState() == Thread.State.TIMED_WAITING)
             cameraHandler.getLooper().getThread().interrupt();

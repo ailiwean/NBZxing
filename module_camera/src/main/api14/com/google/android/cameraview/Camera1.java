@@ -56,7 +56,7 @@ class Camera1 extends CameraViewImpl {
 
     private final AtomicBoolean isPictureCaptureInProgress = new AtomicBoolean(false);
 
-    Camera mCamera;
+    volatile Camera mCamera;
 
     private Camera.Parameters mCameraParameters;
 
@@ -158,9 +158,7 @@ class Camera1 extends CameraViewImpl {
 
     @Override
     boolean isCameraOpened() {
-        synchronized (Camera1.class) {
-            return mCamera != null;
-        }
+        return mCamera != null;
     }
 
     @Override
@@ -293,15 +291,17 @@ class Camera1 extends CameraViewImpl {
         if (mDisplayOrientation == displayOrientation) {
             return;
         }
-        mDisplayOrientation = displayOrientation;
-        try {
-            if (isCameraOpened()) {
-                mCameraParameters.setRotation(calcCameraRotation(displayOrientation));
-                mCamera.setParameters(mCameraParameters);
-                mCamera.setDisplayOrientation(calcDisplayOrientation(displayOrientation));
-            }
-        } catch (Exception ignored) {
-        }
+        if (mPreview != null)
+            mPreview.setDisplayOrientation(displayOrientation);
+//        mDisplayOrientation = displayOrientation;
+//        try {
+//            if (isCameraOpened()) {
+//                mCameraParameters.setRotation(calcCameraRotation(displayOrientation));
+//                mCamera.setParameters(mCameraParameters);
+//                mCamera.setDisplayOrientation(calcDisplayOrientation(displayOrientation));
+//            }
+//        } catch (Exception ignored) {
+//        }
     }
 
     @Override
@@ -477,8 +477,9 @@ class Camera1 extends CameraViewImpl {
 
     private void releaseCamera() {
         if (mCamera != null) {
-            mCamera.release();
+            Camera temp = mCamera;
             mCamera = null;
+            temp.release();
             mCallback.onCameraClosed();
         }
     }
@@ -606,7 +607,10 @@ class Camera1 extends CameraViewImpl {
             List<Camera.Area> areas = Collections.singletonList(new Camera.Area(realRect, 1000));
             mCameraParameters.setFocusAreas(areas);
             mCameraParameters.setMeteringAreas(areas);
-            mCamera.setParameters(mCameraParameters);
+            try {
+                mCamera.setParameters(mCameraParameters);
+            } catch (Exception ignored) {
+            }
         }
     }
 }
