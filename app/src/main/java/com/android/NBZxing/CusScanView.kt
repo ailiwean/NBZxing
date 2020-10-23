@@ -37,6 +37,10 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
         parseFile(string)
     }
 
+    override fun provideAspectRatio(): AspectRatio {
+        return AspectRatio.of(1, 1)
+    }
+
     override fun resultBackFile(content: String) {
         if (content.isEmpty())
             Toast.makeText(context, "未扫描到内容", Toast.LENGTH_SHORT).show()

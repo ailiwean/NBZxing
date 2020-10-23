@@ -32,7 +32,6 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
 
@@ -43,9 +42,7 @@ import com.ailiwean.core.helper.CameraHelper;
 import com.ailiwean.core.helper.ScanHelper;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -256,7 +253,9 @@ class Camera2 extends CameraViewImpl {
 
     @Override
     boolean isCameraOpened() {
-        return mCamera != null;
+        synchronized (Camera2.class) {
+            return mCamera != null;
+        }
     }
 
     @Override
@@ -480,9 +479,10 @@ class Camera2 extends CameraViewImpl {
         for (android.util.Size size : map.getOutputSizes(mPreview.getOutputClass())) {
             int width = size.getWidth();
             int height = size.getHeight();
-            if (width <= MAX_PREVIEW_WIDTH && height <= MAX_PREVIEW_HEIGHT) {
-                mPreviewSizes.add(new Size(width, height));
-            }
+//            if (width <= MAX_PREVIEW_WIDTH && height <= MAX_PREVIEW_HEIGHT) {
+//                mPreviewSizes.add(new Size(width, height));
+//            }
+            mPreviewSizes.add(new Size(width, height));
         }
 
         mPictureSizes.clear();

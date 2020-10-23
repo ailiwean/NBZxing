@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -171,6 +172,19 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         closeCameraBefore()
         closeCamera()
         isShoudCreateOpen = false
+    }
+
+    override fun setAspectRatio(ratio: AspectRatio) {
+        super.setAspectRatio(ratio)
+        //相机运行过程中切换比例
+        if (isCameraOpened) {
+            closeCameraBefore()
+            openCameraBefore()
+            cameraHandler.post {
+                stop()
+                start()
+            }
+        }
     }
 
     private val cameraHandler by lazy {

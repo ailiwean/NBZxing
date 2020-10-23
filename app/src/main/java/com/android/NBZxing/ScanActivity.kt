@@ -14,9 +14,11 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.cameraview.AspectRatio
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import com.zhihu.matisse.engine.impl.GlideEngine
+import kotlinx.android.synthetic.main.activity_main.*
 
 class ScanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,6 +103,15 @@ class ScanActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 200)
         }
+    }
+
+    var a = 0
+
+    fun change(view: View) {
+        if (a % 2 == 0)
+            zxingview.setAspectRatio(AspectRatio.of(1, 1))
+        else zxingview.setAspectRatio(AspectRatio.of(16, 9))
+        a++;
     }
 
 

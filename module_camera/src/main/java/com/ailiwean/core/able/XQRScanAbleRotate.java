@@ -42,6 +42,8 @@ public class XQRScanAbleRotate extends PixsValuesAble {
         dataWidth -= dataHeight;
 
         Rect rect = getScanByteRect(dataWidth, dataHeight);
+        if (dataWidth == dataHeight)
+            dataWidth--;
         PlanarYUVLuminanceSource source = buildLuminanceSource(data, dataWidth, dataHeight, rect);
         result = toLaunchParse(new HybridBinarizerFine(source));
         if (result != null) {

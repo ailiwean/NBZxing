@@ -158,7 +158,9 @@ class Camera1 extends CameraViewImpl {
 
     @Override
     boolean isCameraOpened() {
-        return mCamera != null;
+        synchronized (Camera1.class) {
+            return mCamera != null;
+        }
     }
 
     @Override

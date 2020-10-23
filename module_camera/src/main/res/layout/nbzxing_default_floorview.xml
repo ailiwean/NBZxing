@@ -29,6 +29,8 @@
         android:id="@+id/scanRectView"
         android:layout_width="200dp"
         android:layout_height="200dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginEnd="30dp"
         android:layout_gravity="center" />
 
 

@@ -21,15 +21,12 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.PointF;
 import android.graphics.RectF;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -128,12 +125,12 @@ public class CameraView extends FrameLayout {
         setBackgroundColor(Color.BLACK);
         // Internal setup
         mCallbacks = new CallbackBridge();
-        if (Build.VERSION.SDK_INT < 21) {
-            mImpl = new Camera1(mCallbacks);
-        } else {
-            mImpl = new Camera2(mCallbacks, context);
-        }
-//        mImpl = new Camera1(mCallbacks);
+//        if (Build.VERSION.SDK_INT < 21) {
+//            mImpl = new Camera1(mCallbacks);
+//        } else {
+//            mImpl = new Camera2(mCallbacks, context);
+//        }
+        mImpl = new Camera1(mCallbacks);
         // Attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView, defStyleAttr,
                 R.style.Widget_CameraView);
@@ -188,13 +185,14 @@ public class CameraView extends FrameLayout {
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
         AspectRatio ratio = getAspectRatio();
+        if (ratio == null)
+            return;
         if (getContext().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT) {
             Config.displayOrientation = 0;
             ratio = ratio.inverse();
         }
         assert ratio != null;
-        //当显示的宽高比，与相机输出的宽高比不同时
         //当实际略宽时, 调整高度保证与输出比例相同
         if (height < width * ratio.getY() / ratio.getX()) {
             mImpl.getView().measure(
@@ -242,7 +240,6 @@ public class CameraView extends FrameLayout {
         if (ratio == null)
             return;
 
-        //当实际略宽时, 调整高度保证与输出比例相同
         if (oriHeight < oriWidth * ratio.getY() / ratio.getX()) {
             int measureHeight = (int) (oriWidth * ratio.getY() / (float) ratio.getX());
             float expectRatio = (measureHeight - oriHeight) / 2f / measureHeight;
@@ -254,9 +251,7 @@ public class CameraView extends FrameLayout {
             Config.scanRect.setRect(r);
             Config.scanRect.setExtraX(0);
             Config.scanRect.setExtraY(measureHeight - oriHeight);
-        }
-        //当实际略高时，调整宽度保证与输出比例相同
-        else {
+        } else {
             int measureWidht = (int) (oriHeight * ratio.getX() / (float) ratio.getY());
             float expectRatio = (measureWidht - oriWidth) / 2f / measureWidht;
             float[] edgeRatio = findEdgeRatio(view, measureWidht, oriHeight);

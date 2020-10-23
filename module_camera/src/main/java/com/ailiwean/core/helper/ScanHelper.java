@@ -273,7 +273,7 @@ public class ScanHelper {
             RectF cropRect = Config.scanRect.getRect();
 
             //默认采集的数据
-            if (dataWidth > dataHeight) {
+            if (dataWidth >= dataHeight) {
                 if (Config.scanRect.getScanR() == null) {
                     Config.scanRect.setScanR(new Rect());
                     Config.scanRect.getScanR().left = (int) (cropRect.top * dataWidth);
