@@ -1,4 +1,4 @@
-package com.ailiwean.core.view;
+package com.ailiwean.core.view.style1;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ailiwean.core.view.ScanLightViewCallBack;
 import com.google.android.cameraview.R;
 
 /***

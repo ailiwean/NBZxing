@@ -1,5 +1,6 @@
-package com.ailiwean.core.view;
+package com.ailiwean.core.view.style1;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -25,7 +26,7 @@ import com.google.android.cameraview.R;
 public class MaskView extends View {
 
     private Paint paint;
-    private Rect clearRect;
+    private Rect clearRect = new Rect();
     private Rect[] drawRects;
     private float margin_left;
     private float margin_top;
@@ -70,9 +71,11 @@ public class MaskView extends View {
         paint.setStyle(Paint.Style.FILL);
     }
 
+
+    @SuppressLint("DrawAllocation")
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         post(() -> {
             ViewGroup viewGroup = (ViewGroup) getParent();
             View parseRectView = viewGroup.findViewById(id);
@@ -83,17 +86,18 @@ public class MaskView extends View {
                 int[] parent_screen = new int[2];
                 viewGroup.getLocationInWindow(parent_screen);
 
-                clearRect = new Rect(
-                        parse_screen[0] - parent_screen[0],
-                        parse_screen[1] - parent_screen[1],
-                        parse_screen[0] - parent_screen[0] + parseRectView.getMeasuredWidth(),
-                        parse_screen[1] - parent_screen[1] + parseRectView.getMeasuredHeight());
+                clearRect.left = parse_screen[0] - parent_screen[0];
+                clearRect.top = parse_screen[1] - parent_screen[1];
+                clearRect.right = parse_screen[0] - parent_screen[0] + parseRectView.getMeasuredWidth();
+                clearRect.bottom = parse_screen[1] - parent_screen[1] + parseRectView.getMeasuredHeight();
+
             } else {
-                clearRect = new Rect(
-                        (int) margin_left,
-                        (int) margin_top,
-                        (int) (getMeasuredWidth() - margin_right),
-                        (int) (getMeasuredHeight() - margin_bottom));
+
+                clearRect.left = (int) margin_left;
+                clearRect.top = (int) margin_top;
+                clearRect.right = (int) (getMeasuredWidth() - margin_right);
+                clearRect.bottom = (int) (getMeasuredHeight() - margin_bottom);
+
             }
             drawRects = clearRect2Rect();
             invalidate();

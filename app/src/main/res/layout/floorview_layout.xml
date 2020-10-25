@@ -6,20 +6,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.ailiwean.core.view.LocationView
+    <com.ailiwean.core.view.style1.LocationView
         android:id="@+id/locView"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:alpha="0.7"
         android:visibility="gone" />
 
-    <com.ailiwean.core.view.ScanBarView
+    <com.ailiwean.core.view.style1.ScanBarView
         android:id="@+id/scanBarView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_marginTop="70dp" />
 
-    <com.ailiwean.core.view.ScanLightView
+    <com.ailiwean.core.view.style1.ScanLightView
         android:id="@+id/lightView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:layout_margin="5dp"
         android:background="@drawable/frame_foreground" />
 
-    <com.ailiwean.core.view.MaskView
+    <com.ailiwean.core.view.style1.MaskView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:camera_clearById="@id/scanRectView"

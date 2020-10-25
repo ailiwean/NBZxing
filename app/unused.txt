@@ -750,7 +750,7 @@ androidx.lifecycle.Lifecycling
     private void <init>()
     private static final int REFLECTIVE_CALLBACK
     private static final int GENERATED_CALLBACK
-com.ailiwean.core.view.LocationView
+com.ailiwean.core.view.style1.LocationView
     public android.view.View _$_findCachedViewById(int)
     public void _$_clearFindViewByIdCache()
     private java.util.HashMap _$_findViewCache
@@ -4584,7 +4584,7 @@ androidx.core.view.accessibility.AccessibilityViewCommand$MoveAtGranularityArgum
 androidx.core.view.inputmethod.InputConnectionCompat$OnCommitContentListener
 com.bumptech.glide.request.transition.ViewAnimationFactory$ConcreteViewTransitionAnimationFactory
 kotlin.sequences.TakeSequence$iterator$1
-com.ailiwean.core.view.ScanBarView
+com.ailiwean.core.view.style1.ScanBarView
     public android.view.View _$_findCachedViewById(int)
     public void _$_clearFindViewByIdCache()
     private java.util.HashMap _$_findViewCache

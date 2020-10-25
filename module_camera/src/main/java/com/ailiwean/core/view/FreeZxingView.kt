@@ -94,7 +94,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
                 SCAN_RESULT -> {
                     scanSucHelper()
                     if (message.obj is Result) {
-                        showQRLoc((message.obj as Result).pointF, message.obj.toString())
+                        showQRLoc(message.obj as Result)
                     }
                 }
 
@@ -176,9 +176,9 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     /***
      * 显示二维码位置, 动画播放完回调扫描结果
      */
-    fun showQRLoc(point: PointF, content: String) {
-        locView?.toLocation(point) {
-            resultBack(content)
+    fun showQRLoc(result: Result) {
+        locView?.toLocation(result) {
+            resultBack(result)
         }
     }
 
@@ -218,7 +218,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     /***
      * 扫码结果回调
      */
-    abstract fun resultBack(content: String)
+    abstract fun resultBack(content: Result)
 
     /***
      * 图片文件扫码

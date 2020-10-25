@@ -23,7 +23,7 @@ object GrayScaleDispatch : Dispatch {
         grayScaleProcess.add(OverBrightScale())
         grayScaleProcess.add(OverDarkScale())
         grayScaleProcess.add(RevGrayScale())
-        grayScaleProcess.add(OverlyGrayScale())
+//        grayScaleProcess.add(OverlyGrayScale())
         grayScaleProcess.add(InterruptGrayScale())
         grayScaleProcess.add(ReductionAreaScale(this))
     }
@@ -31,7 +31,7 @@ object GrayScaleDispatch : Dispatch {
     fun getScaleList(): List<Dispatch> {
         return grayScaleProcess
     }
-    
+
     override fun dispatch(data: ByteArray?, width: Int, height: Int): ByteArray {
         return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(
                 data, width, height)
@@ -40,7 +40,7 @@ object GrayScaleDispatch : Dispatch {
     override fun dispatch(data: ByteArray?, width: Int, height: Int, rect: Rect?): ByteArray {
 
         if (rect == null || (rect.left == 0 && rect.right == 0) ||
-                rect.top == 0 && rect.bottom == 0)
+                (rect.top == 0 && rect.bottom == 0))
             return dispatch(data, width, height)
 
         return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(

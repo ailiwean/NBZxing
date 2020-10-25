@@ -2,6 +2,8 @@ package com.ailiwean.core.view;
 
 import android.graphics.PointF;
 
+import com.ailiwean.core.Result;
+
 /**
  * @Package: com.ailiwean.core.view
  * @ClassName: LocationCallBack
@@ -12,9 +14,9 @@ import android.graphics.PointF;
 public interface ScanLocViewCallBack extends CameraStarLater {
 
     /***
-     * @param qrPoint 二维码中心位置坐标，相对于FreeZxingView
+     * @param result 扫码结果
      * @param runnable 扫码结果回调
      */
-    void toLocation(PointF qrPoint, Runnable runnable);
+    void toLocation(Result result, Runnable runnable);
 
 }

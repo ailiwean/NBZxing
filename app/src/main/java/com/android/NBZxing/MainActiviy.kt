@@ -3,6 +3,7 @@ package com.android.NBZxing
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_select.*
 
 /**
  * @Package:        com.android.NBZxing
@@ -19,7 +20,10 @@ class MainActiviy : AppCompatActivity() {
     }
 
     fun toClick(view: View) {
-        ScanActivity.startSelf(this)
+        if (view == style1)
+            ScanActivity.startSelf(this)
+        if (view == style2)
+            ScanActivity2.startSelf(this)
     }
 
 }

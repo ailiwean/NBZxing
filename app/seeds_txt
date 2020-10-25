@@ -90,7 +90,7 @@ androidx.appcompat.R$id: int accessibility_custom_action_10
 com.google.android.cameraview.R$styleable: int AppCompatTheme_listChoiceIndicatorSingleAnimated
 androidx.appcompat.R$layout: int select_dialog_multichoice_material
 com.ailiwean.core.view.FreeZxingView: com.ailiwean.core.view.ScanLightViewCallBack getLightView()
-com.ailiwean.core.view.ScanBarView
+com.ailiwean.core.view.style1.ScanBarView
 androidx.appcompat.R$color: int abc_color_highlight_material
 com.zhihu.matisse.R$style: int Widget_AppCompat_SearchView
 com.google.android.cameraview.R$styleable: int SearchView_queryBackground
@@ -331,7 +331,7 @@ com.google.android.cameraview.R$styleable: int AppCompatTextView_drawableTopComp
 com.google.android.cameraview.R$style: int RtlOverlay_Widget_AppCompat_SearchView_MagIcon
 com.zhihu.matisse.internal.ui.widget.RoundedRectangleImageView: RoundedRectangleImageView(android.content.Context,android.util.AttributeSet,int)
 androidx.appcompat.R$styleable: int MenuItem_android_icon
-com.ailiwean.core.view.ScanBarView: android.widget.ImageView getBarView()
+com.ailiwean.core.view.style1.ScanBarView: android.widget.ImageView getBarView()
 androidx.appcompat.R$styleable: int SearchView_submitBackground
 com.google.android.cameraview.R$style: int ThemeOverlay_AppCompat
 com.google.android.cameraview.R$style: int Widget_AppCompat_PopupWindow
@@ -650,7 +650,7 @@ androidx.appcompat.R$dimen: int abc_action_bar_default_padding_start_material
 androidx.appcompat.resources.R$styleable: int FontFamilyFont_android_font
 com.zhihu.matisse.R$color: int dracula_album_dropdown_count_text
 androidx.appcompat.R$attr: int ttcIndex
-com.ailiwean.core.view.ScanBarView: ScanBarView(android.content.Context,android.util.AttributeSet)
+com.ailiwean.core.view.style1.ScanBarView: ScanBarView(android.content.Context,android.util.AttributeSet)
 androidx.viewpager.widget.ViewPager: ViewPager(android.content.Context,android.util.AttributeSet)
 androidx.appcompat.R$styleable: int AppCompatTheme_windowFixedHeightMinor
 androidx.appcompat.R$styleable: int[] Toolbar
@@ -710,7 +710,7 @@ android.support.v4.app.RemoteActionCompatParcelizer: androidx.core.app.RemoteAct
 androidx.core.R$attr: int fontProviderFetchTimeout
 androidx.appcompat.R$styleable: int AnimatedStateListDrawableItem_android_id
 com.google.android.cameraview.R$styleable: int Toolbar_collapseContentDescription
-com.ailiwean.core.view.LocationView
+com.ailiwean.core.view.style1.LocationView
 androidx.appcompat.R$drawable: int abc_vector_test
 androidx.appcompat.R$id: int parentPanel
 androidx.appcompat.widget.ActionBarContextView: ActionBarContextView(android.content.Context,android.util.AttributeSet)
@@ -1049,7 +1049,7 @@ androidx.appcompat.R$styleable: int DrawerArrowToggle_color
 androidx.appcompat.R$id: int accessibility_custom_action_22
 com.zhihu.matisse.R$style: int Widget_AppCompat_ImageButton
 androidx.recyclerview.R$styleable: int CoordinatorLayout_Layout_layout_keyline
-com.ailiwean.core.view.MaskView: void setMaskingColor(int)
+com.ailiwean.core.view.style1.MaskView: void setMaskingColor(int)
 androidx.recyclerview.R$styleable: int FontFamilyFont_font
 com.google.android.cameraview.R$style: int Widget_AppCompat_RatingBar
 com.google.android.cameraview.R$layout: int abc_activity_chooser_view
@@ -1119,7 +1119,7 @@ com.zhihu.matisse.R$id: int accessibility_custom_action_29
 com.zhihu.matisse.R$style: int Base_V21_Theme_AppCompat
 androidx.core.R$id: int dialog_button
 com.google.android.cameraview.R$drawable: int abc_seekbar_thumb_material
-com.ailiwean.core.view.ScanBarView: ScanBarView(android.content.Context,android.util.AttributeSet,int,int,kotlin.jvm.internal.DefaultConstructorMarker)
+com.ailiwean.core.view.style1.ScanBarView: ScanBarView(android.content.Context,android.util.AttributeSet,int,int,kotlin.jvm.internal.DefaultConstructorMarker)
 com.google.android.cameraview.R$styleable: int AppCompatTheme_actionModeCloseButtonStyle
 androidx.appcompat.R$styleable: int AppCompatImageView_android_src
 com.zhihu.matisse.R$style: int Theme_AppCompat_DayNight_Dialog_MinWidth
@@ -1569,7 +1569,7 @@ com.zhihu.matisse.R$style: int Base_V26_Theme_AppCompat
 androidx.appcompat.widget.ViewStubCompat: void setOnInflateListener(androidx.appcompat.widget.ViewStubCompat$OnInflateListener)
 androidx.appcompat.R$styleable: int SwitchCompat_android_textOff
 androidx.activity.ComponentActivity$2
-com.ailiwean.core.view.MaskView: void setClearRect(android.graphics.Rect)
+com.ailiwean.core.view.style1.MaskView: void setClearRect(android.graphics.Rect)
 com.google.android.cameraview.R$style: int TextAppearance_AppCompat_Tooltip
 com.google.android.cameraview.R$style: int Base_Widget_AppCompat_Button
 com.google.android.cameraview.R$style: int Widget_AppCompat_Light_ListView_DropDown
@@ -1604,7 +1604,7 @@ com.zhihu.matisse.R$style: int Widget_AppCompat_Light_ActionMode_Inverse
 androidx.appcompat.R$attr: int textAppearanceListItemSmall
 androidx.appcompat.R$id: int custom
 com.google.android.cameraview.R$id: int action_bar_spinner
-com.ailiwean.core.view.NBZxingView: NBZxingView(android.content.Context,android.util.AttributeSet)
+com.ailiwean.core.view.style1.NBZxingView: NBZxingView(android.content.Context,android.util.AttributeSet)
 com.zhihu.matisse.R$style: int Widget_AppCompat_Light_ActivityChooserView
 androidx.appcompat.R$drawable: int abc_ratingbar_small_material
 com.zhihu.matisse.R$drawable: int abc_seekbar_tick_mark_material
@@ -1771,7 +1771,7 @@ androidx.appcompat.widget.ActivityChooserView$InnerLayout
 androidx.appcompat.R$styleable: int Spinner_android_entries
 com.google.android.cameraview.R$styleable: int[] ButtonBarLayout
 com.zhihu.matisse.R$attr: int splitTrack
-com.ailiwean.core.view.LocationView: LocationView(android.content.Context,android.util.AttributeSet,int)
+com.ailiwean.core.view.style1.LocationView: LocationView(android.content.Context,android.util.AttributeSet,int)
 androidx.appcompat.R$dimen: int abc_dropdownitem_text_padding_right
 com.ailiwean.core.view.FreeZxingView: com.ailiwean.core.view.ScanLocViewCallBack getLocView()
 com.zhihu.matisse.R$style: int TextAppearance_AppCompat_Widget_ActionMode_Title
@@ -2276,7 +2276,7 @@ com.zhihu.matisse.R$attr: int alertDialogCenterButtons
 com.zhihu.matisse.R$dimen: int abc_dialog_min_width_minor
 androidx.appcompat.R$id: int split_action_bar
 com.zhihu.matisse.R$color: int button_material_dark
-com.ailiwean.core.view.NBZxingView
+com.ailiwean.core.view.style1.NBZxingView
 androidx.vectordrawable.graphics.drawable.VectorDrawableCompat$VFullPath: int getStrokeColor()
 com.zhihu.matisse.R$attr: int colorControlNormal
 androidx.viewpager.widget.ViewPager: void setPageMarginDrawable(android.graphics.drawable.Drawable)
@@ -2765,7 +2765,7 @@ androidx.core.R$id: int tag_transition_group
 androidx.appcompat.R$style: int TextAppearance_AppCompat_Widget_ActionBar_Title_Inverse
 com.zhihu.matisse.R$style: int ThemeOverlay_AppCompat_Light
 androidx.appcompat.R$attr: int subMenuArrow
-com.ailiwean.core.view.LocationView: LocationView(android.content.Context,android.util.AttributeSet)
+com.ailiwean.core.view.style1.LocationView: LocationView(android.content.Context,android.util.AttributeSet)
 com.google.android.cameraview.R$style: int TextAppearance_AppCompat
 androidx.lifecycle.Lifecycle$Event: androidx.lifecycle.Lifecycle$Event ON_PAUSE
 androidx.appcompat.R$attr: int tooltipFrameBackground
@@ -3112,7 +3112,7 @@ com.zhihu.matisse.R$color: int zhihu_bottom_toolbar_preview_text
 androidx.appcompat.R$attr: int titleMarginEnd
 com.zhihu.matisse.R$id: int async
 com.zhihu.matisse.R$attr: int alphabeticModifiers
-com.ailiwean.core.view.MaskView: MaskView(android.content.Context,android.util.AttributeSet,int)
+com.ailiwean.core.view.style1.MaskView: MaskView(android.content.Context,android.util.AttributeSet,int)
 com.google.android.cameraview.R$id: int none
 androidx.recyclerview.R$styleable: int FontFamilyFont_android_ttcIndex
 com.zhihu.matisse.R$dimen: int abc_action_button_min_width_overflow_material
@@ -3152,7 +3152,7 @@ androidx.core.R$id: int forever
 com.ailiwean.core.zxing.core.common.CharacterSetECI: com.ailiwean.core.zxing.core.common.CharacterSetECI[] values()
 androidx.appcompat.widget.AppCompatButton: int getAutoSizeMinTextSize()
 com.google.android.cameraview.R$styleable: int ActionBar_navigationMode
-com.ailiwean.core.view.NBZxingView: NBZxingView(android.content.Context,android.util.AttributeSet,int,int,kotlin.jvm.internal.DefaultConstructorMarker)
+com.ailiwean.core.view.style1.NBZxingView: NBZxingView(android.content.Context,android.util.AttributeSet,int,int,kotlin.jvm.internal.DefaultConstructorMarker)
 com.google.android.cameraview.R$id: int redEye
 androidx.appcompat.R$id: int accessibility_custom_action_12
 com.google.android.cameraview.R$styleable: int FontFamilyFont_fontWeight
@@ -3447,7 +3447,7 @@ androidx.appcompat.R$color: int bright_foreground_inverse_material_dark
 com.zhihu.matisse.R$attr: int allowStacking
 com.google.android.cameraview.R$style: int Base_V22_Theme_AppCompat
 com.zhihu.matisse.R$attr: int album_emptyView_textColor
-com.ailiwean.core.view.MaskView: MaskView(android.content.Context)
+com.ailiwean.core.view.style1.MaskView: MaskView(android.content.Context)
 androidx.appcompat.R$attr: int actionModeCutDrawable
 androidx.recyclerview.R$dimen: int compat_button_inset_horizontal_material
 com.google.android.cameraview.R$styleable: int Toolbar_buttonGravity
@@ -3864,7 +3864,7 @@ com.zhihu.matisse.R$color: int background_material_dark
 com.zhihu.matisse.R$id: int container
 androidx.appcompat.widget.AppCompatTextView: AppCompatTextView(android.content.Context,android.util.AttributeSet,int)
 com.zhihu.matisse.R$attr: int drawableEndCompat
-com.ailiwean.core.view.NBZxingView: NBZxingView(android.content.Context,android.util.AttributeSet,int)
+com.ailiwean.core.view.style1.NBZxingView: NBZxingView(android.content.Context,android.util.AttributeSet,int)
 androidx.appcompat.R$dimen: int abc_text_size_subhead_material
 com.google.android.cameraview.R$style: int Base_Widget_AppCompat_DrawerArrowToggle
 com.google.android.cameraview.R$id: int image
@@ -4055,7 +4055,7 @@ androidx.core.R$attr: int fontProviderFetchStrategy
 androidx.appcompat.R$layout: int abc_action_mode_close_item_material
 com.google.android.cameraview.R$styleable: int AppCompatTheme_textAppearanceListItemSecondary
 androidx.appcompat.R$id: int accessibility_custom_action_25
-com.ailiwean.core.view.ScanLightView: ScanLightView(android.content.Context)
+com.ailiwean.core.view.style1.ScanLightView: ScanLightView(android.content.Context)
 androidx.appcompat.R$attr: int alertDialogCenterButtons
 androidx.appcompat.widget.Toolbar: java.lang.CharSequence getTitle()
 com.zhihu.matisse.R$dimen: int abc_text_size_small_material
@@ -4070,7 +4070,7 @@ com.zhihu.matisse.R$attr: int stackFromEnd
 androidx.appcompat.R$color: int error_color_material_light
 androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView: void setBackgroundDrawable(android.graphics.drawable.Drawable)
 com.google.android.cameraview.R$styleable: int[] SwitchCompat
-com.ailiwean.core.view.MaskView
+com.ailiwean.core.view.style1.MaskView
 com.google.android.cameraview.R$drawable: int abc_cab_background_internal_bg
 com.zhihu.matisse.R$id: int up
 androidx.appcompat.R$drawable: int abc_cab_background_top_material
@@ -4135,7 +4135,7 @@ com.google.android.cameraview.R$id: int accessibility_custom_action_9
 androidx.appcompat.R$styleable: int AppCompatTheme_windowFixedWidthMinor
 androidx.appcompat.R$drawable: int abc_text_select_handle_right_mtrl_light
 androidx.appcompat.widget.DropDownListView: void setSelector(android.graphics.drawable.Drawable)
-com.ailiwean.core.view.ScanLightView: ScanLightView(android.content.Context,android.util.AttributeSet,int)
+com.ailiwean.core.view.style1.ScanLightView: ScanLightView(android.content.Context,android.util.AttributeSet,int)
 androidx.appcompat.widget.LinearLayoutCompat: void setShowDividers(int)
 com.zhihu.matisse.R$string: int abc_searchview_description_clear
 com.google.android.cameraview.R$id: int screen
@@ -4294,7 +4294,7 @@ androidx.appcompat.widget.ViewStubCompat: int getInflatedId()
 com.google.android.cameraview.R$styleable: int ActionBar_contentInsetStartWithNavigation
 com.google.android.cameraview.R$styleable: int AppCompatTheme_buttonStyle
 com.google.android.cameraview.R$styleable: int[] StateListDrawable
-com.ailiwean.core.view.ScanBarView: ScanBarView(android.content.Context,android.util.AttributeSet,int)
+com.ailiwean.core.view.style1.ScanBarView: ScanBarView(android.content.Context,android.util.AttributeSet,int)
 androidx.appcompat.R$styleable: int Toolbar_android_gravity
 androidx.appcompat.widget.Toolbar: void setContentInsetEndWithActions(int)
 androidx.appcompat.R$dimen: int abc_text_size_display_3_material
@@ -4353,7 +4353,7 @@ com.google.android.cameraview.R$drawable: int abc_control_background_material
 androidx.recyclerview.widget.RecyclerView: void setClipToPadding(boolean)
 com.zhihu.matisse.R$id: int accessibility_custom_action_26
 com.google.android.cameraview.R$styleable: int AppCompatTheme_colorControlActivated
-com.ailiwean.core.view.LocationView: LocationView(android.content.Context,android.util.AttributeSet,int,int,kotlin.jvm.internal.DefaultConstructorMarker)
+com.ailiwean.core.view.style1.LocationView: LocationView(android.content.Context,android.util.AttributeSet,int,int,kotlin.jvm.internal.DefaultConstructorMarker)
 androidx.appcompat.widget.AppCompatCheckBox: void setButtonDrawable(android.graphics.drawable.Drawable)
 com.zhihu.matisse.R$attr: int album_thumbnail_placeholder
 com.google.android.cameraview.R$id: int action_mode_bar_stub
@@ -4621,7 +4621,7 @@ androidx.appcompat.widget.ButtonBarLayout: int getMinimumHeight()
 com.google.android.cameraview.R$style: int Base_AlertDialog_AppCompat_Light
 com.zhihu.matisse.R$dimen: int tooltip_corner_radius
 androidx.appcompat.R$color: int abc_search_url_text
-com.ailiwean.core.view.ScanLightView
+com.ailiwean.core.view.style1.ScanLightView
 androidx.appcompat.R$color: int notification_icon_bg_color
 com.zhihu.matisse.R$style: int Platform_V21_AppCompat_Light
 androidx.appcompat.widget.ButtonBarLayout
@@ -4748,7 +4748,7 @@ androidx.recyclerview.widget.RecyclerView: androidx.recyclerview.widget.Recycler
 com.zhihu.matisse.R$style: int TextAppearance_AppCompat_Widget_Button_Colored
 androidx.appcompat.R$color: int abc_secondary_text_material_light
 com.google.android.cameraview.R$styleable: int Toolbar_titleTextAppearance
-com.ailiwean.core.view.ScanLightView: ScanLightView(android.content.Context,android.util.AttributeSet)
+com.ailiwean.core.view.style1.ScanLightView: ScanLightView(android.content.Context,android.util.AttributeSet)
 com.zhihu.matisse.R$layout: int support_simple_spinner_dropdown_item
 androidx.appcompat.R$style: int TextAppearance_AppCompat_Large
 com.google.android.cameraview.R$id: int off
@@ -4886,7 +4886,7 @@ androidx.appcompat.R$styleable: int ActionBar_contentInsetLeft
 com.google.android.cameraview.R$styleable: int Toolbar_contentInsetStart
 com.zhihu.matisse.R$dimen: int notification_media_narrow_margin
 androidx.loader.app.LoaderManagerImpl$LoaderViewModel: LoaderManagerImpl$LoaderViewModel()
-com.ailiwean.core.view.LocationView: LocationView(android.content.Context)
+com.ailiwean.core.view.style1.LocationView: LocationView(android.content.Context)
 androidx.appcompat.R$styleable: int FontFamilyFont_android_fontVariationSettings
 com.google.android.cameraview.CameraView: void setAdjustViewBounds(boolean)
 com.google.android.cameraview.R$style: int TextAppearance_Widget_AppCompat_Toolbar_Title
@@ -4995,7 +4995,7 @@ androidx.appcompat.R$style: int TextAppearance_AppCompat_Widget_Button_Borderles
 com.zhihu.matisse.R$id: int submenuarrow
 com.google.android.cameraview.R$styleable: int GradientColor_android_gradientRadius
 com.google.android.cameraview.R$style: int Widget_AppCompat_ListPopupWindow
-com.ailiwean.core.view.NBZxingView: NBZxingView(android.content.Context)
+com.ailiwean.core.view.style1.NBZxingView: NBZxingView(android.content.Context)
 androidx.appcompat.R$attr: int backgroundTintMode
 com.google.android.cameraview.R$styleable: int View_paddingStart
 com.zhihu.matisse.R$layout: int abc_activity_chooser_view_list_item
@@ -5237,7 +5237,7 @@ com.zhihu.matisse.R$attr: int spinnerDropDownItemStyle
 androidx.core.R$id: int accessibility_custom_action_30
 com.ailiwean.core.view.LifeOwner
 com.zhihu.matisse.R$style: int Base_TextAppearance_AppCompat
-com.ailiwean.core.view.MaskView: MaskView(android.content.Context,android.util.AttributeSet)
+com.ailiwean.core.view.style1.MaskView: MaskView(android.content.Context,android.util.AttributeSet)
 com.zhihu.matisse.R$attr: int seekBarStyle
 androidx.appcompat.R$styleable: int AppCompatTheme_colorPrimary
 androidx.appcompat.widget.Toolbar: void setSubtitle(java.lang.CharSequence)
@@ -5251,7 +5251,7 @@ com.zhihu.matisse.R$id: int action_mode_bar_stub
 androidx.appcompat.R$color: int abc_primary_text_material_dark
 androidx.appcompat.widget.AppCompatButton: android.graphics.PorterDuff$Mode getSupportBackgroundTintMode()
 com.zhihu.matisse.R$style: int Widget_AppCompat_Light_ActionBar_TabText_Inverse
-com.ailiwean.core.view.ScanBarView: ScanBarView(android.content.Context)
+com.ailiwean.core.view.style1.ScanBarView: ScanBarView(android.content.Context)
 androidx.appcompat.widget.AppCompatSpinner: void setSupportBackgroundTintList(android.content.res.ColorStateList)
 androidx.appcompat.R$attr: int listPreferredItemPaddingStart
 com.google.android.cameraview.R$id: int tabMode

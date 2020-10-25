@@ -17,8 +17,8 @@ android {
         applicationId "com.android.NBZxing"
         minSdkVersion 17
         targetSdkVersion 27
-        versionCode 17
-        versionName "1.21"
+        versionCode 20
+        versionName "1.25"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         compileOptions {

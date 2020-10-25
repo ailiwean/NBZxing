@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.Toast
 import com.ailiwean.core.Result
-import com.ailiwean.core.view.style1.NBZxingView
+import com.ailiwean.core.view.style2.NBZxingView
 import com.ailiwean.core.zxing.ScanTypeConfig
 import com.google.android.cameraview.AspectRatio
 
@@ -16,7 +16,7 @@ import com.google.android.cameraview.AspectRatio
  * @Author:         SWY
  * @CreateDate:     2020/4/30 4:06 PM
  */
-class CusScanView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
+class CusScanView2 @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
 
     override fun resultBack(content: Result) {
         Toast.makeText(context, content.text, Toast.LENGTH_LONG).show()

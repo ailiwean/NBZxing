@@ -1,4 +1,4 @@
-package com.ailiwean.core.view
+package com.ailiwean.core.view.style1
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.ailiwean.core.Utils
+import com.ailiwean.core.view.ScanBarCallBack
 import com.google.android.cameraview.R
 
 /**
@@ -20,11 +21,13 @@ import com.google.android.cameraview.R
 class ScanBarView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
         FrameLayout(context, attributeSet, def), ScanBarCallBack {
 
-    private val ALPHA_LENGHT = 100f
+    private val BAR_HEIGHT = Utils.dp2px(20f)
+
+    private val ALPHA_LENGHT = 0.2f
 
     private val barView: ImageView by lazy {
         val view = ImageView(context)
-        view.layoutParams = ViewGroup.LayoutParams(-1, Utils.dp2px(50f))
+        view.layoutParams = ViewGroup.LayoutParams(-1, BAR_HEIGHT)
         view.setBackgroundResource(R.drawable.ic_scan_bar)
         view
     }
@@ -46,17 +49,19 @@ class ScanBarView @JvmOverloads constructor(context: Context, attributeSet: Attr
         if (measuredHeight == 0)
             return
 
+        val alpha_height = ALPHA_LENGHT * measuredHeight
+
         visibility = View.VISIBLE
-        animator = ValueAnimator.ofFloat(0f, measuredHeight.toFloat())
-                .setDuration(2000)
+        animator = ValueAnimator.ofFloat((-BAR_HEIGHT).toFloat(), measuredHeight.toFloat())
+                .setDuration(4000)
         animator?.addUpdateListener { it ->
             val values = it.animatedValue as Float
-            alpha = if (values <= ALPHA_LENGHT) {
-                values / ALPHA_LENGHT
+            barView.alpha = if (values <= alpha_height) {
+                values / alpha_height
             } else {
-                (measuredHeight - values) / ALPHA_LENGHT
+                (measuredHeight - values) / alpha_height
             }
-            translationY = values
+            barView.translationY = values
         }
         animator?.repeatCount = Int.MAX_VALUE - 1
         animator?.repeatMode = ValueAnimator.RESTART

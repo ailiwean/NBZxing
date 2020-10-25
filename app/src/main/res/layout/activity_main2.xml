@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.android.NBZxing.CusScanView
-        android:id="@+id/zxingview"
+    <com.android.NBZxing.CusScanView2
+        android:id="@+id/zxingview2"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

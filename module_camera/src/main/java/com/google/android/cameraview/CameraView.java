@@ -22,6 +22,7 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcel;
@@ -125,12 +126,12 @@ public class CameraView extends FrameLayout {
         setBackgroundColor(Color.BLACK);
         // Internal setup
         mCallbacks = new CallbackBridge();
-//        if (Build.VERSION.SDK_INT < 21) {
-//            mImpl = new Camera1(mCallbacks);
-//        } else {
-//            mImpl = new Camera2(mCallbacks, context);
-//        }
-        mImpl = new Camera1(mCallbacks);
+        if (Build.VERSION.SDK_INT < 21) {
+            mImpl = new Camera1(mCallbacks);
+        } else {
+            mImpl = new Camera2(mCallbacks, context);
+        }
+//        mImpl = new Camera1(mCallbacks);
         // Attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView, defStyleAttr,
                 R.style.Widget_CameraView);
@@ -228,6 +229,10 @@ public class CameraView extends FrameLayout {
         int oriWidth = getMeasuredWidth();
 
         AspectRatio ratio = getAspectRatio();
+
+        if (ratio == null)
+            return;
+
         if (getContext().getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_PORTRAIT) {
             Config.displayOrientation = 0;
@@ -236,10 +241,6 @@ public class CameraView extends FrameLayout {
             if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() != 0)
                 Config.displayOrientation = mDisplayOrientationDetector.getLastKnownDisplayOrientation();
         }
-
-        if (ratio == null)
-            return;
-
         if (oriHeight < oriWidth * ratio.getY() / ratio.getX()) {
             int measureHeight = (int) (oriWidth * ratio.getY() / (float) ratio.getX());
             float expectRatio = (measureHeight - oriHeight) / 2f / measureHeight;

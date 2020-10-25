@@ -112,7 +112,6 @@ public class LightGreySource extends LuminanceSource {
                 if (count == 0) {
                     continue;
                 }
-                avage /= stepX * stepY;
                 for (int y_ = step_h; y_ < step_h + stepY; y_++) {
                     for (int x_ = step_w; x_ < step_w + stepX; x_++) {
                         cropNv21[y_ * w + x_] = (byte) (min / 3 * 2);

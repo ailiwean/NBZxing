@@ -36,6 +36,10 @@
 
         <activity android:name=".ScanActivity" />
 
+
+        <activity android:name=".ScanActivity2" />
+
+
     </application>
 
 </manifest>

@@ -10,7 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.ailiwean.core.view.NBZxingView;
+import com.ailiwean.core.Result;
+import com.ailiwean.core.view.style1.NBZxingView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,8 +31,8 @@ public class ZxingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         NBZxingView = new NBZxingView(container.getContext()) {
             @Override
-            public void resultBack(@NotNull String content) {
-                Toast.makeText(container.getContext(), content, Toast.LENGTH_LONG).show();
+            public void resultBack(@NotNull Result content) {
+                Toast.makeText(getContext(), content.getText(), Toast.LENGTH_LONG).show();
             }
         };
         return NBZxingView;

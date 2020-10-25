@@ -35,8 +35,8 @@ public class LightHelper {
         lastRecordTime = currentTime;
         long pixelLightCount = 0L;
         long pixCount = 0L;
-        int step = 10;
-        for (int i = 0; i < dataWidth * dataheight; i += step) {
+        int step = 20;
+        for (int i = 0; i < data.length; i += step) {
             pixelLightCount += data[i] & 0xff;
             pixCount++;
         }

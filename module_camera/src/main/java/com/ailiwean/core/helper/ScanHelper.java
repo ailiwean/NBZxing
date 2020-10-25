@@ -140,21 +140,22 @@ public class ScanHelper {
      * @param point
      * @return
      */
-    public static PointF rotatePoint(ResultPoint[] point) {
+    public static PointF[] rotatePoint(ResultPoint[] point) {
 
         if (point == null || point.length == 0)
-            return new PointF(0, 0);
+            return null;
 
         if (Config.scanRect.getScanR() == null)
-            return new PointF(0, 0);
+            return null;
 
-        PointF avargPoint = new PointF();
-        for (ResultPoint item : point) {
-            avargPoint.x += Math.abs(item.getX());
-            avargPoint.y += Math.abs(item.getY());
-        }
-        avargPoint.x /= point.length;
-        avargPoint.y /= point.length;
+//        PointF avargPoint = new PointF();
+//        for (ResultPoint item : point) {
+//            avargPoint.x += Math.abs(item.getX());
+//            avargPoint.y += Math.abs(item.getY());
+//        }
+//        avargPoint.x /= point.length;
+//        avargPoint.y /= point.length;
+
         float preX = Config.scanRect.getPreX();
         float preY = Config.scanRect.getPreY();
         float extraX = Config.scanRect.getExtraX();
@@ -170,42 +171,42 @@ public class ScanHelper {
             aspeY = (preY + extraY) / (float) Config.scanRect.getDataX();
         }
 
-        float relatPointX, relatPointY;
+        PointF[] pointFS = new PointF[point.length];
 
-        if (Config.is90()) {
-            relatPointX = (Config.scanRect.getScanR().left + avargPoint.x) * aspeX - extraX / 2;
-            relatPointY = (Config.scanRect.getScanR().top + avargPoint.y) * aspeY - extraY / 2;
-        } else if (Config.is270()) {
-            relatPointX = preX - (Config.scanRect.getScanR().left + avargPoint.x) * aspeX + extraX / 2;
-            relatPointY = preY - (Config.scanRect.getScanR().top + avargPoint.y) * aspeY + extraY / 2;
-        } else {
-            relatPointX = preX + extraX / 2 - (Config.scanRect.getScanR().top + avargPoint.y) * aspeX;
-            relatPointY = (Config.scanRect.getScanR().left + avargPoint.x) * aspeY - extraY / 2;
+        for (int i = 0; i < point.length; i++) {
+
+            float relatPointX, relatPointY;
+
+            if (Config.is90()) {
+                relatPointX = (Config.scanRect.getScanR().left + point[i].getX()) * aspeX - extraX / 2;
+                relatPointY = (Config.scanRect.getScanR().top + point[i].getY()) * aspeY - extraY / 2;
+            } else if (Config.is270()) {
+                relatPointX = preX - (Config.scanRect.getScanR().left + point[i].getX()) * aspeX + extraX / 2;
+                relatPointY = preY - (Config.scanRect.getScanR().top + point[i].getY()) * aspeY + extraY / 2;
+            } else {
+                relatPointX = preX + extraX / 2 - (Config.scanRect.getScanR().top + point[i].getY()) * aspeX;
+                relatPointY = (Config.scanRect.getScanR().left + point[i].getX()) * aspeY - extraY / 2;
+            }
+
+            pointFS[i] = new PointF(relatPointX, relatPointY);
         }
 
-        return new PointF(relatPointX, relatPointY);
+        return pointFS;
     }
 
     /***
-     * 二维码坐标转换屏幕坐标
+     * 二维码坐标转换屏幕坐标(旋转后)
      * @param point
      * @return
      */
-    public static PointF rotatePointR(ResultPoint[] point) {
+    public static PointF[] rotatePointR(ResultPoint[] point) {
 
         if (point == null || point.length == 0)
-            return new PointF(0, 0);
+            return null;
 
         if (Config.scanRect.getScanRR() == null)
-            return new PointF(0, 0);
+            return null;
 
-        PointF avargPoint = new PointF();
-        for (ResultPoint item : point) {
-            avargPoint.x += Math.abs(item.getX());
-            avargPoint.y += Math.abs(item.getY());
-        }
-        avargPoint.x /= point.length;
-        avargPoint.y /= point.length;
         float preX = Config.scanRect.getPreX();
         float preY = Config.scanRect.getPreY();
         float extraX = Config.scanRect.getExtraX();
@@ -221,21 +222,93 @@ public class ScanHelper {
             aspeY = (preY + extraY) / (float) Config.scanRect.getDataX();
         }
 
-        float relatPointX, relatPointY;
+        PointF[] pointFS = new PointF[point.length];
 
-        if (Config.is90()) {
-            relatPointX = (Config.scanRect.getScanRR().top + avargPoint.y) * aspeX - extraX / 2;
-            relatPointY = (Config.scanRect.getScanRR().left - avargPoint.x +
-                    Config.scanRect.getScanRR().width()) * aspeY - extraY / 2;
-        } else if (Config.is270()) {
-            relatPointX = preX - (Config.scanRect.getScanRR().top + avargPoint.y) * aspeX + extraX / 2;
-            relatPointY = preY - (Config.scanRect.getScanRR().left - avargPoint.x +
-                    Config.scanRect.getScanRR().width()) * aspeY + extraY / 2;
-        } else {
-            relatPointX = (Config.scanRect.getScanRR().left + avargPoint.x) * aspeX - extraX / 2;
-            relatPointY = (Config.scanRect.getScanRR().top + avargPoint.y) * aspeY - extraY / 2;
+        for (int i = 0; i < point.length; i++) {
+
+            float relatPointX, relatPointY;
+
+            if (Config.is90()) {
+                relatPointX = (Config.scanRect.getScanRR().top + point[i].getY()) * aspeX - extraX / 2;
+                relatPointY = (Config.scanRect.getScanRR().left - point[i].getX() +
+                        Config.scanRect.getScanRR().width()) * aspeY - extraY / 2;
+            } else if (Config.is270()) {
+                relatPointX = preX - (Config.scanRect.getScanRR().top + point[i].getY()) * aspeX + extraX / 2;
+                relatPointY = preY - (Config.scanRect.getScanRR().left - point[i].getX() +
+                        Config.scanRect.getScanRR().width()) * aspeY + extraY / 2;
+            } else {
+                relatPointX = (Config.scanRect.getScanRR().left + point[i].getX()) * aspeX - extraX / 2;
+                relatPointY = (Config.scanRect.getScanRR().top + point[i].getY()) * aspeY - extraY / 2;
+            }
+
+            pointFS[i] = new PointF(relatPointX, relatPointY);
+
         }
-        return new PointF(relatPointX, relatPointY);
+
+        return pointFS;
+    }
+
+
+    /***
+     * 二维码边长转屏幕px
+     */
+    public static int calQrLenghtShow(ResultPoint[] point) {
+
+        if (point == null || point.length == 0)
+            return 0;
+
+        PointF avargPoint = new PointF();
+        for (ResultPoint item : point) {
+            avargPoint.x += Math.abs(item.getX());
+            avargPoint.y += Math.abs(item.getY());
+        }
+        avargPoint.x /= point.length;
+        avargPoint.y /= point.length;
+
+        int x = (int) Math.pow((avargPoint.x - point[0].getX()), 2);
+        int y = (int) Math.pow((avargPoint.y - point[0].getY()), 2);
+
+        float asp = Math.max(Config.scanRect.getPreX(), Config.scanRect.getPreY()) /
+                (float) Math.max(Config.scanRect.getDataX(), Config.scanRect.getDataY());
+
+        return (int) (Math.sqrt(x + y) / Math.sqrt(2) * 2 * asp);
+    }
+
+
+    /***
+     * 计算中心点
+     * @param point
+     * @return
+     */
+    public static PointF calCenterPointF(PointF[] point) {
+
+        if (point == null || point.length == 0)
+            return new PointF();
+
+        PointF avargPoint = new PointF();
+        for (PointF item : point) {
+            avargPoint.x += Math.abs(item.x);
+            avargPoint.y += Math.abs(item.y);
+        }
+        avargPoint.x /= point.length;
+        avargPoint.y /= point.length;
+
+        return avargPoint;
+    }
+
+
+    /***
+     * 二维码旋转角度(相对对角线与x轴45度夹角)
+     */
+    public static float calQrRotate(PointF[] point) {
+
+        PointF avargPoint = calCenterPointF(point);
+
+        int x = (int) Math.abs(avargPoint.x - point[0].x);
+        int y = (int) Math.abs(avargPoint.y - point[0].y);
+
+        float maxRotate = (float) ((float) Math.atan2(x, y) / 2 / Math.PI * 360);
+        return (float) (maxRotate - 45);
     }
 
 

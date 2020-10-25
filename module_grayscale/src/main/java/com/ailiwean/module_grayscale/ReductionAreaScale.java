@@ -12,11 +12,13 @@ import android.util.Log;
  */
 class ReductionAreaScale implements Dispatch {
 
-    GrayScaleDispatch dispatch;
+    GrayScaleDispatch grayScaleDispatch;
+
 
     ReductionAreaScale(GrayScaleDispatch dispatch) {
-        this.dispatch = dispatch;
+        this.grayScaleDispatch = dispatch;
     }
+
 
     @Override
     public byte[] dispatch(byte[] data, int width, int height) {
@@ -28,8 +30,7 @@ class ReductionAreaScale implements Dispatch {
         byte[] newByte = data.clone();
         byte[] emptyByte = new byte[rect.width() * rect.height()];
         int areaSize = 0;
-//        double step = Math.random() * 2 + 1;
-        double step = 3;
+        double step = Math.random() * 2 + 1;
 
         int reductWidth, reductHeight = 0;
 
@@ -58,6 +59,6 @@ class ReductionAreaScale implements Dispatch {
 
             }
         }
-        return dispatch.dispatch(newByte, width, height, rect);
+        return grayScaleDispatch.dispatch(newByte, width, height, rect);
     }
 }
