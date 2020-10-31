@@ -175,14 +175,16 @@ public abstract class OneDReader implements Reader {
                     // continue -- just couldn't decode this row
                 }
             }
+
             if (lastResult != null && currentResult != null &&
                     lastResult.getText().equals(currentResult.getText())) {
                 hitCount++;
-            } else {
+                lastResult = currentResult;
+            } else if (currentResult != null) {
                 hitCount = 0;
+                lastResult = currentResult;
             }
-            lastResult = currentResult;
-            if (hitCount > 2)
+            if (hitCount > 3)
                 return lastResult;
         }
 

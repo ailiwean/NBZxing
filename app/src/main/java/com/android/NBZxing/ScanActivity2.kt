@@ -78,7 +78,7 @@ class ScanActivity2 : AppCompatActivity() {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 val path = Matisse.obtainPathResult(data)[0]
-                findViewById<CusScanView>(R.id.zxingview).toParse(path)
+                findViewById<CusScanView2>(R.id.zxingview2).toParse(path)
             }
         }
     }

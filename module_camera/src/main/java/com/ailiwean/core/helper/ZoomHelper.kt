@@ -25,7 +25,7 @@ object ZoomHelper {
                 if (currentOnce == 0f)
                     currentOnce = Config.currentZoom
 
-                currentOnce += offset / 10000
+                currentOnce += offset / 8000
                 view.setZoom(currentOnce.let {
                     when {
                         it > 1f -> 1f
@@ -36,7 +36,7 @@ object ZoomHelper {
             }
 
             override fun onDoubleClick() {
-                view.setZoom(Config.currentZoom + 0.025f)
+                view.setZoom(Config.currentZoom + 0.03f)
             }
 
             override fun onStepEnd() {
