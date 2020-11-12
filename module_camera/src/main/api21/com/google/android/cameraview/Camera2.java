@@ -37,7 +37,6 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 
-import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.CameraHelper;
 import com.ailiwean.core.helper.ScanHelper;
 
@@ -896,8 +895,12 @@ class Camera2 extends CameraViewImpl {
 
     }
 
+    RectF rectF;
+
     @Override
-    protected void rectMeteringWithFocus() {
+    protected void rectMeteringWithFocus(RectF rectF) {
+
+        this.rectF = rectF;
 
         if (mCamera == null || mCameraCharacteristics == null)
             return;
@@ -920,7 +923,7 @@ class Camera2 extends CameraViewImpl {
             if (maxNum == null || maxNum <= 0)
                 return;
 
-            if (Config.scanRect == null || Config.scanRect.getRect() == null)
+            if (rectF == null)
                 return;
 
             if (dateRect == null)
@@ -929,7 +932,7 @@ class Camera2 extends CameraViewImpl {
             int dataWidth = dateRect.width() - 1;
             int dataHeight = dateRect.height() - 1;
 
-            RectF cropRect = ScanHelper.copyRect(Config.scanRect.getRect());
+            RectF cropRect = ScanHelper.copyRect(rectF);
             cropRect.left += (cropRect.right - cropRect.left) / 4;
             cropRect.right -= (cropRect.right - cropRect.left) / 4;
             cropRect.top += (cropRect.bottom - cropRect.top) / 4;

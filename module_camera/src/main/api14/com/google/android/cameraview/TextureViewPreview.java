@@ -71,10 +71,15 @@ class TextureViewPreview extends PreviewImpl {
     @TargetApi(15)
     @Override
     void setBufferSize(int widthData, int heightData) {
-        Config.scanRect.setDataX(widthData);
-        Config.scanRect.setDataY(heightData);
+
+        if (Config.scanRect != null) {
+            Config.scanRect.setDataX(widthData);
+            Config.scanRect.setDataY(heightData);
+        }
+
         if (getSurfaceTexture() != null)
             getSurfaceTexture().setDefaultBufferSize(widthData, heightData);
+
     }
 
     @Override

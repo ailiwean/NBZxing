@@ -2,6 +2,7 @@ package com.ailiwean.core.zxing;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.view.View;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
@@ -15,24 +16,43 @@ import com.ailiwean.core.helper.ScanHelper;
  */
 public class ScanRect {
 
+    /***
+     * 相机阅览过程中采集到的数据宽高
+     * 受预览比例{{@link com.google.android.cameraview.AspectRatio}} 与CameraView的宽高影响
+     */
     private int dataX;
     private int dataY;
 
+    /***
+     * 可预览到的控件宽高(即CameraView的宽高)
+     */
     private int preX;
     private int preY;
 
+    /***
+     * TextureView的宽高分别与CameraView宽高的差值
+     * 为了处理画面拉伸TextureView的宽高比例会同步{{@link #dataX}{ {@link #dataY}的宽高比例，
+     * 因此要么是宽要么是高往往会超出CameraView，这里主要记录该值
+     */
     private int extraX;
     private int extraY;
 
+    /***
+     *该矩形实现了剪裁比例同步，即将外部设定的View区域对应到CameraView/TxtureView上
+     *参照 {@link com.google.android.cameraview.CameraView#defineScanParseRect(View view)}
+     */
     private RectF r = new RectF();
-    private Rect scanR = null;
-    private Rect scanRR = null;
-
 
     /***
-     * 采集数据的解析区域
-     * @param r
+     * 将{{@link #r}对应到默认相机采集到数据上形成一个矩形
      */
+    private Rect scanR = null;
+
+    /***
+     * 将{{@link #r}对应到相机采集到数据旋转90°上形成一个矩形
+     */
+    private Rect scanRR = null;
+
     public void setRect(RectF r) {
         //默认适配的是0度，也就是手机垂直方向拿着
         //朝左倾斜90
@@ -50,10 +70,6 @@ public class ScanRect {
         scanRR = null;
     }
 
-    /***
-     * 预览区域对应像素区域
-     * @return
-     */
     public Rect getScanR() {
         return scanR;
     }
@@ -72,10 +88,6 @@ public class ScanRect {
         return this;
     }
 
-    /***
-     * @param x 相机返回数据x
-     * @param y 相机返回的数据y
-     */
     public void setData(int x, int y) {
         this.dataX = x;
         this.dataY = y;

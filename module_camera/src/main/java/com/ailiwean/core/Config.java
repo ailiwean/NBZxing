@@ -61,7 +61,7 @@ public class Config {
     }
 
     //灰度算法类路径
-    public static final String GARY_SCALE_PATH = "com.ailiwean.module_grayscale.GrayScaleDispatch";
+    public static String GARY_SCALE_PATH = "com.ailiwean.module_grayscale.GrayScaleDispatch";
 
     public static boolean hasDepencidesScale() {
         try {
@@ -71,6 +71,4 @@ public class Config {
         }
         return true;
     }
-
-
 }

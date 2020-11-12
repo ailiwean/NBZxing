@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -31,11 +30,10 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
     init {
         Utils.init(context)
+        Config.initConfig()
         autoFocus = true
         adjustViewBounds = false
         this.addCallback(object : Callback() {
-
-            var hasFloorView = false
 
             override fun onCameraOpened(cameraView: CameraView) {
                 mainHand.post {

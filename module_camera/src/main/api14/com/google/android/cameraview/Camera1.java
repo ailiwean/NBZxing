@@ -25,7 +25,6 @@ import android.view.SurfaceHolder;
 
 import androidx.collection.SparseArrayCompat;
 
-import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.CameraHelper;
 import com.ailiwean.core.helper.LightHelper;
 import com.ailiwean.core.helper.ScanHelper;
@@ -583,16 +582,16 @@ class Camera1 extends CameraViewImpl {
 
 
     @Override
-    protected void rectMeteringWithFocus() {
+    protected void rectMeteringWithFocus(RectF rectF) {
         synchronized (Camera1.class) {
             if (mCamera == null || mCamera.getParameters() == null)
                 return;
             if (mCamera.getParameters().getMaxNumMeteringAreas() == 0)
                 return;
-            if (Config.scanRect == null || Config.scanRect.getRect() == null)
+            if (rectF == null)
                 return;
 
-            RectF cropRect = ScanHelper.copyRect(Config.scanRect.getRect());
+            RectF cropRect = ScanHelper.copyRect(rectF);
             cropRect.left += (cropRect.right - cropRect.left) / 4;
             cropRect.right -= (cropRect.right - cropRect.left) / 4;
             cropRect.top += (cropRect.bottom - cropRect.top) / 4;
