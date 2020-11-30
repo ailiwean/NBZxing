@@ -18,7 +18,6 @@ package com.ailiwean.core.zxing.core;
 
 import com.ailiwean.core.zxing.core.common.HybridBinarizer;
 import com.ailiwean.core.zxing.core.common.HybridBinarizerCrude;
-import com.ailiwean.core.zxing.core.common.HybridBinarizerFine;
 
 /**
  * This object extends LuminanceSource around an array of YUV data returned from the camera driver,
@@ -34,12 +33,12 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
 
     private static final int THUMBNAIL_SCALE_FACTOR = 2;
 
-    private final byte[] yuvData;
-    private final byte[] matrix;
-    private final int dataWidth;
-    private final int dataHeight;
-    private final int left;
-    private final int top;
+    private byte[] yuvData;
+    private byte[] matrix;
+    private int dataWidth;
+    private int dataHeight;
+    private int left;
+    private int top;
 
     public PlanarYUVLuminanceSource(byte[] yuvData,
                                     int dataWidth,
@@ -183,37 +182,23 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
 
     Binarizer hybridBinary;
     Binarizer hybridBinaryCurde;
-    Binarizer hybridBinaryFine;
 
     public Binarizer getHybridBinary() {
         if (hybridBinary == null) {
-            synchronized (HybridBinarizer.class) {
-                if (hybridBinary == null)
-                    hybridBinary = new HybridBinarizer(this);
-            }
+                hybridBinary = new HybridBinarizer(this);
         }
         return hybridBinary;
     }
 
     public Binarizer getHybridBinaryCurde() {
         if (hybridBinaryCurde == null) {
-            synchronized (HybridBinarizerCrude.class) {
-                if (hybridBinaryCurde == null)
-                    hybridBinaryCurde = new HybridBinarizerCrude(this);
-            }
+            hybridBinaryCurde = new HybridBinarizerCrude(this);
         }
         return hybridBinaryCurde;
     }
 
-    public Binarizer getHybridBinaryFine() {
-        if (hybridBinaryFine == null) {
-            synchronized (HybridBinarizerFine.class) {
-                if (hybridBinaryFine == null)
-                    hybridBinaryFine = new HybridBinarizerFine(this);
-            }
-        }
-        return hybridBinaryFine;
+    public PlanarYUVLuminanceSourceRotate copyRotate() {
+        return new PlanarYUVLuminanceSourceRotate(matrix, getWidth(), getHeight());
     }
-
 
 }

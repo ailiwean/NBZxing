@@ -45,7 +45,6 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         ableList.add(XQRScanZoomAble(handlerHolder.get()))
         ableList.add(XQRScanAbleRotate(handlerHolder.get()))
         ableList.add(LighSolveAble(handlerHolder.get()))
-//        ableList.add(XQRScanFineAble(handlerHolder.get()))
 //        ableList.add(XQRScanAble(handler))
 //        ableList.add(GrayscaleStrengAble(handlerHolder.get()))
 //        ableList.add(XQRScanFastAble(handler))
@@ -74,10 +73,13 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     private fun executeToParse(data: ByteArray, dataWidth: Int, dataHeight: Int, isNative: Boolean, server: WorkThreadServer) {
         val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight) ?: return
         for (able in ableList) {
-            server.post(TypeRunnable.create(if (isNative) TypeRunnable.NORMAL else TypeRunnable.SCALE) {
-                able.cusAction(data, dataWidth, dataHeight, isNative)
-                able.needParseDeploy(source)
-            })
+            if (able.isCycleRun(isNative))
+                server.post(TypeRunnable.create(
+                        able.isImportant(isNative),
+                        if (isNative) TypeRunnable.NORMAL else TypeRunnable.SCALE) {
+                    able.cusAction(data, dataWidth, dataHeight, isNative)
+                    able.needParseDeploy(source, isNative)
+                })
         }
     }
 

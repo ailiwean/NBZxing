@@ -25,7 +25,7 @@ public class XQRScanCrudeAble extends PixsValuesAble {
     }
 
     @Override
-    protected void needParseDeploy(PlanarYUVLuminanceSource source) {
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
         if (result != null)
             return;
         result = toLaunchParse(source.getHybridBinaryCurde());

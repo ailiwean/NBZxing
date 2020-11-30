@@ -32,7 +32,11 @@ class RespectScalePool extends ThreadPoolExecutor {
     }
 
     /***
-     * Abandoning strategy for gray-scale tasks and ordinary tasks without interference
+     *     线程池任务拒绝策略：
+     *        目前会执行的两个线程
+     *               GrayProcessThread ： {@link com.ailiwean.core.able.AbleManager#grayProcessHandler$delegate}
+     *              CameraProcessThread ： {@link com.google.android.cameraview.BaseCameraView#cameraHandler}
+     *
      */
     public static class RespectScalePolicy extends DiscardOldestPolicy {
         @Override

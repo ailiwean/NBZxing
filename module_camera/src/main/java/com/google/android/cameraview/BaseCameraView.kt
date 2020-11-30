@@ -156,6 +156,10 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }
     }
 
+
+    /***
+     *  外部使用该方法启动相机
+     */
     protected fun onCameraResume() {
         if (isShoudCreateOpen) {
             return
@@ -166,12 +170,18 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }
     }
 
+    /***
+     *  外部使用该方法暂停相机
+     */
     protected fun onCameraPause() {
         closeCameraBefore()
         closeCamera()
         isShoudCreateOpen = false
     }
 
+    /***
+     *  外部使用该方法动态调整相机输出比例
+     */
     override fun setAspectRatio(ratio: AspectRatio) {
         super.setAspectRatio(ratio)
         //相机运行过程中切换比例
@@ -186,8 +196,13 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }
     }
 
+    /***
+     *  执行操作：
+     *        1 ： 启动关闭相机
+     *        2 ： 处理相机相关数据回调，拍照，YUV数据
+     */
     private val cameraHandler by lazy {
-        val handlerThread = HandlerThread(System.currentTimeMillis().toString())
+        val handlerThread = HandlerThread("CameraProcessThread")
         handlerThread.start()
         Handler(handlerThread.looper)
                 .apply {

@@ -29,8 +29,8 @@ public class XQRScanZoomAble extends XQRScanAble {
     }
 
     @Override
-    protected void needParseDeploy(PlanarYUVLuminanceSource source) {
-        super.needParseDeploy(source);
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
+        super.needParseDeploy(source, isNative);
         if (result != null)
             return;
         DetectorResult decoderResult = null;

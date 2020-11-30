@@ -21,8 +21,6 @@ import java.lang.ref.WeakReference;
 public abstract class PixsValuesAble {
 
     WeakReference<Handler> handlerHolder;
-    boolean isNative;
-
     CustomMultiFormatReader reader = CustomMultiFormatReader.getInstance();
 
     public PixsValuesAble(Handler handler) {
@@ -39,15 +37,13 @@ public abstract class PixsValuesAble {
     }
 
     protected void cusAction(byte[] data, int dataWidth, int dataHeight, boolean isNative) {
-        this.isNative = isNative;
-        cusAction(data, dataWidth, dataHeight);
     }
 
     /***
      * 需要解析二维码子类重写这个
      * @param source
      */
-    protected void needParseDeploy(PlanarYUVLuminanceSource source) {
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
     }
 
     Result toLaunchParse(Binarizer binarizer) {
@@ -66,5 +62,20 @@ public abstract class PixsValuesAble {
         handlerHolder = null;
     }
 
+    /***
+     * 是否为重要， 重要则不被舍弃
+     * @return
+     */
+    public boolean isImportant(boolean isNative) {
+        return false;
+    }
+
+    /***
+     *  根据时间控制周期
+     * @return
+     */
+    public boolean isCycleRun(boolean isNative) {
+        return true;
+    }
 
 }

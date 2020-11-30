@@ -51,6 +51,7 @@ public class ScanRect {
     /***
      * 将{{@link #r}对应到相机采集到数据旋转90°上形成一个矩形
      */
+    @Deprecated
     private Rect scanRR = null;
 
     public void setRect(RectF r) {
@@ -79,10 +80,12 @@ public class ScanRect {
         return this;
     }
 
+    @Deprecated
     public Rect getScanRR() {
         return scanRR;
     }
 
+    @Deprecated
     public ScanRect setScanRR(Rect scanRR) {
         this.scanRR = scanRR;
         return this;

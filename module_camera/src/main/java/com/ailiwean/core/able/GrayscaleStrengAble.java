@@ -28,12 +28,9 @@ class GrayscaleStrengAble extends PixsValuesAble {
     int i = -1;
 
     @Override
-    protected void needParseDeploy(PlanarYUVLuminanceSource source) {
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
         if (result != null)
             return;
-
-//        if (!isNative)
-//            return;
 
         i++;
         if (i % 2 != 1) {

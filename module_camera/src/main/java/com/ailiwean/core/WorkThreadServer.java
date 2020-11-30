@@ -18,21 +18,23 @@ public class WorkThreadServer {
     private WorkThreadServer() {
         if (!Config.hasDepencidesScale())
             executor = new ThreadPoolExecutor(
-                    corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(maximumPoolSize, true),
+                    corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS,
+                    new ArrayBlockingQueue<>(queueMaxSize, true),
                     new ThreadPoolExecutor.DiscardOldestPolicy());
         else executor = new RespectScalePool(
-                corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
-                RespectScaleQueue.create(maximumPoolSize / 2, maximumPoolSize / 2),
+                corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS,
+                RespectScaleQueue.create(queueMaxSize, queueMaxSize / 4 + 1),
                 new RespectScalePool.RespectScalePolicy());
     }
 
     //参数初始化
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     //核心线程数量大小
-    private static final int corePoolSize = Math.max(2, Math.min(CPU_COUNT - 1, 4));
+    private static final int corePoolSize = Math.max(2, CPU_COUNT / 2);
     //线程池最大容纳线程数
-    private static final int maximumPoolSize = CPU_COUNT * 2 + 1;
+    private static final int maximumPoolSize = corePoolSize;
+    //线程池队列长度
+    private static final int queueMaxSize = Math.max(4, maximumPoolSize);
     //线程空闲后的存活时长
     private static final int keepAliveTime = 30;
 

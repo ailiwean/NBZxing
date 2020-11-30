@@ -1,18 +1,13 @@
 package com.ailiwean.core.able;
 
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.os.Handler;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
-import com.ailiwean.core.zxing.core.BinaryBitmap;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.Result;
-import com.ailiwean.core.zxing.core.common.HybridBinarizerFine;
-
-import static com.ailiwean.core.helper.ScanHelper.buildLuminanceSource;
-import static com.ailiwean.core.helper.ScanHelper.getScanByteRect;
+import com.ailiwean.core.zxing.core.common.HybridBinarizer;
 
 /**
  * @Package: com.ailiwean.core.able
@@ -24,28 +19,14 @@ import static com.ailiwean.core.helper.ScanHelper.getScanByteRect;
 public class XQRScanAbleRotate extends PixsValuesAble {
 
     protected Result result;
-    BinaryBitmap binaryBitmap;
 
     XQRScanAbleRotate(Handler handler) {
         super(handler);
     }
 
     @Override
-    public void cusAction(byte[] data, int dataWidth, int dataHeight) {
-        if (result != null && !isNative)
-            return;
-        data = rotateByte(data, dataWidth, dataHeight);
-        if (data == null)
-            return;
-        dataWidth += dataHeight;
-        dataHeight = dataWidth - dataHeight;
-        dataWidth -= dataHeight;
-
-        Rect rect = getScanByteRect(dataWidth, dataHeight);
-        if (dataWidth == dataHeight)
-            dataWidth--;
-        PlanarYUVLuminanceSource source = buildLuminanceSource(data, dataWidth, dataHeight, rect);
-        result = toLaunchParse(new HybridBinarizerFine(source));
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
+        result = toLaunchParse(new HybridBinarizer(source.copyRotate()));
         if (result != null) {
             sendMessage(Config.SCAN_RESULT, covertResultRotate(result));
         }

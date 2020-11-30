@@ -2,7 +2,6 @@ package com.ailiwean.core.view
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.PointF
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
@@ -308,6 +307,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
             this@BusHandler.viewReference = WeakReference(view)
         }
 
+        @Synchronized
         override fun handleMessage(msg: Message?) {
             if (!hasResult)
                 return

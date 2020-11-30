@@ -17,6 +17,8 @@
 package com.ailiwean.core.zxing.core;
 
 
+import android.util.Log;
+
 /**
  * The purpose of this class hierarchy is to abstract different bitmap implementations across
  * platforms into a standard interface for requesting greyscale luminance values. The interface
