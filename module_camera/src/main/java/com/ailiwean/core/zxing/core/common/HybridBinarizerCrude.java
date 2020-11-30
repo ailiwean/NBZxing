@@ -17,8 +17,6 @@
 package com.ailiwean.core.zxing.core.common;
 
 
-import android.util.Log;
-
 import com.ailiwean.core.zxing.core.Binarizer;
 import com.ailiwean.core.zxing.core.LuminanceSource;
 import com.ailiwean.core.zxing.core.NotFoundException;
@@ -53,7 +51,6 @@ public final class HybridBinarizerCrude extends GlobalHistogramBinarizer {
 
     public HybridBinarizerCrude(LuminanceSource source) {
         super(source);
-        Log.e("random", BLOCK_SIZE_POWER + "");
     }
 
     private static int getRandom() {
