@@ -26,7 +26,7 @@ public class XQRScanAbleRotate extends PixsValuesAble {
 
     @Override
     protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
-        result = toLaunchParse(new HybridBinarizer(source.copyRotate()));
+        result = toLaunchParse(new HybridBinarizer(source.onlyCopyWarpRotate()));
         if (result != null) {
             sendMessage(Config.SCAN_RESULT, covertResultRotate(result));
         }

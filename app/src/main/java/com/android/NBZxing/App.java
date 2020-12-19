@@ -2,8 +2,6 @@ package com.android.NBZxing;
 
 import android.app.Application;
 
-import com.tencent.bugly.crashreport.CrashReport;
-
 
 /**
  * @Package: com.android.NBZxing
@@ -17,6 +15,14 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        CrashReport.initCrashReport(getApplicationContext(), "99de934384", true);
+//        CrashReport.initCrashReport(getApplicationContext(), "99de934384", true);
+
+//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//            @Override
+//            public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
+//
+//            }
+//        });
+
     }
 }

@@ -63,7 +63,7 @@ public abstract class PixsValuesAble {
     }
 
     /***
-     * 是否为重要， 重要则不被舍弃
+     * 是否为重要，重要则先不舍弃， 除非线程池已满
      * @return
      */
     public boolean isImportant(boolean isNative) {

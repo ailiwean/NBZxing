@@ -17,6 +17,12 @@ class InterruptGrayScale implements Dispatch {
 
     @Override
     public byte[] dispatch(byte[] data, int width, int height) {
+        int offset = (int) (Math.random() * 3) + 1;
+        Rect rect = new Rect(0, 0, width, height);
+        for (int i = 0; i < offset; i++) {
+            openOp(data, width, rect, i);
+            closeOp(data, width, rect, i);
+        }
         return data;
     }
 

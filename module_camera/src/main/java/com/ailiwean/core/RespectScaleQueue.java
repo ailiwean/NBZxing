@@ -67,20 +67,34 @@ class RespectScaleQueue<T extends TypeRunnable> implements BlockingQueue<T>, jav
         else return normalQueue.poll();
     }
 
-    public void poll(@IntRange(from = 0, to = 1) int type) {
-        if (type == TypeRunnable.NORMAL) {
-            T t = normalQueue.poll();
-            if (t != null && t.isImportant()) {
-                poll(type);
-                normalQueue.add(t);
-            }
-        } else {
-            T t = scaleQueue.poll();
-            if (t != null && t.isImportant()) {
-                poll(type);
-                scaleQueue.add(t);
-            }
+    public T poll(@IntRange(from = 0, to = 1) int type) {
+
+        switch (type) {
+            case TypeRunnable.NORMAL:
+                for (T t : normalQueue) {
+                    //舍弃非重要任务
+                    if (!t.isImportant()) {
+                        normalQueue.remove(t);
+                        return t;
+                    }
+                }
+                break;
+
+            case TypeRunnable.SCALE:
+                for (T t : scaleQueue) {
+                    //舍弃非重要任务
+                    if (!t.isImportant()) {
+                        scaleQueue.remove(t);
+                        return t;
+                    }
+                }
+                break;
         }
+        //找不到合适的则强制出队第一项
+        if (type == TypeRunnable.NORMAL) {
+            return normalQueue.poll();
+        }
+        return scaleQueue.poll();
     }
 
     int elementIndex = 0;

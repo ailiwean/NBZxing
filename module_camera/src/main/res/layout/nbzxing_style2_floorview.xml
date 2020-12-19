@@ -15,8 +15,8 @@
 
     <View
         android:id="@+id/scanRectView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_gravity="center" />
 
     <com.ailiwean.core.view.style1.ScanLightView

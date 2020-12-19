@@ -22,7 +22,7 @@ public class LighSolveAble extends PixsValuesAble {
     static long lastRecordTime = System.currentTimeMillis();
 
     //扫描间隔
-    static int waitScanTime = 500;
+    static int waitScanTime = 1000;
 
     public LighSolveAble(Handler handler) {
         super(handler);

@@ -17,15 +17,20 @@ public class TypeRunnable implements Runnable {
     private final boolean isImportant;
     private final Runnable runnable;
     final int type;
+    public String tagId;
 
-    private TypeRunnable(int type, boolean isImportant, Runnable runnable) {
+    private TypeRunnable(int type, boolean isImportant, Runnable runnable, String tagId) {
         this.type = type;
         this.runnable = runnable;
         this.isImportant = isImportant;
+        this.tagId = tagId;
     }
 
-    public static TypeRunnable create(boolean isImportant, @IntRange(from = 0, to = 1) int type, Runnable runnable) {
-        return new TypeRunnable(type, isImportant, runnable);
+    public static TypeRunnable create(boolean isImportant,
+                                      @IntRange(from = 0, to = 1) int type,
+                                      String tagId,
+                                      Runnable runnable) {
+        return new TypeRunnable(type, isImportant, runnable, tagId);
     }
 
     @Override
@@ -40,4 +45,5 @@ public class TypeRunnable implements Runnable {
     public boolean isImportant() {
         return isImportant;
     }
+
 }

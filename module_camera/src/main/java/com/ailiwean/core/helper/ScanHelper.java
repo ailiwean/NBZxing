@@ -320,7 +320,7 @@ public class ScanHelper {
             return null;
         }
         return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
-                rect.width(), rect.height(), false);
+                rect.width(), rect.height());
     }
 
     /***

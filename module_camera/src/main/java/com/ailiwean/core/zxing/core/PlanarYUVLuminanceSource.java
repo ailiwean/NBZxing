@@ -16,6 +16,8 @@
 
 package com.ailiwean.core.zxing.core;
 
+import android.text.TextUtils;
+
 import com.ailiwean.core.zxing.core.common.HybridBinarizer;
 import com.ailiwean.core.zxing.core.common.HybridBinarizerCrude;
 
@@ -31,9 +33,6 @@ import com.ailiwean.core.zxing.core.common.HybridBinarizerCrude;
  */
 public final class PlanarYUVLuminanceSource extends LuminanceSource {
 
-    private static final int THUMBNAIL_SCALE_FACTOR = 2;
-
-    private byte[] yuvData;
     private byte[] matrix;
     private int dataWidth;
     private int dataHeight;
@@ -46,29 +45,30 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
                                     int left,
                                     int top,
                                     int width,
-                                    int height,
-                                    boolean reverseHorizontal) {
+                                    int height) {
         super(width, height);
 
         if (left + width > dataWidth || top + height > dataHeight) {
-            this.yuvData = new byte[0];
-            this.matrix = this.yuvData;
             this.dataHeight = 0;
             this.dataWidth = 0;
             this.left = 0;
             this.top = 0;
             return;
         }
-
-        this.yuvData = yuvData;
         this.dataWidth = dataWidth;
         this.dataHeight = dataHeight;
         this.left = left;
         this.top = top;
-        if (reverseHorizontal) {
-            reverseHorizontal(width, height);
-        }
-        matrix = getGlobeMatrix();
+        matrix = getGlobeMatrix(yuvData);
+    }
+
+
+    public PlanarYUVLuminanceSource(
+            byte[] matrix,
+            int width,
+            int height) {
+        super(width, height);
+        this.matrix = matrix;
     }
 
     @Override
@@ -80,12 +80,12 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
         if (row == null || row.length < width) {
             row = new byte[width];
         }
-        int offset = (y + top) * dataWidth + left;
-        System.arraycopy(yuvData, offset, row, 0, width);
+        int offset = y * width;
+        System.arraycopy(matrix, offset, row, 0, width);
         return row;
     }
 
-    public byte[] getGlobeMatrix() {
+    public byte[] getGlobeMatrix(byte[] yuvData) {
         int width = getWidth();
         int height = getHeight();
 
@@ -126,58 +126,7 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
 
     @Override
     public LuminanceSource crop(int left, int top, int width, int height) {
-        return new PlanarYUVLuminanceSource(yuvData,
-                dataWidth,
-                dataHeight,
-                this.left + left,
-                this.top + top,
-                width,
-                height,
-                false);
-    }
-
-    public int[] renderThumbnail() {
-        int width = getWidth() / THUMBNAIL_SCALE_FACTOR;
-        int height = getHeight() / THUMBNAIL_SCALE_FACTOR;
-        int[] pixels = new int[width * height];
-        byte[] yuv = yuvData;
-        int inputOffset = top * dataWidth + left;
-
-        for (int y = 0; y < height; y++) {
-            int outputOffset = y * width;
-            for (int x = 0; x < width; x++) {
-                int grey = yuv[inputOffset + x * THUMBNAIL_SCALE_FACTOR] & 0xff;
-                pixels[outputOffset + x] = 0xFF000000 | (grey * 0x00010101);
-            }
-            inputOffset += dataWidth * THUMBNAIL_SCALE_FACTOR;
-        }
-        return pixels;
-    }
-
-    /**
-     * @return width of image from {@link #renderThumbnail()}
-     */
-    public int getThumbnailWidth() {
-        return getWidth() / THUMBNAIL_SCALE_FACTOR;
-    }
-
-    /**
-     * @return height of image from {@link #renderThumbnail()}
-     */
-    public int getThumbnailHeight() {
-        return getHeight() / THUMBNAIL_SCALE_FACTOR;
-    }
-
-    private void reverseHorizontal(int width, int height) {
-        byte[] yuvData = this.yuvData;
-        for (int y = 0, rowStart = top * dataWidth + left; y < height; y++, rowStart += dataWidth) {
-            int middle = rowStart + width / 2;
-            for (int x1 = rowStart, x2 = rowStart + width - 1; x1 < middle; x1++, x2--) {
-                byte temp = yuvData[x1];
-                yuvData[x1] = yuvData[x2];
-                yuvData[x2] = temp;
-            }
-        }
+        return this;
     }
 
     Binarizer hybridBinary;
@@ -185,7 +134,7 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
 
     public Binarizer getHybridBinary() {
         if (hybridBinary == null) {
-                hybridBinary = new HybridBinarizer(this);
+            hybridBinary = new HybridBinarizer(this);
         }
         return hybridBinary;
     }
@@ -197,8 +146,27 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
         return hybridBinaryCurde;
     }
 
-    public PlanarYUVLuminanceSourceRotate copyRotate() {
+    /***
+     * 拷贝所有
+     * @return
+     */
+    public PlanarYUVLuminanceSource copyAll() {
+        return new PlanarYUVLuminanceSource(matrix.clone(), getWidth(), getHeight());
+    }
+
+    /***
+     * 仅拷贝byte[]封装
+     * @return
+     */
+    public PlanarYUVLuminanceSourceRotate onlyCopyWarpRotate() {
         return new PlanarYUVLuminanceSourceRotate(matrix, getWidth(), getHeight());
     }
 
+    String tagId;
+
+    public String getTagId() {
+        if (TextUtils.isEmpty(tagId))
+            tagId = System.currentTimeMillis() + "";
+        return tagId;
+    }
 }
