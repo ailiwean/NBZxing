@@ -95,13 +95,13 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     private fun originProcess(source: PlanarYUVLuminanceSource, data: ByteArray, dataWidth: Int, dataHeight: Int) {
         ableList.forEach { able ->
             if (able.isCycleRun(true))
-                TypeRunnable.create(
+                server.post(TypeRunnable.create(
                         able.isImportant(true),
                         //区分类型
                         TypeRunnable.NORMAL, source.tagId) {
                     able.cusAction(data, dataWidth, dataHeight, true)
                     able.needParseDeploy(source, true)
-                }
+                })
         }
     }
 
