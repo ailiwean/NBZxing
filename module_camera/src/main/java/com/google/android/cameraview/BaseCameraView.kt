@@ -166,7 +166,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         }
         if (Utils.checkPermissionCamera(context) && !isCameraOpened) {
             openCameraBefore()
-            openCamera()
+            openCamera(if (cameraStartTime != 0L) cameraStartTime else 100L)
         }
     }
 
@@ -210,19 +210,24 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
                 }
     }
 
-    private fun openCamera() {
+    var cameraStartTime = 0L
+
+    private fun openCamera(delayValues: Long = 0L) {
         cameraHandler.removeCallbacksAndMessages(null)
-        cameraHandler.post {
-            if (!isProscribeCamera)
+        cameraHandler.postDelayed({
+            if (!isProscribeCamera) {
+                val var0 = System.currentTimeMillis()
                 start()
-        }
+                cameraStartTime = System.currentTimeMillis() - var0
+            }
+        }, delayValues)
     }
 
     private fun closeCamera() {
         cameraHandler.removeCallbacksAndMessages(null)
-        cameraHandler.post {
+        cameraHandler.postDelayed({
             stop()
-        }
+        }, cameraStartTime)
     }
 
     /***

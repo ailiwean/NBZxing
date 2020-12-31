@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.TypedValue
-import androidx.core.app.ActivityCompat.requestPermissions
 import java.io.ByteArrayOutputStream
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -33,7 +32,7 @@ object Utils {
     }
 
     fun getContext(): Context? {
-        return holder!!.get()
+        return holder?.get()
     }
 
     fun dp2px(dpValue: Float): Int {

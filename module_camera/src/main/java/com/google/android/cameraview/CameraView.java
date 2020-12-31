@@ -332,7 +332,6 @@ public class CameraView extends FrameLayout {
         return edgeRatio;
     }
 
-
     protected void provideCameraHandler(Handler handler) {
         this.cameraHandler = handler;
         if (preview != null)
@@ -400,7 +399,8 @@ public class CameraView extends FrameLayout {
      * {@link Activity}.
      */
     protected void stop() {
-        mImpl.stop();
+        if (isCameraOpened())
+            mImpl.stop();
     }
 
     /**
