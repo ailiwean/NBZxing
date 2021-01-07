@@ -12,11 +12,11 @@ android {
             keyPassword 'shuai1234'
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.android.NBZxing"
         minSdkVersion 17
-        targetSdkVersion 27
+        targetSdkVersion 30
         versionCode 21
         versionName "1.30"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

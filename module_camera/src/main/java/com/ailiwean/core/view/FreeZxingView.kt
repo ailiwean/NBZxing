@@ -248,7 +248,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     }
 
     /***
-     * File转Bitmap
+     * 解析File， 目前默认大小压缩一半并转换ARGB_8888
      */
     protected fun parseFile(filePath: String) {
 
@@ -307,7 +307,6 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
             this@BusHandler.viewReference = WeakReference(view)
         }
 
-        @Synchronized
         override fun handleMessage(msg: Message?) {
             if (!hasResult)
                 return

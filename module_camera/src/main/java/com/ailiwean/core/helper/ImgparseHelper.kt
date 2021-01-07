@@ -9,8 +9,10 @@ import com.ailiwean.core.zxing.BitmapLuminanceSource
 import com.ailiwean.core.zxing.CustomMultiFormatReader
 import com.ailiwean.core.zxing.core.BinaryBitmap
 import com.ailiwean.core.zxing.core.Result
+import com.ailiwean.core.zxing.core.common.GlobalHistogramBinarizer
 import com.ailiwean.core.zxing.core.common.HybridBinarizer
 import java.io.File
+
 
 /**
  * @Package:        com.ailiwean.core.helper
@@ -22,49 +24,35 @@ import java.io.File
 object ImgparseHelper {
 
     fun parseFile(filePath: String): Result? {
-
         val file = File(filePath)
         if (!file.exists())
             return null
-
         val bitmap: Bitmap = (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Utils.getContext()?.let { it ->
                 it.contentResolver.let { reso ->
                     ImageDecoder.createSource(reso, Utils.getMediaUriFromPath(it, filePath))
                 }.let {
-                    ImageDecoder.decodeBitmap(it)
-                            .copy(Bitmap.Config.RGB_565, false)
+                    ImageDecoder.decodeBitmap(it) { decoder, _, _ ->
+                        decoder.setTargetSampleSize(2)
+                    }
                 }
             }
         } else
-            BitmapFactory.decodeFile(filePath))
-                ?: return null
+            BitmapFactory.decodeFile(filePath, BitmapFactory.Options().apply {
+                inSampleSize = 2
+            })) ?: return null
 
         return parseBitmap(bitmap)
     }
 
     fun parseBitmap(bitmap: Bitmap?): Result? {
-
         if (bitmap == null)
             return null
-
-        bitmap.apply {
-            if (config != Bitmap.Config.RGB_565
-                    && config != Bitmap.Config.ARGB_8888) {
-                if (isMutable)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        config = Bitmap.Config.RGB_565
-                    } else {
-                        copy(Bitmap.Config.RGB_565, false)
-                    }
-                else
-                    copy(Bitmap.Config.RGB_565, false)
-            }
-            val source = BitmapLuminanceSource(this)
-            return CustomMultiFormatReader.getInstance()
-                    .decode(BinaryBitmap(HybridBinarizer(source)))
-        }
-
+        val source = BitmapLuminanceSource(bitmap)
+        return CustomMultiFormatReader.getInstance()
+                .decode(BinaryBitmap(GlobalHistogramBinarizer(source)))
+                ?: CustomMultiFormatReader.getInstance()
+                        .decode(BinaryBitmap(HybridBinarizer(source)))
     }
 
 }

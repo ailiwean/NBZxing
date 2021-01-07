@@ -1,5 +1,6 @@
 package com.ailiwean.core.able
 
+import android.graphics.Rect
 import android.os.Handler
 import android.os.HandlerThread
 import com.ailiwean.core.Config
@@ -51,8 +52,15 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 //        ableList.add(XQRScanFastAble(handler))
     }
 
+    /**
+     * 相机实时数据解析
+     */
     public override fun cusAction(data: ByteArray, dataWidth: Int, dataHeight: Int) {
-        executeToParseWay2(data, dataWidth, dataHeight)
+        executeToParseWay2(data, dataWidth, dataHeight, ScanHelper.getScanByteRect(dataWidth, dataHeight))
+    }
+
+    override fun cusActionNoCrop(data: ByteArray, dataWidth: Int, dataHeight: Int) {
+        executeToParseWay2(data, dataWidth, dataHeight, ScanHelper.getScanByteRect(dataWidth, dataHeight))
     }
 
     /***
@@ -110,9 +118,9 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
      * 方式一： 原始数据扫描后基于原始数据进行灰度变换后再处理
      *  这种方式占用内存最少，速度有点慢
      */
-    private fun executeToParseWay1(data: ByteArray, dataWidth: Int, dataHeight: Int) {
+    private fun executeToParseWay1(data: ByteArray, dataWidth: Int, dataHeight: Int, rect: Rect) {
         //生成全局YUVLuminanceSource
-        val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight) ?: return
+        val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight, rect) ?: return
         var typeRunList = ArrayList<TypeRunnable>()
         ableList.forEach { able ->
             if (able.isCycleRun(true))
@@ -141,9 +149,9 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
      * 方式二： 直接拷贝一份ByteArray同时处理原始数据与灰度变换后的数据
      * 该方式速度快，占用内存较高
      */
-    private fun executeToParseWay2(data: ByteArray, dataWidth: Int, dataHeight: Int) {
+    private fun executeToParseWay2(data: ByteArray, dataWidth: Int, dataHeight: Int, rect: Rect) {
         //生成全局YUVLuminanceSource
-        val oriSource = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight) ?: return
+        val oriSource = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight, rect) ?: return
         //执行原始数据解析
         originProcess(oriSource, data, dataWidth, dataHeight)
         //copy一份相同的数据后处理灰度
@@ -151,8 +159,8 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         grayscaleProcess(graySource)
     }
 
-    private fun generateGlobeYUVLuminanceSource(data: ByteArray?, dataWidth: Int, dataHeight: Int): PlanarYUVLuminanceSource? {
-        return ScanHelper.buildLuminanceSource(data, dataWidth, dataHeight, ScanHelper.getScanByteRect(dataWidth, dataHeight))
+    private fun generateGlobeYUVLuminanceSource(data: ByteArray?, dataWidth: Int, dataHeight: Int, rect: Rect): PlanarYUVLuminanceSource? {
+        return ScanHelper.buildLuminanceSource(data, dataWidth, dataHeight, rect)
     }
 
     companion object {

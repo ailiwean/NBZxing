@@ -6,6 +6,7 @@ import android.os.Message;
 import com.ailiwean.core.zxing.CustomMultiFormatReader;
 import com.ailiwean.core.zxing.core.Binarizer;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
+import com.ailiwean.core.zxing.core.LuminanceSource;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.Result;
 
@@ -37,6 +38,12 @@ public abstract class PixsValuesAble {
     }
 
     protected void cusAction(byte[] data, int dataWidth, int dataHeight, boolean isNative) {
+    }
+
+    /***
+     * 相册数据解析
+     */
+    protected void cusActionNoCrop(byte[] data, int dataWidth, int dataHeight) {
     }
 
     /***
