@@ -112,7 +112,6 @@ public class LightGreySource extends LuminanceSource {
                 if (count == 0) {
                     continue;
                 }
-                avage /= stepX * stepY;
                 for (int y_ = step_h; y_ < step_h + stepY; y_++) {
                     for (int x_ = step_w; x_ < step_w + stepX; x_++) {
                         cropNv21[y_ * w + x_] = (byte) (min / 3 * 2);
@@ -187,13 +186,13 @@ public class LightGreySource extends LuminanceSource {
 
     @Override
     public byte[] getMatrix() {
-        int length = getWidth() * getHeight();
-        toPut(delegate.getMatrix(), getWidth(), getHeight());
-        byte[] lightGrey = delegate.getMatrix().clone();
-        for (int i = 0; i < length; i++) {
-            lightGrey[i] = (byte) (lightGrey[i] * 2f);
-        }
-        return lightGrey;
+//        int length = getWidth() * getHeight();
+//        toPut(delegate.getMatrix(), getWidth(), getHeight());
+//        byte[] lightGrey = delegate.getMatrix().clone();
+//        for (int i = 0; i < length; i++) {
+//            lightGrey[i] = (byte) (lightGrey[i] * 2f);
+//        }
+        return delegate.getMatrix();
     }
 
     @Override

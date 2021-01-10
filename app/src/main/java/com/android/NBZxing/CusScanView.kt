@@ -3,7 +3,8 @@ package com.android.NBZxing
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.Toast
-import com.ailiwean.core.view.NBZxingView
+import com.ailiwean.core.Result
+import com.ailiwean.core.view.style1.NBZxingView
 import com.ailiwean.core.zxing.ScanTypeConfig
 import com.google.android.cameraview.AspectRatio
 
@@ -17,12 +18,8 @@ import com.google.android.cameraview.AspectRatio
  */
 class CusScanView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
 
-    init {
-        setAspectRatio(AspectRatio.of(16, 9))
-    }
-
-    override fun resultBack(content: String) {
-        Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
+    override fun resultBack(content: Result) {
+        Toast.makeText(context, content.text, Toast.LENGTH_LONG).show()
     }
 
     /***
@@ -39,6 +36,10 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
 
     fun toParse(string: String) {
         parseFile(string)
+    }
+
+    override fun provideAspectRatio(): AspectRatio {
+        return AspectRatio.of(16, 9)
     }
 
     override fun resultBackFile(content: String) {

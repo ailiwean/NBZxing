@@ -1,4 +1,4 @@
-package com.ailiwean.core.view;
+package com.ailiwean.core.view.style1;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ailiwean.core.view.ScanLightViewCallBack;
 import com.google.android.cameraview.R;
 
 /***
@@ -46,6 +47,7 @@ public class ScanLightView extends FrameLayout implements ScanLightViewCallBack 
         tv = v.findViewById(R.id.light_text);
         addView(v);
         setOnClickListener(v1 -> toggle());
+        setVisibility(View.GONE);
     }
 
     public void toggle() {
@@ -70,7 +72,6 @@ public class ScanLightView extends FrameLayout implements ScanLightViewCallBack 
         iv.setImageDrawable(getContext().getResources().getDrawable(R.drawable.light_close));
 
     }
-
 
     @Override
     public void lightBrighter() {

@@ -17,6 +17,7 @@
 package com.google.android.cameraview;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Display;
 import android.view.OrientationEventListener;
@@ -30,7 +31,9 @@ abstract class DisplayOrientationDetector {
 
     private final OrientationEventListener mOrientationEventListener;
 
-    /** Mapping from Surface.Rotation_n to degrees. */
+    /**
+     * Mapping from Surface.Rotation_n to degrees.
+     */
     static final SparseIntArray DISPLAY_ORIENTATIONS = new SparseIntArray();
 
     static {
@@ -86,11 +89,27 @@ abstract class DisplayOrientationDetector {
         onDisplayOrientationChanged(displayOrientation);
     }
 
+    public boolean isVertical() {
+        return mLastKnownDisplayOrientation % 180 != 0;
+    }
+
+    public boolean isHorizontal() {
+        return mLastKnownDisplayOrientation % 180 == 0;
+    }
+
     /**
      * Called when display orientation is changed.
      *
      * @param displayOrientation One of 0, 90, 180, and 270.
      */
+
+
     public abstract void onDisplayOrientationChanged(int displayOrientation);
+
+    private boolean isVisiable = true;
+
+    public void isVisiable(boolean isVisiable) {
+        this.isVisiable = isVisiable;
+    }
 
 }

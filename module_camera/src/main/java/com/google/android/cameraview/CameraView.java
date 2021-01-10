@@ -18,8 +18,9 @@ package com.google.android.cameraview;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.graphics.PointF;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Handler;
@@ -104,7 +105,7 @@ public class CameraView extends FrameLayout {
 
     private boolean mAdjustViewBounds;
 
-    private final DisplayOrientationDetector mDisplayOrientationDetector;
+    protected final DisplayOrientationDetector mDisplayOrientationDetector;
 
     public CameraView(Context context) {
         this(context, null);
@@ -122,6 +123,7 @@ public class CameraView extends FrameLayout {
             mDisplayOrientationDetector = null;
             return;
         }
+        setBackgroundColor(Color.BLACK);
         // Internal setup
         mCallbacks = new CallbackBridge();
         if (Build.VERSION.SDK_INT < 21) {
@@ -129,17 +131,13 @@ public class CameraView extends FrameLayout {
         } else {
             mImpl = new Camera2(mCallbacks, context);
         }
+//        mImpl = new Camera1(mCallbacks);
         // Attributes
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CameraView, defStyleAttr,
                 R.style.Widget_CameraView);
         mAdjustViewBounds = a.getBoolean(R.styleable.CameraView_android_adjustViewBounds, false);
         setFacing(a.getInt(R.styleable.CameraView_facing, FACING_BACK));
-        String aspectRatio = a.getString(R.styleable.CameraView_aspectRatio);
-        if (aspectRatio != null) {
-            setAspectRatio(AspectRatio.parse(aspectRatio));
-        } else {
-            setAspectRatio(Constants.DEFAULT_ASPECT_RATIO);
-        }
+        setAspectRatio(provideAspectRatio());
         setAutoFocus(a.getBoolean(R.styleable.CameraView_autoFocus, true));
         setFlash(a.getInt(R.styleable.CameraView_flash, Constants.FLASH_AUTO));
         a.recycle();
@@ -175,8 +173,6 @@ public class CameraView extends FrameLayout {
         super.onDetachedFromWindow();
     }
 
-    RectF r = new RectF();
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (isInEditMode()) {
@@ -186,89 +182,122 @@ public class CameraView extends FrameLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (mImpl.getView() == null)
             return;
-        // Measure the TextureView
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
+
         AspectRatio ratio = getAspectRatio();
-        if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {
+        if (ratio == null)
+            return;
+        if (getContext().getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
+            Config.displayOrientation = 0;
             ratio = ratio.inverse();
         }
-        assert ratio != null;
-        //当显示的宽高比，与相机输出的宽高比不同时
+
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+
         //当实际略宽时, 调整高度保证与输出比例相同
         if (height < width * ratio.getY() / ratio.getX()) {
+
+            int realHeight = (int) (width * ratio.getY() / (float) ratio.getX());
             mImpl.getView().measure(
                     MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(width * ratio.getY() / ratio.getX(),
-                            MeasureSpec.EXACTLY));
+                    MeasureSpec.makeMeasureSpec(realHeight, MeasureSpec.EXACTLY));
+
+            Config.scanRect.setExtraX(0);
+            Config.scanRect.setExtraY(realHeight - height);
         }
         //当实际略高时，调整宽度保证与输出比例相同
         else {
+
+            int realWidth = (int) (height * ratio.getX() / (float) ratio.getY());
             mImpl.getView().measure(
-                    MeasureSpec.makeMeasureSpec(height * ratio.getX() / ratio.getY(),
-                            MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(realWidth, MeasureSpec.EXACTLY),
                     MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
 
+            Config.scanRect.setExtraX(realWidth - width);
+            Config.scanRect.setExtraY(0);
         }
+
+        Config.scanRect.setPreX(getMeasuredWidth());
+        Config.scanRect.setPreY(getMeasuredHeight());
     }
+
+
+    /**
+     * 将View的所在的区域对应到相机采集到的数据区域(为比例)
+     * 确保View测量流程完成后调用，保险起见可以外部直接调用post{}
+     *
+     * @param view
+     */
+    protected RectF preRect2RealDataRect(View view) {
+
+        RectF r = new RectF();
+
+        int oriHeight = getMeasuredHeight();
+        int oriWidth = getMeasuredWidth();
+
+        AspectRatio ratio = getAspectRatio();
+
+        if (ratio == null)
+            return r;
+
+        if (getContext().getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_PORTRAIT) {
+            Config.displayOrientation = 0;
+            ratio = ratio.inverse();
+        } else {
+            if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() != 0)
+                Config.displayOrientation = mDisplayOrientationDetector.getLastKnownDisplayOrientation();
+        }
+
+        if (oriHeight < oriWidth * ratio.getY() / ratio.getX()) {
+            int realHeight = (int) (oriWidth * ratio.getY() / (float) ratio.getX());
+            float expectRatio = (realHeight - oriHeight) / 2f / realHeight;
+            float[] edgeRatio = findEdgeRatio(view, oriWidth, realHeight);
+            r.left = edgeRatio[0];
+            r.right = edgeRatio[2];
+            r.top = expectRatio + edgeRatio[1];
+            r.bottom = expectRatio + edgeRatio[3];
+        } else {
+            int realWidth = (int) (oriHeight * ratio.getX() / (float) ratio.getY());
+            float expectRatio = (realWidth - oriWidth) / 2f / realWidth;
+            float[] edgeRatio = findEdgeRatio(view, realWidth, oriHeight);
+            r.left = expectRatio + edgeRatio[0];
+            r.right = expectRatio + edgeRatio[2];
+            r.top = edgeRatio[1];
+            r.bottom = edgeRatio[3];
+        }
+
+        return r;
+    }
+
 
     /***
      * 确定扫码区域
+     * 确保View测量流程完成后调用，保险起见可以外部直接调用post{}
      */
     protected void defineScanParseRect(View view) {
 
         if (view == null)
             return;
 
+        Config.scanRect.setRect(preRect2RealDataRect(view));
         Config.scanRect.setScanR(null);
         Config.scanRect.setScanRR(null);
-        Config.scanRect.setRect(null);
-
-        int oriHeight = getMeasuredHeight();
-        int oriWidth = getMeasuredWidth();
-
-        AspectRatio ratio = getAspectRatio();
-        if (mDisplayOrientationDetector.getLastKnownDisplayOrientation() % 180 == 0) {
-            ratio = ratio.inverse();
-        }
-
-        if (ratio == null)
-            return;
-
-        //当实际略宽时, 调整高度保证与输出比例相同
-        if (oriHeight < oriWidth * ratio.getY() / ratio.getX()) {
-            int measureHeight = (int) (oriWidth * ratio.getY() / (float) ratio.getX());
-            float expectRatio = (measureHeight - oriHeight) / 2f / measureHeight;
-            float[] edgeRatio = findEdgeRatio(view, oriWidth, measureHeight);
-            r.left = edgeRatio[0];
-            r.right = edgeRatio[2];
-            r.top = expectRatio + edgeRatio[1];
-            r.bottom = expectRatio + edgeRatio[3];
-            Config.scanRect.setRect(r);
-            Config.scanRect.setExtraX(0);
-            Config.scanRect.setExtraY(measureHeight - oriHeight);
-        }
-        //当实际略高时，调整宽度保证与输出比例相同
-        else {
-            int measureWidht = (int) (oriHeight * ratio.getX() / (float) ratio.getY());
-            float expectRatio = (measureWidht - oriWidth) / 2f / measureWidht;
-            float[] edgeRatio = findEdgeRatio(view, measureWidht, oriHeight);
-            r.left = expectRatio + edgeRatio[0];
-            r.right = expectRatio + edgeRatio[2];
-            r.top = edgeRatio[1];
-            r.bottom = edgeRatio[3];
-            Config.scanRect.setRect(r);
-            Config.scanRect.setExtraX(measureWidht - oriWidth);
-            Config.scanRect.setExtraY(0);
-        }
-        Config.scanRect.setPreX(oriWidth);
-        Config.scanRect.setPreY(oriHeight);
-
-        mImpl.rectMeteringWithFocus();
+        mImpl.rectMeteringWithFocus(Config.scanRect.getRect());
     }
 
     /***
-     * 确定可视区域比例
+     * 根据view所在区域调整测光对焦区域
+     * 确保View测量流程完成后调用，保险起见可以外部直接调用post{}
+     */
+    protected void useRectMeteringWithFocus(View view) {
+        mImpl.rectMeteringWithFocus(preRect2RealDataRect(view));
+    }
+
+
+    /***
+     * view在CameraView中的区域，注意不包含TextureView超出的那部分
      * @param view
      * @param realWidht
      * @param realHeight
@@ -302,7 +331,6 @@ public class CameraView extends FrameLayout {
         }
         return edgeRatio;
     }
-
 
     protected void provideCameraHandler(Handler handler) {
         this.cameraHandler = handler;
@@ -347,6 +375,10 @@ public class CameraView extends FrameLayout {
         initPreView();
     }
 
+    public void closeCameraBefore() {
+    }
+
+
     /**
      * Open a camera device and start showing camera preview. This is typically called from
      */
@@ -367,7 +399,8 @@ public class CameraView extends FrameLayout {
      * {@link Activity}.
      */
     protected void stop() {
-        mImpl.stop();
+        if (isCameraOpened())
+            mImpl.stop();
     }
 
     /**
@@ -437,6 +470,10 @@ public class CameraView extends FrameLayout {
     public int getFacing() {
         //noinspection WrongConstant
         return mImpl.getFacing();
+    }
+
+    protected AspectRatio provideAspectRatio() {
+        return Constants.DEFAULT_ASPECT_RATIO;
     }
 
     /**

@@ -19,7 +19,7 @@ package com.google.android.cameraview;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
-import android.hardware.camera2.CameraAccessException;
+import android.graphics.RectF;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
@@ -32,18 +32,16 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Build;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
 
-import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.CameraHelper;
+import com.ailiwean.core.helper.ScanHelper;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Set;
 import java.util.SortedSet;
 
@@ -94,13 +92,11 @@ class Camera2 extends CameraViewImpl {
 
         @Override
         public void onError(@NonNull CameraDevice camera, int error) {
-            restart();
             mCamera = null;
+            restart();
         }
 
     };
-
-    boolean isTrue;
 
     private final CameraCaptureSession.StateCallback mSessionCallback
             = new CameraCaptureSession.StateCallback() {
@@ -177,7 +173,7 @@ class Camera2 extends CameraViewImpl {
 
     private CameraCharacteristics mCameraCharacteristics;
 
-    CameraDevice mCamera;
+    volatile CameraDevice mCamera;
 
     CameraCaptureSession mCaptureSession;
 
@@ -215,6 +211,8 @@ class Camera2 extends CameraViewImpl {
     @Override
     boolean start() {
         synchronized (Camera2.class) {
+            if (isCameraOpened())
+                return true;
 
             if (!chooseCameraIdByFacing())
                 return false;
@@ -384,8 +382,9 @@ class Camera2 extends CameraViewImpl {
             if (!isCameraOpened())
                 return;
             try {
-                mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, CameraHelper.getZoomRect(mCameraCharacteristics, percent));
-                mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
+                Rect showRect = CameraHelper.getZoomRect(mCameraCharacteristics, percent);
+                mPreviewRequestBuilder.set(CaptureRequest.SCALER_CROP_REGION, showRect);
+                rectMeteringWithFocus(showRect);
             } catch (Exception e) {
                 restart();
             }
@@ -477,9 +476,10 @@ class Camera2 extends CameraViewImpl {
         for (android.util.Size size : map.getOutputSizes(mPreview.getOutputClass())) {
             int width = size.getWidth();
             int height = size.getHeight();
-            if (width <= MAX_PREVIEW_WIDTH && height <= MAX_PREVIEW_HEIGHT) {
-                mPreviewSizes.add(new Size(width, height));
-            }
+//            if (width <= MAX_PREVIEW_WIDTH && height <= MAX_PREVIEW_HEIGHT) {
+//                mPreviewSizes.add(new Size(width, height));
+//            }
+            mPreviewSizes.add(new Size(width, height));
         }
 
         mPictureSizes.clear();
@@ -493,7 +493,7 @@ class Camera2 extends CameraViewImpl {
         }
 
         if (!mPreviewSizes.ratios().contains(mAspectRatio)) {
-            //扫码没有16：9则取4:3
+            //扫码没有设置的则取4:3
             mAspectRatio = Constants.DEFAULT_ASPECT_RATIO;
             //没有4：3则取最接近的
             if (!mPreviewSizes.ratios().contains(mAspectRatio)) {
@@ -895,8 +895,25 @@ class Camera2 extends CameraViewImpl {
 
     }
 
+    RectF rectF;
+
     @Override
-    protected void rectMeteringWithFocus() {
+    protected void rectMeteringWithFocus(RectF rectF) {
+
+        this.rectF = rectF;
+
+        if (mCamera == null || mCameraCharacteristics == null)
+            return;
+
+        Integer maxNum = mCameraCharacteristics.get(CameraCharacteristics.CONTROL_MAX_REGIONS_AF);
+        if (maxNum == null || maxNum <= 0)
+            return;
+
+        Rect dateRect = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+        rectMeteringWithFocus(dateRect);
+    }
+
+    protected void rectMeteringWithFocus(Rect dateRect) {
         synchronized (Camera2.class) {
 
             if (mCamera == null || mCameraCharacteristics == null)
@@ -906,23 +923,29 @@ class Camera2 extends CameraViewImpl {
             if (maxNum == null || maxNum <= 0)
                 return;
 
-            if (Config.scanRect == null || Config.scanRect.getRect() == null)
+            if (rectF == null)
                 return;
 
-            Rect rect = mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
-            if (rect == null)
-                rect = new Rect(0, 0, 1, 1);
+            if (dateRect == null)
+                dateRect = new Rect(0, 0, 1, 1);
 
-            int dataWidth = rect.width() - 1;
-            int dataHeight = rect.height() - 1;
+            int dataWidth = dateRect.width() - 1;
+            int dataHeight = dateRect.height() - 1;
 
-            int left = (int) (Config.scanRect.getRect().top * dataWidth);
-            int top = (int) ((1f - Config.scanRect.getRect().right) * dataHeight);
-            int right = (int) (Config.scanRect.getRect().bottom * dataWidth);
-            int bottom = (int) ((1f - (Config.scanRect.getRect().left)) * dataHeight);
+            RectF cropRect = ScanHelper.copyRect(rectF);
+            cropRect.left += (cropRect.right - cropRect.left) / 4;
+            cropRect.right -= (cropRect.right - cropRect.left) / 4;
+            cropRect.top += (cropRect.bottom - cropRect.top) / 4;
+            cropRect.bottom -= (cropRect.bottom - cropRect.top) / 4;
+
+            int left = (int) (cropRect.top * dataWidth) + dateRect.left;
+            int top = (int) ((1f - cropRect.right) * dataHeight) + dateRect.top;
+            int right = (int) (cropRect.bottom * dataWidth) + dateRect.left;
+            int bottom = (int) ((1f - cropRect.left) * dataHeight) + dateRect.top;
             Rect realRect = new Rect(left, top, right, bottom);
-            MeteringRectangle[] meteringRectangles = new MeteringRectangle[]{new MeteringRectangle(realRect, 1000)};
 
+            MeteringRectangle meteringRectangle = new MeteringRectangle(realRect, 1000);
+            MeteringRectangle[] meteringRectangles = new MeteringRectangle[]{meteringRectangle};
             try {
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AWB_REGIONS, meteringRectangles);
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_REGIONS, meteringRectangles);
@@ -930,6 +953,8 @@ class Camera2 extends CameraViewImpl {
                 mCaptureSession.setRepeatingRequest(mPreviewRequestBuilder.build(), mCaptureCallback, null);
             } catch (Exception ignored) {
             }
+
         }
     }
+
 }

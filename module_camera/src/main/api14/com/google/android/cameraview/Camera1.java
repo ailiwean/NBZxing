@@ -18,19 +18,18 @@ package com.google.android.cameraview;
 
 import android.annotation.SuppressLint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 import androidx.collection.SparseArrayCompat;
 
-import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.CameraHelper;
 import com.ailiwean.core.helper.LightHelper;
+import com.ailiwean.core.helper.ScanHelper;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -56,7 +55,7 @@ class Camera1 extends CameraViewImpl {
 
     private final AtomicBoolean isPictureCaptureInProgress = new AtomicBoolean(false);
 
-    Camera mCamera;
+    volatile Camera mCamera;
 
     private Camera.Parameters mCameraParameters;
 
@@ -100,8 +99,10 @@ class Camera1 extends CameraViewImpl {
     @Override
     boolean start() {
         synchronized (Camera1.class) {
+
             if (isCameraOpened())
                 return true;
+
             chooseCamera();
 
             if (mCameraId == INVALID_CAMERA_ID) {
@@ -289,12 +290,17 @@ class Camera1 extends CameraViewImpl {
         if (mDisplayOrientation == displayOrientation) {
             return;
         }
-        mDisplayOrientation = displayOrientation;
-        if (isCameraOpened()) {
-            mCameraParameters.setRotation(calcCameraRotation(displayOrientation));
-            mCamera.setParameters(mCameraParameters);
-            mCamera.setDisplayOrientation(calcDisplayOrientation(displayOrientation));
-        }
+        if (mPreview != null)
+            mPreview.setDisplayOrientation(displayOrientation);
+//        mDisplayOrientation = displayOrientation;
+//        try {
+//            if (isCameraOpened()) {
+//                mCameraParameters.setRotation(calcCameraRotation(displayOrientation));
+//                mCamera.setParameters(mCameraParameters);
+//                mCamera.setDisplayOrientation(calcDisplayOrientation(displayOrientation));
+//            }
+//        } catch (Exception ignored) {
+//        }
     }
 
     @Override
@@ -470,8 +476,9 @@ class Camera1 extends CameraViewImpl {
 
     private void releaseCamera() {
         if (mCamera != null) {
-            mCamera.release();
+            Camera temp = mCamera;
             mCamera = null;
+            temp.release();
             mCallback.onCameraClosed();
         }
     }
@@ -575,25 +582,34 @@ class Camera1 extends CameraViewImpl {
 
 
     @Override
-    protected void rectMeteringWithFocus() {
+    protected void rectMeteringWithFocus(RectF rectF) {
         synchronized (Camera1.class) {
             if (mCamera == null || mCamera.getParameters() == null)
                 return;
             if (mCamera.getParameters().getMaxNumMeteringAreas() == 0)
                 return;
-            if (Config.scanRect == null || Config.scanRect.getRect() == null)
+            if (rectF == null)
                 return;
 
-            int left = (int) (2000 * Config.scanRect.getRect().top) - 1000;
-            int top = (int) (2000 * (1 - Config.scanRect.getRect().right)) - 1000;
-            int right = (int) (2000 * Config.scanRect.getRect().bottom) - 1000;
-            int bottom = (int) (2000 * (1 - Config.scanRect.getRect().left)) - 1000;
+            RectF cropRect = ScanHelper.copyRect(rectF);
+            cropRect.left += (cropRect.right - cropRect.left) / 4;
+            cropRect.right -= (cropRect.right - cropRect.left) / 4;
+            cropRect.top += (cropRect.bottom - cropRect.top) / 4;
+            cropRect.bottom -= (cropRect.bottom - cropRect.top) / 4;
 
-            Rect realRect = new Rect(left , top, right, bottom);
+            int left = (int) (2000 * cropRect.top) - 1000;
+            int top = (int) (2000 * (1 - cropRect.right)) - 1000;
+            int right = (int) (2000 * cropRect.bottom) - 1000;
+            int bottom = (int) (2000 * (1 - cropRect.left)) - 1000;
+
+            Rect realRect = new Rect(left, top, right, bottom);
             List<Camera.Area> areas = Collections.singletonList(new Camera.Area(realRect, 1000));
             mCameraParameters.setFocusAreas(areas);
             mCameraParameters.setMeteringAreas(areas);
-            mCamera.setParameters(mCameraParameters);
+            try {
+                mCamera.setParameters(mCameraParameters);
+            } catch (Exception ignored) {
+            }
         }
     }
 }

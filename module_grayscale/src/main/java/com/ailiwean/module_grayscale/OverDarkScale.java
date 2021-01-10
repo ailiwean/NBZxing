@@ -1,7 +1,6 @@
 package com.ailiwean.module_grayscale;
 
 import android.graphics.Rect;
-import android.util.Log;
 
 /**
  * @Package: com.ailiwean.module_grayscale
@@ -14,11 +13,10 @@ class OverDarkScale implements Dispatch {
 
     @Override
     public byte[] dispatch(byte[] data, int width, int height) {
-        byte[] newByte = data.clone();
         double random = Math.random() / 2 + 0.4f;
         for (int i = 0; i < width * height; i++)
-            newByte[i] = (byte) (byte) (255 * Math.pow((newByte[i] & 0xff) / 255f, random));
-        return newByte;
+            data[i] = (byte) (byte) (255 * Math.pow((data[i] & 0xff) / 255f, random));
+        return data;
     }
 
     @Override

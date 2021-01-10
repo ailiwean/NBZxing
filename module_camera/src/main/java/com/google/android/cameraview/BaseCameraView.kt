@@ -1,14 +1,9 @@
 package com.google.android.cameraview
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
-import androidx.annotation.FloatRange
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -35,12 +30,10 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
     init {
         Utils.init(context)
+        Config.initConfig()
         autoFocus = true
         adjustViewBounds = false
-        this.setAspectRatio(AspectRatio.of(4, 3))
         this.addCallback(object : Callback() {
-
-            var hasFloorView = false
 
             override fun onCameraOpened(cameraView: CameraView) {
                 mainHand.post {
@@ -119,6 +112,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
                 }
                 if (isShoudCreateOpen) {
                     onCreate()
+                    onResume()
                     onCameraCreate()
                 } else {
                     onResume()
@@ -154,31 +148,61 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     private fun onCameraCreate() {
         if (!isShoudCreateOpen)
             return
-        if (checkPermissionCamera()) {
+        if (Utils.checkPermissionCamera(context)) {
             openCameraBefore()
             openCamera()
         } else {
-            requstPermission()
+            Utils.requstPermission(context)
         }
     }
 
+
+    /***
+     *  外部使用该方法启动相机
+     */
     protected fun onCameraResume() {
         if (isShoudCreateOpen) {
             return
         }
-        if (checkPermissionCamera() && !isCameraOpened) {
+        if (Utils.checkPermissionCamera(context) && !isCameraOpened) {
             openCameraBefore()
-            openCamera()
+            openCamera(if (cameraStartTime != 0L) cameraStartTime else 100L)
         }
     }
 
+    /***
+     *  外部使用该方法暂停相机
+     */
     protected fun onCameraPause() {
+        closeCameraBefore()
         closeCamera()
         isShoudCreateOpen = false
     }
 
+    /***
+     *  外部使用该方法动态调整相机输出比例
+     */
+    override fun setAspectRatio(ratio: AspectRatio) {
+        super.setAspectRatio(ratio)
+        //相机运行过程中切换比例
+        if (isCameraOpened) {
+            closeCameraBefore()
+            openCameraBefore()
+            cameraHandler.removeCallbacksAndMessages(null)
+            cameraHandler.post {
+                stop()
+                start()
+            }
+        }
+    }
+
+    /***
+     *  执行操作：
+     *        1 ： 启动关闭相机
+     *        2 ： 处理相机相关数据回调，拍照，YUV数据
+     */
     private val cameraHandler by lazy {
-        val handlerThread = HandlerThread(System.currentTimeMillis().toString())
+        val handlerThread = HandlerThread("CameraProcessThread")
         handlerThread.start()
         Handler(handlerThread.looper)
                 .apply {
@@ -186,19 +210,24 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
                 }
     }
 
-    private fun openCamera() {
+    var cameraStartTime = 0L
+
+    private fun openCamera(delayValues: Long = 0L) {
         cameraHandler.removeCallbacksAndMessages(null)
-        cameraHandler.post {
-            if (!isProscribeCamera)
+        cameraHandler.postDelayed({
+            if (!isProscribeCamera) {
+                val var0 = System.currentTimeMillis()
                 start()
-        }
+                cameraStartTime = System.currentTimeMillis() - var0
+            }
+        }, delayValues)
     }
 
     private fun closeCamera() {
         cameraHandler.removeCallbacksAndMessages(null)
-        cameraHandler.post {
+        cameraHandler.postDelayed({
             stop()
-        }
+        }, cameraStartTime)
     }
 
     /***
@@ -242,37 +271,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
     override fun onDestroy() {
         cameraHandler.looper.quit()
-    }
-
-    fun checkPermissionCamera(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context.checkSelfPermission(
-                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-        } else {
-            return true
-        }
-    }
-
-    fun checkPermissionRW(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            context.checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
-            context.checkSelfPermission(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-
-        } else {
-            return true
-        }
-    }
-
-    fun requstPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            (context as? Activity)?.requestPermissions(arrayOf(Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-            ), 200)
-        }
     }
 
     /***

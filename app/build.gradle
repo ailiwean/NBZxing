@@ -6,19 +6,19 @@ apply plugin: 'kotlin-kapt'
 android {
     signingConfigs {
         release {
-            storeFile file('/Users/mac/Desktop/shuai_sign')
+            storeFile file("$rootDir/nbzxing.jks")
             storePassword 'shuai1234'
             keyAlias 'key0'
             keyPassword 'shuai1234'
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "com.android.NBZxing"
         minSdkVersion 17
-        targetSdkVersion 29
-        versionCode 15
-        versionName "1.15"
+        targetSdkVersion 30
+        versionCode 21
+        versionName "1.30"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.release
         compileOptions {
@@ -46,9 +46,10 @@ dependencies {
     api "androidx.appcompat:appcompat:1.1.0"
     implementation 'com.zhihu.android:matisse:0.5.3-beta3'
     api "com.github.bumptech.glide:glide:4.11.0"
+    api 'com.tencent.bugly:crashreport:3.2.3'
 //
-//    implementation 'com.github.ailiwean:NBZxing-Scale:0.0.3'
-//    implementation 'com.github.ailiwean:NBZxing:0.0.27'
-    //   implementation 'me.devilsen:czxing:1.0.11'
+
+//    implementation 'com.github.ailiwean:NBZxing-Scale:0.0.5'
+//    implementation 'com.github.ailiwean:NBZxing:0.1.1'
 
 }

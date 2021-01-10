@@ -16,6 +16,8 @@
 
 package com.ailiwean.core.zxing.core.common;
 
+import android.util.Log;
+
 import java.util.Arrays;
 
 /**
@@ -91,6 +93,15 @@ public final class BitMatrix implements Cloneable {
             }
         }
         return bits;
+    }
+
+    public byte[] covertYData() {
+        byte[] yByte = new byte[width * height];
+        for (int j = 0; j < height; j++)
+            for (int i = 0; i < width; i++) {
+                yByte[j * width + i] = (byte) ((get(i, j) ? 0 : 255));
+            }
+        return yByte;
     }
 
     public static BitMatrix parse(String stringRepresentation, String setString, String unsetString) {
@@ -475,6 +486,10 @@ public final class BitMatrix implements Cloneable {
     @Override
     public BitMatrix clone() {
         return new BitMatrix(width, height, rowSize, bits.clone());
+    }
+
+    public int size() {
+        return bits.length;
     }
 
 }

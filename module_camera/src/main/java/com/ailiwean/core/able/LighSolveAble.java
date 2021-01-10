@@ -1,8 +1,6 @@
 package com.ailiwean.core.able;
 
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.LightHelper;
@@ -20,12 +18,19 @@ public class LighSolveAble extends PixsValuesAble {
 
     private boolean isBright = true;
 
+    //上次记录的时间戳
+    static long lastRecordTime = System.currentTimeMillis();
+
+    //扫描间隔
+    static int waitScanTime = 1000;
+
     public LighSolveAble(Handler handler) {
         super(handler);
     }
 
     @Override
-    protected void cusAction(byte[] data, int dataWidth, int dataHeight) {
+    protected void cusAction(byte[] data, int dataWidth, int dataHeight, boolean isNative) {
+        super.cusAction(data, dataWidth, dataHeight, isNative);
         //非原始数据不采集亮度
         if (!isNative)
             return;
@@ -38,5 +43,27 @@ public class LighSolveAble extends PixsValuesAble {
             isBright = false;
             sendMessage(Config.LIGHT_CHANGE, false);
         }
+    }
+
+    @Override
+    public boolean isCycleRun(boolean isNative) {
+        //非原始数据不走采集亮度任务
+        if (!isNative)
+            return false;
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastRecordTime < waitScanTime) {
+            return false;
+        }
+        lastRecordTime = currentTime;
+        return true;
+    }
+
+    /***
+     *  采集环境亮度对于原始数据来说是重要且不能舍弃的
+     * @return
+     */
+    @Override
+    public boolean isImportant(boolean isNative) {
+        return isNative;
     }
 }

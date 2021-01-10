@@ -11,13 +11,7 @@ import android.hardware.Camera;
  * @CreateDate: 2020/4/26 3:10 PM
  */
 public class LightHelper {
-
-    //上次记录的时间戳
-    static long lastRecordTime = System.currentTimeMillis();
-
-    //扫描间隔
-    static int waitScanTime = 300;
-
+    
     static int lastAvDark = 0;
 
     /***
@@ -28,15 +22,10 @@ public class LightHelper {
         if (data.length == 0)
             return lastAvDark;
 
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastRecordTime < waitScanTime) {
-            return lastAvDark;
-        }
-        lastRecordTime = currentTime;
         long pixelLightCount = 0L;
         long pixCount = 0L;
-        int step = 10;
-        for (int i = 0; i < dataWidth * dataheight; i += step) {
+        int step = 20;
+        for (int i = 0; i < data.length; i += step) {
             pixelLightCount += data[i] & 0xff;
             pixCount++;
         }

@@ -1,49 +1,37 @@
 package com.ailiwean.core.zxing;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import com.ailiwean.core.zxing.core.LuminanceSource;
+import com.ailiwean.core.zxing.core.RGBLuminanceSource;
 
 
 /***
  *  Created by SWY
- *  DATE 2019/6/3
- *
- *  author Vondear
- *  定义解析Bitmap LuminanceSource
- *
  */
 public class BitmapLuminanceSource extends LuminanceSource {
 
-    private byte bitmapPixels[];
+    RGBLuminanceSource source;
 
     public BitmapLuminanceSource(Bitmap bitmap) {
         super(bitmap.getWidth(), bitmap.getHeight());
-        // 首先，要取得该图片的像素数组内容
+        Bitmap ori = bitmap;
+        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+        ori.recycle();
         int[] data = new int[bitmap.getWidth() * bitmap.getHeight()];
-        this.bitmapPixels = new byte[bitmap.getWidth() * bitmap.getHeight()];
-        bitmap.getPixels(data, 0, getWidth(), 0, 0, getWidth(), getHeight());
-        for (int i = 0; i < data.length; i++) {
-            int pixel = data[i];
-            int r = (pixel >> 16) & 0xff; // red
-            int g2 = (pixel >> 7) & 0x1fe; // 2 * green
-            int b = pixel & 0xff; // blue
-            this.bitmapPixels[i] = (byte) ((r + g2 + b) / 4);
-        }
+        bitmap.getPixels(data, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        source = new RGBLuminanceSource(bitmap.getWidth(), bitmap.getHeight(), data);
     }
 
     @Override
     public byte[] getMatrix() {
         // 返回我们生成好的像素数据
-        return bitmapPixels;
+        return source.getMatrix();
     }
 
     @Override
     public byte[] getRow(int y, byte[] row) {
-        // 这里要得到指定行的像素数据
-        System.arraycopy(bitmapPixels, y * getWidth(), row, 0, getWidth());
-        return row;
+        return source.getRow(y, row);
     }
 
 }

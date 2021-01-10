@@ -16,7 +16,7 @@
 
 package com.google.android.cameraview;
 
-import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.View;
 
 import androidx.annotation.FloatRange;
@@ -104,8 +104,7 @@ abstract class CameraViewImpl {
     /**
      * 矩形区域测光变焦
      */
-    protected void rectMeteringWithFocus() {
-        
+    protected void rectMeteringWithFocus(RectF rectF) {
     }
 
 }

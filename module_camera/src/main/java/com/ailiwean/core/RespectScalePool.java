@@ -1,8 +1,9 @@
 package com.ailiwean.core;
 
+import android.util.Log;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -15,26 +16,42 @@ import java.util.concurrent.TimeUnit;
  */
 class RespectScalePool extends ThreadPoolExecutor {
 
-    public RespectScalePool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<? extends Runnable> workQueue) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, (BlockingQueue<Runnable>) workQueue);
-    }
+    private ExecutorEnd runEnd;
 
-    public RespectScalePool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<? extends Runnable> workQueue, ThreadFactory threadFactory) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, (BlockingQueue<Runnable>) workQueue, threadFactory);
-    }
-
-    public RespectScalePool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<? extends Runnable> workQueue, RejectedExecutionHandler handler) {
+    public RespectScalePool(int corePoolSize,
+                            int maximumPoolSize,
+                            long keepAliveTime,
+                            TimeUnit unit,
+                            BlockingQueue<? extends Runnable> workQueue,
+                            RejectedExecutionHandler handler,
+                            ExecutorEnd runEnd) {
         super(corePoolSize, maximumPoolSize, keepAliveTime, unit, (BlockingQueue<Runnable>) workQueue, handler);
+        this.runEnd = runEnd;
     }
 
-    public RespectScalePool(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<? extends Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
-        super(corePoolSize, maximumPoolSize, keepAliveTime, unit, (BlockingQueue<Runnable>) workQueue, threadFactory, handler);
+    @Override
+    protected void afterExecute(Runnable r, Throwable t) {
+        super.afterExecute(r, t);
+        if (r instanceof TypeRunnable && runEnd != null)
+            //任务执行完毕
+            runEnd.executorEnd((TypeRunnable) r);
     }
 
     /***
-     * Abandoning strategy for gray-scale tasks and ordinary tasks without interference
+     *     线程池任务拒绝策略：
+     *        目前会执行的两个线程
+     *               GrayProcessThread ： {@link com.ailiwean.core.able.AbleManager#grayProcessHandler$delegate}
+     *              CameraProcessThread ： {@link com.google.android.cameraview.BaseCameraView#cameraHandler}
+     *
      */
     public static class RespectScalePolicy extends DiscardOldestPolicy {
+
+        private final ExecutorEnd runEnd;
+
+        public RespectScalePolicy(ExecutorEnd runEnd) {
+            this.runEnd = runEnd;
+        }
+
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
 
@@ -51,13 +68,17 @@ class RespectScalePool extends ThreadPoolExecutor {
                 return;
             }
 
-            if (((TypeRunnable) r).getType() == TypeRunnable.NORMAL)
-                ((RespectScaleQueue<?>) executor.getQueue()).poll(TypeRunnable.NORMAL);
-            else
-                ((RespectScaleQueue<?>) executor.getQueue()).poll(TypeRunnable.SCALE);
+            TypeRunnable typeRunnable = (TypeRunnable) r;
+            RespectScaleQueue<?> respectScaleQueue = (RespectScaleQueue<?>) executor.getQueue();
+
+            //舍弃同类型任务
+            TypeRunnable targetRun = respectScaleQueue.poll(typeRunnable.type);
+
+            //舍弃等同于任务执行完毕
+            if (targetRun != null && runEnd != null)
+                runEnd.executorEnd(targetRun);
 
             executor.execute(r);
         }
     }
-
 }

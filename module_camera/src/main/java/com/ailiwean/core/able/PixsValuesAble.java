@@ -2,11 +2,11 @@ package com.ailiwean.core.able;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.ailiwean.core.zxing.CustomMultiFormatReader;
 import com.ailiwean.core.zxing.core.Binarizer;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
+import com.ailiwean.core.zxing.core.LuminanceSource;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.Result;
 
@@ -22,8 +22,6 @@ import java.lang.ref.WeakReference;
 public abstract class PixsValuesAble {
 
     WeakReference<Handler> handlerHolder;
-    boolean isNative;
-
     CustomMultiFormatReader reader = CustomMultiFormatReader.getInstance();
 
     public PixsValuesAble(Handler handler) {
@@ -40,15 +38,19 @@ public abstract class PixsValuesAble {
     }
 
     protected void cusAction(byte[] data, int dataWidth, int dataHeight, boolean isNative) {
-        this.isNative = isNative;
-        cusAction(data, dataWidth, dataHeight);
+    }
+
+    /***
+     * 相册数据解析
+     */
+    protected void cusActionNoCrop(byte[] data, int dataWidth, int dataHeight) {
     }
 
     /***
      * 需要解析二维码子类重写这个
      * @param source
      */
-    protected void needParseDeploy(PlanarYUVLuminanceSource source) {
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
     }
 
     Result toLaunchParse(Binarizer binarizer) {
@@ -67,5 +69,20 @@ public abstract class PixsValuesAble {
         handlerHolder = null;
     }
 
+    /***
+     * 是否为重要，重要则先不舍弃， 除非线程池已满
+     * @return
+     */
+    public boolean isImportant(boolean isNative) {
+        return false;
+    }
+
+    /***
+     *  根据时间控制周期
+     * @return
+     */
+    public boolean isCycleRun(boolean isNative) {
+        return true;
+    }
 
 }

@@ -1,17 +1,11 @@
 package com.ailiwean.core.able;
 
 import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
-import com.ailiwean.core.zxing.core.FormatException;
-import com.ailiwean.core.zxing.core.NotFoundException;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.ResultPoint;
-import com.ailiwean.core.zxing.core.common.DetectorResult;
-import com.ailiwean.core.zxing.core.qrcode.detector.Detector;
 
 /**
  * @Package: com.ailiwean.core.able
@@ -31,26 +25,22 @@ public class XQRScanZoomAble extends XQRScanAble {
     }
 
     @Override
-    protected void needParseDeploy(PlanarYUVLuminanceSource source) {
-        super.needParseDeploy(source);
-        if (result != null)
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
+        super.needParseDeploy(source, isNative);
+        if (result == null)
             return;
-        DetectorResult decoderResult = null;
-        ResultPoint[] points;
-        try {
-            decoderResult = new Detector(source.getHybridBinary().getBlackMatrix()).detect(null);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        } catch (FormatException e) {
-            e.printStackTrace();
-        }
-        if (decoderResult == null)
-            return;
-        points = decoderResult.getPoints();
-        int lenght = ScanHelper.getQrLenght(points);
 
+        if (result != null && result.getText() != null)
+            return;
+
+        ResultPoint[] points = result.getResultPoints();
+        if (points == null || points.length < 3)
+            return;
+
+        int lenght = ScanHelper.getQrLenght(points);
         if (points != null && points.length >= 3)
-            sendMessage(Config.RT_LOCATION, ScanHelper.rotatePoint(points));
+            sendMessage(Config.RT_LOCATION,
+                    ScanHelper.rotatePoint(points));
 
         //自动变焦时间间隔为500ms
         if (System.currentTimeMillis() - zoomTime < 500)
@@ -64,6 +54,6 @@ public class XQRScanZoomAble extends XQRScanAble {
         zoomTime = System.currentTimeMillis();
         lastLenght = lenght;
 
-        sendMessage(Config.AUTO_ZOOM, Config.currentZoom + "");
+        //  sendMessage(Config.AUTO_ZOOM, Config.currentZoom + "");
     }
 }

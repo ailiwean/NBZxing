@@ -1,11 +1,12 @@
-package com.ailiwean.core.view
+package com.ailiwean.core.view.style1
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
-import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.View
+import com.ailiwean.core.Result
+import com.ailiwean.core.view.ScanLocViewCallBack
 import com.google.android.cameraview.R
 
 /**
@@ -23,7 +24,8 @@ class LocationView @JvmOverloads constructor(context: Context, attributeSet: Att
         setImageResource(R.drawable.ic_qr_loc)
     }
 
-    override fun toLocation(qrPoint: PointF, run: Runnable) {
+    override fun toLocation(result: Result, run: Runnable) {
+        var qrPoint = result.qrPointF
         visibility = View.VISIBLE
         translationX = (qrPoint.x - layoutParams.width / 2)
         translationY = (qrPoint.y - layoutParams.height / 2)

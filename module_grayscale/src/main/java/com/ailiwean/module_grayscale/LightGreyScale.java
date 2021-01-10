@@ -10,14 +10,14 @@ import android.graphics.Rect;
  * @CreateDate: 2020/8/9 6:37 PM
  */
 class LightGreyScale implements Dispatch {
+
     @Override
     public byte[] dispatch(byte[] data, int width, int height) {
-        byte[] newByte = data.clone();
-        short random = (short) (Math.random() * 4 + 3);
+        short random = (short) (Math.random() * 5 + 2);
         for (int i = 0; i < width * height; i++) {
-            newByte[i] = (byte) (newByte[i] * random);
+            data[i] = (byte) (data[i] * random);
         }
-        return newByte;
+        return data;
     }
 
     @Override

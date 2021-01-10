@@ -1,11 +1,15 @@
-package com.ailiwean.core.view
+package com.ailiwean.core.view.style1
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.Toast
+import com.ailiwean.core.Result
+import com.ailiwean.core.view.FreeZxingView
+import com.ailiwean.core.view.ScanBarCallBack
+import com.ailiwean.core.view.ScanLightViewCallBack
+import com.ailiwean.core.view.ScanLocViewCallBack
 import com.google.android.cameraview.R
-import kotlinx.android.synthetic.main.nbzxing_default_floorview.view.*
+import kotlinx.android.synthetic.main.nbzxing_style1_floorview.view.*
 
 /**
  * @Package:        com.google.android.cameraview
@@ -17,12 +21,12 @@ import kotlinx.android.synthetic.main.nbzxing_default_floorview.view.*
 open class NBZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
         FreeZxingView(context, attributeSet, def) {
 
-    override fun resultBack(content: String) {
-        Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
+    override fun resultBack(content: Result) {
+
     }
 
     override fun provideFloorView(): Int {
-        return R.layout.nbzxing_default_floorview
+        return R.layout.nbzxing_style1_floorview
     }
 
     override fun provideParseRectView(): View? {

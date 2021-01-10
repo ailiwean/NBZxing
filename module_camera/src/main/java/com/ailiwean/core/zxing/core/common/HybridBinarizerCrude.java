@@ -42,16 +42,22 @@ public final class HybridBinarizerCrude extends GlobalHistogramBinarizer {
 
     // This class uses 5x5 blocks to compute local luminance, where each block is 8x8 pixels.
     // So this is the smallest dimension in each axis we can accept.
-    private static final int BLOCK_SIZE_POWER = 6;
-    private static final int BLOCK_SIZE = 1 << BLOCK_SIZE_POWER; // ...0100...00
-    private static final int BLOCK_SIZE_MASK = BLOCK_SIZE - 1;   // ...0011...11
-    private static final int MINIMUM_DIMENSION = BLOCK_SIZE * 5;
-    private static final int MIN_DYNAMIC_RANGE = 24;
+    private final int BLOCK_SIZE_POWER = getRandom();
+    private final int BLOCK_SIZE = 1 << BLOCK_SIZE_POWER; // ...0100...00
+    private final int BLOCK_SIZE_MASK = BLOCK_SIZE - 1;   // ...0011...11
+    private final int MINIMUM_DIMENSION = BLOCK_SIZE * 5;
 
     private BitMatrix matrix;
 
     public HybridBinarizerCrude(LuminanceSource source) {
         super(source);
+    }
+
+    private static int getRandom() {
+        int max = 7;
+        int min = 1;
+        int mid = max - min;
+        return (int) (Math.random() * (mid + 1)) + min;
     }
 
     /**
@@ -85,16 +91,15 @@ public final class HybridBinarizerCrude extends GlobalHistogramBinarizer {
             if ((height & BLOCK_SIZE_MASK) != 0) {
                 subHeight++;
             }
-            int[][] blackPoints = calculateBlackPoints(luminances, subWidth, subHeight, width, height);
+            int[][] blackPoints = calculateBlackPoints(luminances, subWidth, subHeight, width, height, BLOCK_SIZE, BLOCK_SIZE_POWER);
 
             BitMatrix newMatrix = new BitMatrix(width, height);
-            calculateThresholdForBlock(luminances, subWidth, subHeight, width, height, blackPoints, newMatrix);
+            calculateThresholdForBlock(luminances, subWidth, subHeight, width, height, blackPoints, newMatrix, BLOCK_SIZE, BLOCK_SIZE_POWER);
             matrix = newMatrix;
+            return matrix;
         } else {
-            // If the image is too small, fall back to the global histogram approach.
-            matrix = super.getBlackMatrix();
+            return null;
         }
-        return matrix;
     }
 
     @Override
@@ -113,7 +118,9 @@ public final class HybridBinarizerCrude extends GlobalHistogramBinarizer {
                                                    int width,
                                                    int height,
                                                    int[][] blackPoints,
-                                                   BitMatrix matrix) {
+                                                   BitMatrix matrix,
+                                                   int BLOCK_SIZE,
+                                                   int BLOCK_SIZE_POWER) {
         int maxYOffset = height - BLOCK_SIZE;
         int maxXOffset = width - BLOCK_SIZE;
         for (int y = 0; y < subHeight; y++) {
@@ -134,7 +141,7 @@ public final class HybridBinarizerCrude extends GlobalHistogramBinarizer {
                     sum += blackRow[left - 2] + blackRow[left - 1] + blackRow[left] + blackRow[left + 1] + blackRow[left + 2];
                 }
                 int average = sum / 25;
-                thresholdBlock(luminances, xoffset, yoffset, average, width, matrix);
+                thresholdBlock(luminances, xoffset, yoffset, average, width, BLOCK_SIZE, matrix);
             }
         }
     }
@@ -151,6 +158,7 @@ public final class HybridBinarizerCrude extends GlobalHistogramBinarizer {
                                        int yoffset,
                                        int threshold,
                                        int stride,
+                                       int BLOCK_SIZE,
                                        BitMatrix matrix) {
         for (int y = 0, offset = yoffset * stride + xoffset; y < BLOCK_SIZE; y++, offset += stride) {
             for (int x = 0; x < BLOCK_SIZE; x++) {
@@ -171,7 +179,9 @@ public final class HybridBinarizerCrude extends GlobalHistogramBinarizer {
                                                 int subWidth,
                                                 int subHeight,
                                                 int width,
-                                                int height) {
+                                                int height,
+                                                int BLOCK_SIZE,
+                                                int BLOCK_SIZE_POWER) {
         int maxYOffset = height - BLOCK_SIZE;
         int maxXOffset = width - BLOCK_SIZE;
         int[][] blackPoints = new int[subHeight][subWidth];
@@ -188,6 +198,7 @@ public final class HybridBinarizerCrude extends GlobalHistogramBinarizer {
                 int sum = 0;
                 int min = 0xFF;
                 int max = 0;
+                int MIN_DYNAMIC_RANGE = 24;
                 for (int yy = 0, offset = yoffset * width + xoffset; yy < BLOCK_SIZE; yy++, offset += width) {
                     for (int xx = 0; xx < BLOCK_SIZE; xx++) {
                         int pixel = luminances[offset + xx] & 0xFF;

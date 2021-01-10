@@ -1,7 +1,6 @@
 package com.ailiwean.core.zxing.core.qrcode.detector;
 
 import android.os.Build;
-import android.util.Log;
 
 import com.ailiwean.core.zxing.core.DecodeHintType;
 import com.ailiwean.core.zxing.core.NotFoundException;
@@ -92,16 +91,8 @@ class FinderPatternFinder2 {
                     if ((currentState & 1) == 0) { // Counting black pixels
                         if (currentState == 4) { // A winner?
 
-                            int beforeStateCount4 = stateCount[4];
-                            if (stateCount[0] != 0 && stateCount[4] != 0 &&
-                                    Math.abs(stateCount[0] - stateCount[4]) >=
-                                            Math.min(stateCount[0], stateCount[4]) * 0.8f) {
-                                stateCount[0] = Math.min(stateCount[0], stateCount[4]);
-                                stateCount[4] = stateCount[0];
-                            }
-
-                            if (foundPatternCross(stateCount)) { // Yes
-                                boolean confirmed = handlePossibleCenter(stateCount, i, j);
+                            if (foundPatternCross(clearBlackEdgeCount(stateCount))) { // Yes
+                                boolean confirmed = handlePossibleCenter(clearBlackEdgeCount(stateCount), i, j - getBlackEdgeOffset(stateCount));
                                 if (confirmed) {
                                     // Start examining every other line. Checking each line turned out to be too
                                     // expensive and didn't improve performance.
@@ -123,7 +114,6 @@ class FinderPatternFinder2 {
                                         }
                                     }
                                 } else {
-                                    stateCount[4] = beforeStateCount4;
                                     doShiftCounts2(stateCount);
                                     currentState = 3;
                                     continue;
@@ -132,7 +122,6 @@ class FinderPatternFinder2 {
                                 currentState = 0;
                                 doClearCounts(stateCount);
                             } else { // No, shift counts back by two
-                                stateCount[4] = beforeStateCount4;
                                 doShiftCounts2(stateCount);
                                 currentState = 3;
                             }
@@ -144,8 +133,9 @@ class FinderPatternFinder2 {
                     }
                 }
             }
-            if (foundPatternCross(stateCount)) {
-                boolean confirmed = handlePossibleCenter(stateCount, i, maxJ);
+
+            if (foundPatternCross(clearBlackEdgeCount(stateCount))) {
+                boolean confirmed = handlePossibleCenter(clearBlackEdgeCount(stateCount), i, maxJ - getBlackEdgeOffset(stateCount));
                 if (confirmed) {
                     iSkip = stateCount[0];
                     if (hasSkipped) {
@@ -161,6 +151,28 @@ class FinderPatternFinder2 {
         return new FinderPatternInfo(patternInfo);
     }
 
+    /***
+     * 清除黑边
+     * @param statusCounts
+     * @return
+     */
+    private int[] clearBlackEdgeCount(int[] statusCounts) {
+        int[] clone = statusCounts.clone();
+        clone[0] = clone[4] = Math.min(clone[0], clone[4]);
+        return clone;
+    }
+
+    /***
+     *  尾部黑边要向前的偏移量
+     * @param statusCounts
+     * @return
+     */
+    private int getBlackEdgeOffset(int[] statusCounts) {
+        if (statusCounts[4] > statusCounts[0])
+            return statusCounts[4] - statusCounts[0];
+        return 0;
+    }
+
     /**
      * 给定刚刚看到的黑/白/黑/白/黑像素计数和结束位置，
      * 计算此管路的中心位置。
@@ -171,32 +183,9 @@ class FinderPatternFinder2 {
 
     /**
      * @param stateCount 刚读取的黑/白/黑/白/黑像素计数
-     *                   默认计算方式是1:1:3:1:1,这里则成了n:1:3:1:1
      *                   由finder模式使用，被视为匹配
      */
     protected static boolean foundPatternCross(int[] stateCount) {
-//        int totalModuleSize = 0;
-//        for (int i = 1; i < 3; i++) {
-//            int count = stateCount[i];
-//            if (count == 0) {
-//                return false;
-//            }
-//            totalModuleSize += count;
-//        }
-//        if (totalModuleSize < 3) {
-//            return false;
-//        }
-//        //黑色少于白色
-//        if (stateCount[0] < stateCount[1] ||
-//                stateCount[4] < stateCount[3])
-//            return false;
-//
-//        float moduleSize = totalModuleSize / 3.0f;
-//        float maxVariance = moduleSize / 2.0f;
-//        return Math.abs(moduleSize - stateCount[1]) < maxVariance &&
-//                Math.abs(3.0f * moduleSize - stateCount[2]) < 3 * maxVariance &&
-//                Math.abs(moduleSize - stateCount[3]) < maxVariance;
-
         int totalModuleSize = 0;
         for (int i = 0; i < 5; i++) {
             int count = stateCount[i];
@@ -342,9 +331,10 @@ class FinderPatternFinder2 {
             i++;
         }
 
-        if (stateCount[4] != 0) {
-            stateCount[0] = Math.min(stateCount[0], stateCount[4]);
-            stateCount[4] = stateCount[0];
+        if (stateCount[4] != 0 && stateCount[0] != 0) {
+            stateCount[0] = stateCount[4] = Math.min(
+                    stateCount[0], stateCount[4]
+            );
         }
 
         if (stateCount[4] == 0) {
@@ -429,11 +419,11 @@ class FinderPatternFinder2 {
         }
 
         if (stateCount[0] != 0 && stateCount[4] != 0) {
-            stateCount[0] = Math.min(stateCount[0], stateCount[4]);
-            if (stateCount[4] != stateCount[0]) {
-                i -= (stateCount[4] - stateCount[0]);
-                stateCount[4] = stateCount[0];
+            //下方为黑边
+            if (stateCount[0] < stateCount[4]) {
+                i -= stateCount[4] - stateCount[0];
             }
+            stateCount[0] = stateCount[4] = Math.min(stateCount[0], stateCount[4]);
         }
 
         if (stateCount[4] >= maxCount) {
@@ -442,11 +432,11 @@ class FinderPatternFinder2 {
 
         // If we found a finder-pattern-like section, but its size is more than 40% different than
         // the original, assume it's a false positive
-//        int stateCountTotal = stateCount[0] + stateCount[1] + stateCount[2] + stateCount[3] +
-//                stateCount[4];
-//        if (5 * Math.abs(stateCountTotal - originalStateCountTotal) >= 2 * originalStateCountTotal) {
-//            return Float.NaN;
-//        }
+        int stateCountTotal = stateCount[0] + stateCount[1] + stateCount[2] + stateCount[3] +
+                stateCount[4];
+        if (5 * Math.abs(stateCountTotal - originalStateCountTotal) >= 2 * originalStateCountTotal) {
+            return Float.NaN;
+        }
 
         return foundPatternCross(stateCount) ? centerFromEnd(stateCount, i) : Float.NaN;
     }
@@ -510,13 +500,11 @@ class FinderPatternFinder2 {
             j++;
         }
 
-
         if (stateCount[0] != 0 && stateCount[4] != 0) {
-            stateCount[0] = Math.min(stateCount[0], stateCount[4]);
-            if (stateCount[4] != stateCount[0]) {
+            if (stateCount[0] < stateCount[4]) {
                 j -= (stateCount[4] - stateCount[0]);
-                stateCount[4] = stateCount[0];
             }
+            stateCount[0] = stateCount[4] = Math.min(stateCount[0], stateCount[4]);
         }
 
         if (stateCount[4] >= maxCount) {
@@ -525,11 +513,11 @@ class FinderPatternFinder2 {
 
         // If we found a finder-pattern-like section, but its size is significantly different than
         // the original, assume it's a false positive
-//        int stateCountTotal = stateCount[0] + stateCount[1] + stateCount[2] + stateCount[3] +
-//                stateCount[4];
-//        if (5 * Math.abs(stateCountTotal - originalStateCountTotal) >= originalStateCountTotal) {
-//            return Float.NaN;
-//        }
+        int stateCountTotal = stateCount[0] + stateCount[1] + stateCount[2] + stateCount[3] +
+                stateCount[4];
+        if (5 * Math.abs(stateCountTotal - originalStateCountTotal) >= originalStateCountTotal) {
+            return Float.NaN;
+        }
 
         return foundPatternCross(stateCount) ? centerFromEnd(stateCount, j) : Float.NaN;
     }

@@ -1,8 +1,11 @@
 package com.ailiwean.core;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Package: com.ailiwean.core
@@ -11,36 +14,30 @@ import java.util.concurrent.TimeUnit;
  * @Author: SWY
  * @CreateDate: 2020/4/19 5:46 PM
  */
-public class WorkThreadServer {
+public class WorkThreadServer implements ExecutorEnd {
 
     private ThreadPoolExecutor executor;
 
     private WorkThreadServer() {
-        boolean hasGrayScale;
-        try {
-            Class.forName(Config.GARY_SCALE_PATH);
-            hasGrayScale = true;
-        } catch (ClassNotFoundException e) {
-            hasGrayScale = false;
-        }
-
-        if (!hasGrayScale)
+        if (!Config.hasDepencidesScale())
             executor = new ThreadPoolExecutor(
-                    corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
-                    new ArrayBlockingQueue<>(maximumPoolSize, true),
+                    corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS,
+                    new ArrayBlockingQueue<>(queueMaxSize, true),
                     new ThreadPoolExecutor.DiscardOldestPolicy());
         else executor = new RespectScalePool(
-                corePoolSize, corePoolSize, keepAliveTime, TimeUnit.SECONDS,
-                RespectScaleQueue.create(maximumPoolSize / 3 * 2, maximumPoolSize / 3),
-                new RespectScalePool.RespectScalePolicy());
+                corePoolSize, maximumPoolSize, keepAliveTime, TimeUnit.SECONDS,
+                RespectScaleQueue.create(queueMaxSize, queueMaxSize),
+                new RespectScalePool.RespectScalePolicy(this), this);
     }
 
     //参数初始化
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     //核心线程数量大小
-    private static final int corePoolSize = Math.max(2, Math.min(CPU_COUNT - 1, 4));
+    private static final int corePoolSize = Math.max(2, CPU_COUNT / 2);
     //线程池最大容纳线程数
-    private static final int maximumPoolSize = CPU_COUNT * 2 + 1;
+    private static final int maximumPoolSize = corePoolSize;
+    //线程池队列长度
+    private static final int queueMaxSize = Math.max(4, maximumPoolSize);
     //线程空闲后的存活时长
     private static final int keepAliveTime = 30;
 
@@ -48,9 +45,15 @@ public class WorkThreadServer {
         return new WorkThreadServer();
     }
 
-    public void post(Runnable runnable) {
+    public void post(TypeRunnable typeRunnable) {
         if (executor != null)
-            executor.execute(runnable);
+            executor.execute(typeRunnable);
+    }
+
+    private final Map<String, Packing> packingMap = new HashMap<>();
+
+    public void regPostListBack(String tagId, int size, Runnable runnable) {
+        packingMap.put(tagId, new Packing(tagId, size, runnable));
     }
 
     public void quit() {
@@ -66,4 +69,36 @@ public class WorkThreadServer {
             executor.getQueue().clear();
     }
 
+    @Override
+    public void executorEnd(TypeRunnable typeRunnable) {
+
+        if (typeRunnable.type == TypeRunnable.SCALE)
+            return;
+
+        if (packingMap.size() == 0)
+            return;
+        
+        Packing packing = packingMap.get(typeRunnable.tagId);
+
+        if (packing == null)
+            return;
+
+        if (packing.completeNum.decrementAndGet() == 0) {
+            packing.postListBack.run();
+            packing.postListBack = null;
+
+        }
+    }
+
+    private static class Packing {
+        private AtomicInteger completeNum;
+        private Runnable postListBack;
+        private String tagId;
+
+        public Packing(String tagId, int size, Runnable runnable) {
+            this.tagId = tagId;
+            this.completeNum = new AtomicInteger(size);
+            this.postListBack = runnable;
+        }
+    }
 }

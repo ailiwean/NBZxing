@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
  * @Author:         SWY
  * @CreateDate:     2020/8/9 6:33 PM
  */
-class GrayScaleDispatch : Dispatch {
+object GrayScaleDispatch : Dispatch {
 
     private var grayScaleProcess = ArrayList<Dispatch>()
 
@@ -23,8 +23,13 @@ class GrayScaleDispatch : Dispatch {
         grayScaleProcess.add(OverBrightScale())
         grayScaleProcess.add(OverDarkScale())
         grayScaleProcess.add(RevGrayScale())
-        //grayScaleProcess.add(InterruptGrayScale())
-        grayScaleProcess.add(OverlyGrayScale())
+//        grayScaleProcess.add(OverlyGrayScale())
+        grayScaleProcess.add(InterruptGrayScale())
+//        grayScaleProcess.add(ReductionAreaScale(this))
+    }
+
+    fun getScaleList(): List<Dispatch> {
+        return grayScaleProcess
     }
 
     override fun dispatch(data: ByteArray?, width: Int, height: Int): ByteArray {
@@ -35,11 +40,11 @@ class GrayScaleDispatch : Dispatch {
     override fun dispatch(data: ByteArray?, width: Int, height: Int, rect: Rect?): ByteArray {
 
         if (rect == null || (rect.left == 0 && rect.right == 0) ||
-                rect.top == 0 && rect.bottom == 0)
+                (rect.top == 0 && rect.bottom == 0))
             return dispatch(data, width, height)
 
         return grayScaleProcess[random.nextInt(grayScaleProcess.size)].dispatch(
                 data, width, height, rect)
-
     }
+
 }

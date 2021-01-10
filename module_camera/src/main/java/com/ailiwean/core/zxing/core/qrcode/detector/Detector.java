@@ -16,6 +16,8 @@
 
 package com.ailiwean.core.zxing.core.qrcode.detector;
 
+import android.util.Log;
+
 import com.ailiwean.core.zxing.core.DecodeHintType;
 import com.ailiwean.core.zxing.core.FormatException;
 import com.ailiwean.core.zxing.core.NotFoundException;
@@ -131,7 +133,6 @@ public class Detector {
                 createTransform(topLeft, topRight, bottomLeft, alignmentPattern, dimension);
 
         BitMatrix bits = sampleGrid(image, transform, dimension);
-
         ResultPoint[] points;
         if (alignmentPattern == null) {
             points = new ResultPoint[]{bottomLeft, topLeft, topRight};

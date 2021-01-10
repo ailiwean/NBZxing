@@ -12,10 +12,9 @@ import android.graphics.Rect;
 class RevGrayScale implements Dispatch {
     @Override
     public byte[] dispatch(byte[] data, int width, int height) {
-        byte[] newByte = data.clone();
         for (int i = 0; i < width * height; i++)
-            newByte[i] = (byte) (255 - newByte[i] & 0xff);
-        return newByte;
+            data[i] = (byte) (255 - data[i] & 0xff);
+        return data;
     }
 
     @Override
