@@ -2,16 +2,14 @@ package com.ailiwean.core.view
 
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Looper
 import android.os.Message
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
 import com.ailiwean.core.Config.*
 import com.ailiwean.core.Result
 import com.ailiwean.core.able.AbleManager
@@ -43,6 +41,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
 
         //配置扫码类型
         initScanType()
+
     }
 
     /***
@@ -107,10 +106,11 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
                     setZoom(message.obj.toString().toFloat())
                 }
 
-                //实时位置
+                //实时探测点位置
                 RT_LOCATION -> {
-                    poinF = message.obj as Array<PointF>
-                    invalidate()
+                    //数组长度为3
+//                    poinF = message.obj as Array<PointF>
+//                    invalidate()
                 }
             }
         }
@@ -118,23 +118,25 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
         return true
     }
 
-    var poinF: Array<PointF>? = null
+//    var poinF: Array<PointF>? = null
 
-    val paint by lazy {
-        val paint = Paint()
-        paint.color = Color.RED
-        paint.style = Paint.Style.FILL
-        paint
-    }
-
-
-    override fun draw(canvas: Canvas?) {
-        super.draw(canvas)
-        if (poinF != null)
-            poinF?.forEach {
-                canvas?.drawCircle(it.x, it.y, 5f, paint)
-            }
-    }
+//    val paint by lazy {
+//        val paint = Paint()
+//        paint.color = Color.RED
+//        paint.textSize = 15f
+//        paint.style = Paint.Style.FILL
+//        paint
+//    }
+//
+//
+//    override fun draw(canvas: Canvas?) {
+//        super.draw(canvas)
+//        if (poinF != null)
+//            poinF?.forEachIndexed { index, it ->
+////                canvas?.drawText("$index", pointF.x, pointF.y, paint)
+//                canvas?.drawCircle(it.x, it.y, 5f, paint)
+//            }
+//    }
 
     /***
      * 相机采集数据实时回调
@@ -269,7 +271,8 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      * 配置扫码类型
      */
     private fun initScanType() {
-        scanTypeConfig = getScanType()
+        scanTypeConfig = configScanType()
+        isSupportBlackEdge = isSupportBlackEdgeQrScan()
     }
 
     /***
@@ -317,8 +320,16 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     /***
      * 提供扫码类型
      */
-    open fun getScanType(): ScanTypeConfig {
+    open fun configScanType(): ScanTypeConfig {
         return ScanTypeConfig.HIGH_FREQUENCY
+    }
+
+    /***
+     * 是否支持黑边二维码识别-会导致缩放变得灵敏
+     * 默认支持
+     */
+    open fun isSupportBlackEdgeQrScan(): Boolean {
+        return true
     }
 
     /***

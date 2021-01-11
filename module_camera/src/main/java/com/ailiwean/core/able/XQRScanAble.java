@@ -29,7 +29,7 @@ public class XQRScanAble extends PixsValuesAble {
         if (result != null && result.getText() != null)
             return;
         result = toLaunchParse(source.getHybridBinary());
-        if (result != null && !"".equals(result.getText()) && result.getText() != null) {
+        if (result != null && result.getText() != null && !"".equals(result.getText())) {
             sendMessage(Config.RT_LOCATION,
                     ScanHelper.rotatePoint(result.getResultPoints()));
             sendMessage(Config.SCAN_RESULT, covertResult(result));

@@ -36,12 +36,12 @@ import java.util.Map;
  *
  * @author Sean Owen
  */
-public class Detector {
+public class Detector2 {
 
     private final BitMatrix image;
     private ResultPointCallback resultPointCallback;
 
-    public Detector(BitMatrix image) {
+    public Detector2(BitMatrix image) {
         this.image = image;
     }
 
@@ -77,7 +77,7 @@ public class Detector {
         resultPointCallback = hints == null ? null :
                 (ResultPointCallback) hints.get(DecodeHintType.NEED_RESULT_POINT_CALLBACK);
 
-        FinderPatternFinder finder = new FinderPatternFinder(image, resultPointCallback);
+        FinderPatternFinder2 finder = new FinderPatternFinder2(image, resultPointCallback);
         FinderPatternInfo info = finder.find(hints);
 
         return processFinderPatternInfo(info);
@@ -90,7 +90,8 @@ public class Detector {
         FinderPattern topRight = info.getTopRight();
         FinderPattern bottomLeft = info.getBottomLeft();
 
-        float moduleSize = calculateModuleSize(topLeft, topRight, bottomLeft);
+        float scaleRatio = (float) (Math.random() * 0.6f + 0.3f);
+        float moduleSize = calculateModuleSize(topLeft, topRight, bottomLeft) * scaleRatio;
         if (moduleSize < 1.0f) {
             throw NotFoundException.getNotFoundInstance();
         }

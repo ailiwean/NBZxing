@@ -30,7 +30,7 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
      * 4 ScanTypeConfig.TWO_DIMENSION 所有二维码格式
      * 5 ScanTypeConfig.ONE_DIMENSION 所有一维码格式
      */
-    override fun getScanType(): ScanTypeConfig {
+    override fun configScanType(): ScanTypeConfig {
         return ScanTypeConfig.HIGH_FREQUENCY
     }
 
@@ -47,4 +47,12 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
             Toast.makeText(context, "未扫描到内容", Toast.LENGTH_SHORT).show()
         else Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
     }
+
+    /***
+     *  是否支持黑边二维码扫描
+     */
+    override fun isSupportBlackEdgeQrScan(): Boolean {
+        return true
+    }
+
 }

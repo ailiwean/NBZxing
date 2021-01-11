@@ -16,6 +16,7 @@
 
 package com.ailiwean.core.zxing.core.qrcode;
 
+import com.ailiwean.core.Config;
 import com.ailiwean.core.zxing.core.BarcodeFormat;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
 import com.ailiwean.core.zxing.core.ChecksumException;
@@ -32,6 +33,7 @@ import com.ailiwean.core.zxing.core.common.DetectorResult;
 import com.ailiwean.core.zxing.core.qrcode.decoder.Decoder;
 import com.ailiwean.core.zxing.core.qrcode.decoder.QRCodeDecoderMetaData;
 import com.ailiwean.core.zxing.core.qrcode.detector.Detector;
+import com.ailiwean.core.zxing.core.qrcode.detector.Detector2;
 
 import java.util.List;
 import java.util.Map;
@@ -83,7 +85,14 @@ public class QRCodeReader implements Reader {
             try {
                 detectorResult = new Detector(image.getBlackMatrix()).detect(hints);
             } catch (NotFoundException e) {
-                return null;
+                if (Config.isSupportBlackEdge) {
+                    try {
+                        detectorResult = new Detector2(image.getBlackMatrix()).detect(hints);
+                    } catch (NotFoundException notFoundException) {
+                        return null;
+                    }
+                } else
+                    return null;
             }
             points = detectorResult.getPoints();
             try {
@@ -207,7 +216,8 @@ public class QRCodeReader implements Reader {
         return bits;
     }
 
-    private static float moduleSize(int[] leftTopBlack, BitMatrix image) throws NotFoundException {
+    private static float moduleSize(int[] leftTopBlack, BitMatrix image) throws
+            NotFoundException {
         int height = image.getHeight();
         int width = image.getWidth();
         int x = leftTopBlack[0];

@@ -33,6 +33,7 @@ class FinderPatternFinder2 {
     private final List<FinderPattern> possibleCenters;
     private boolean hasSkipped;
     private final int[] crossCheckStateCount;
+    private final int[] clearStateCount;
     private final ResultPointCallback resultPointCallback;
 
     /**
@@ -48,6 +49,7 @@ class FinderPatternFinder2 {
         this.image = image;
         this.possibleCenters = new ArrayList<>();
         this.crossCheckStateCount = new int[5];
+        clearStateCount = new int[5];
         this.resultPointCallback = resultPointCallback;
     }
 
@@ -133,7 +135,6 @@ class FinderPatternFinder2 {
                     }
                 }
             }
-
             if (foundPatternCross(clearBlackEdgeCount(stateCount))) {
                 boolean confirmed = handlePossibleCenter(clearBlackEdgeCount(stateCount), i, maxJ - getBlackEdgeOffset(stateCount));
                 if (confirmed) {
@@ -145,7 +146,6 @@ class FinderPatternFinder2 {
                 }
             }
         }
-
         FinderPattern[] patternInfo = selectBestPatterns();
         ResultPoint.orderBestPatterns(patternInfo);
         return new FinderPatternInfo(patternInfo);
@@ -157,10 +157,15 @@ class FinderPatternFinder2 {
      * @return
      */
     private int[] clearBlackEdgeCount(int[] statusCounts) {
-        int[] clone = statusCounts.clone();
-        clone[0] = clone[4] = Math.min(clone[0], clone[4]);
-        return clone;
+        doClearCopy(statusCounts);
+        clearStateCount[0] = clearStateCount[4] = (int) (Math.min(clearStateCount[0], clearStateCount[4]));
+        return clearStateCount;
     }
+
+    private void doClearCopy(int[] stateCount) {
+        System.arraycopy(stateCount, 0, clearStateCount, 0, stateCount.length);
+    }
+
 
     /***
      *  尾部黑边要向前的偏移量
@@ -168,8 +173,11 @@ class FinderPatternFinder2 {
      * @return
      */
     private int getBlackEdgeOffset(int[] statusCounts) {
-        if (statusCounts[4] > statusCounts[0])
-            return statusCounts[4] - statusCounts[0];
+        if (statusCounts[0] / (float) statusCounts[4] > 2f ||
+                statusCounts[0] / (float) statusCounts[4] < 0.5f) {
+            if (statusCounts[4] > statusCounts[0])
+                return statusCounts[4] - statusCounts[0];
+        }
         return 0;
     }
 
@@ -194,13 +202,9 @@ class FinderPatternFinder2 {
             }
             totalModuleSize += count;
         }
-        if (totalModuleSize < 7) {
+        if (totalModuleSize < 14) {
             return false;
         }
-
-        if (stateCount[1] == 0 || stateCount[2] == 0
-                || stateCount[3] == 0 || stateCount[4] == 0)
-            return false;
 
         float moduleSize = totalModuleSize / 7.0f;
         float maxVariance = moduleSize / 2.0f;
@@ -227,7 +231,7 @@ class FinderPatternFinder2 {
             }
             totalModuleSize += count;
         }
-        if (totalModuleSize < 7) {
+        if (totalModuleSize < 14) {
             return false;
         }
         float moduleSize = totalModuleSize / 7.0f;
@@ -557,7 +561,6 @@ class FinderPatternFinder2 {
     protected final boolean handlePossibleCenter(int[] stateCount, int i, int j) {
         int stateCountTotal = stateCount[0] + stateCount[1] + stateCount[2] + stateCount[3] +
                 stateCount[4];
-
         float centerJ = centerFromEnd(stateCount, j);
         float centerI = crossCheckVertical(i, (int) centerJ, stateCount[2], stateCountTotal);
         if (!Float.isNaN(centerI)) {
@@ -745,7 +748,6 @@ class FinderPatternFinder2 {
                 }
             }
         }
-
         if (distortion == Double.MAX_VALUE) {
             throw NotFoundException.getNotFoundInstance();
         }

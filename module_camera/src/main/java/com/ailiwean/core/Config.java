@@ -29,7 +29,7 @@ public class Config {
     //自动缩放
     public static final int AUTO_ZOOM = 2;
 
-    //实时位置
+    //实时二维码探测点位置
     public static final int RT_LOCATION = 3;
 
     //###############################################
@@ -63,6 +63,9 @@ public class Config {
         return displayOrientation == 270;
     }
 
+    /*###############################################*/
+
+
     //灰度算法类路径
     public static String GARY_SCALE_PATH = "com.ailiwean.module_grayscale.GrayScaleDispatch";
 
@@ -74,4 +77,10 @@ public class Config {
         }
         return true;
     }
+
+    /*###############################################*/
+
+    //是否支持黑边二维码识别
+    public static boolean isSupportBlackEdge = true;
+
 }

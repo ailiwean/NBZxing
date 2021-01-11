@@ -29,7 +29,7 @@ public class XQRScanCrudeAble extends PixsValuesAble {
         if (result != null && result.getText() != null)
             return;
         result = toLaunchParse(source.getHybridBinaryCurde());
-        if (result != null && !"".equals(result.getText()) && result.getText() != null) {
+        if (result != null && result.getText() != null && !"".equals(result.getText())) {
             sendMessage(Config.SCAN_RESULT, covertResult(result));
         }
     }

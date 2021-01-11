@@ -50,10 +50,8 @@ public class XQRScanZoomAble extends XQRScanAble {
         } else if (lenght < Config.scanRect.getPreX() / 3 * 2) {
             Config.currentZoom += 0.07;
         }
-
         zoomTime = System.currentTimeMillis();
         lastLenght = lenght;
-
-        //  sendMessage(Config.AUTO_ZOOM, Config.currentZoom + "");
+        sendMessage(Config.AUTO_ZOOM, Config.currentZoom + "");
     }
 }

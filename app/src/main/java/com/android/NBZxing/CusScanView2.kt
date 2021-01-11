@@ -30,7 +30,7 @@ class CusScanView2 @JvmOverloads constructor(context: Context, attributeSet: Att
      * 4 ScanTypeConfig.TWO_DIMENSION 所有二维码格式
      * 5 ScanTypeConfig.ONE_DIMENSION 所有一维码格式
      */
-    override fun getScanType(): ScanTypeConfig {
+    override fun configScanType(): ScanTypeConfig {
         return ScanTypeConfig.HIGH_FREQUENCY
     }
 
