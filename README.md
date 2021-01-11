@@ -49,14 +49,14 @@
 
 #### 测试二维码
 
-| 标准反色  | ![标准反色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/82984899-9f981600-a025-11ea-9fe6-ad9fead67afa.png "标准反色")  |
+| 标准反色  | ![82984899-9f981600-a025-11ea-9fe6-ad9fead67afa.png](https://i.loli.net/2021/01/11/cmigtU6xebQW1yK.png)  |
 | ------------ | ------------ |
-| 彩色  | ![彩色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/caise.png "彩色")  |
-| 暗色  | ![暗色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_dart.png "暗色")  |
-|  曝光 |  ![曝光](https://github.com/ailiwean/NBZxing/blob/master/qr_test/over_light.png "曝光") |
-|  浅色 | ![浅色](https://github.com/ailiwean/NBZxing/blob/master/qr_test/test_gray.png "浅色")  |
-|  间断 | ![间断](https://github.com/ailiwean/NBZxing/blob/master/qr_test/test_inter.png "间断")  |
-|  黑边 | ![黑边](https://github.com/ailiwean/NBZxing/blob/master/qr_test/test2.png "黑边")  |
+| 彩色  | ![caise.png](https://i.loli.net/2021/01/11/jHDvJePlbtqZ8E2.png)  |
+| 暗色  | ![over_dart.png](https://i.loli.net/2021/01/11/fmg7UPHnlk5ZqyQ.png)  |
+|  曝光 | ![over_light.png](https://i.loli.net/2021/01/11/3eBboifhlCGQgwH.png) |
+|  浅色 | ![test_gray.png](https://i.loli.net/2021/01/11/CAgGc64I7PDkioe.png)  |
+|  间断 | ![test_inter.png](https://i.loli.net/2021/01/11/2OlTjvscagUxkbL.png)  |
+|  黑边 | ![test2.png](https://i.loli.net/2021/01/11/iMGJaTS6vkb1YWK.png)  |
 
 
 #### 联系我
@@ -66,7 +66,7 @@
 
 | 😊  |  😊 |
 | ------------ | ------------ |
-|  请喝咖啡 | ![pay](https://github.com/ailiwean/NBZxing/blob/master/qr_test/pay.png "pay")  |
+|  请喝咖啡 | ![pay.png](https://i.loli.net/2021/01/11/P13qOdAlpyivuEs.png)  |
 
 
 
