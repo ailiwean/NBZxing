@@ -39,9 +39,9 @@
 感谢[@guangming](https://github.com/guangmingxiong9999)提供近百台机型应用测试🙏
 
 #### 下载体验
-![在这里插入图片描述](https://imgconvert.csdnimg.cn/aHR0cHM6Ly93d3cucGd5ZXIuY29tL2FwcC9xcmNvZGUvaWlabg?x-oss-process=image/format,png)
+![在这里插入图片描述](https://qr.api.cli.im/newqr/create?data=http%3A%2F%2Fqr61.cn%2FonpFym%2FqO8gtVw&level=H&transparent=false&bgcolor=%23ffffff&forecolor=%23000000&blockpixel=12&marginblock=1&logourl=&logoshape=no&size=260&kid=cliim&key=41c85caf6d8d48b4986ff572548e26e3)
 
-- 安装密码1234
+- doc文件后缀改为apk安装
 
 ###### 😊 <自从写了这个库后，感觉身体与时间被掏空！！真的是花费了太多精力。如果觉得还凑合不错，强烈请求来上一个star ，开源不易，多多鼓励，感谢！>  😊
 
