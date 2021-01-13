@@ -39,9 +39,9 @@
 感谢[@guangming](https://github.com/guangmingxiong9999)提供近百台机型应用测试🙏
 
 #### 下载体验
-![在这里插入图片描述](https://qr.api.cli.im/newqr/create?data=http%3A%2F%2Fqr61.cn%2FonpFym%2FqO8gtVw&level=H&transparent=false&bgcolor=%23ffffff&forecolor=%23000000&blockpixel=12&marginblock=1&logourl=&logoshape=no&size=260&kid=cliim&key=41c85caf6d8d48b4986ff572548e26e3)
+![在这里插入图片描述](https://qr.api.cli.im/newqr/create?data=http%3A%2F%2Fqr61.cn%2FonpFym%2FqAYr5ST&level=H&transparent=0&bgcolor=%23FFFFFF&forecolor=%234caf50&blockpixel=12&marginblock=2&logourl=https%3A%2F%2Fmhimg.clewm.net%2Fcli%2Fimages%2Fbeautify%2Fnew%2Flogo%2F25.png&size=400&logoshape=ellipse&embed_text_fontfamily=simhei.ttc&foretype=1&eye_use_fore=1&background=images%2Fbackground%2Fbg8.png&wper=0.58&hper=0.58&tper=0.21&lper=0.21&qrcode_eyes=circle_star&outcolor=%23239ae9&incolor=%23239ae9&body_type=17&qr_rotate=0&text=&fontfamily=msyh.ttf&fontsize=30&fontcolor=&logo_pos=0&kid=bizcliim&time=1610537973&key=5a908945a809244763d27948301487b0)
 
-- doc文件后缀改为apk安装
+- 手动改文件后缀改为apk
 
 ###### 😊 <自从写了这个库后，感觉身体与时间被掏空！！真的是花费了太多精力。如果觉得还凑合不错，强烈请求来上一个star ，开源不易，多多鼓励，感谢！>  😊
 
