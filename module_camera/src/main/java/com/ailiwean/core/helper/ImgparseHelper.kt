@@ -34,6 +34,7 @@ object ImgparseHelper {
                 }.let {
                     ImageDecoder.decodeBitmap(it) { decoder, _, _ ->
                         decoder.setTargetSampleSize(2)
+                        decoder.isMutableRequired = true
                     }
                 }
             }
