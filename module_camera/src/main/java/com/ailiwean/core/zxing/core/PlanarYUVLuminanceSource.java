@@ -17,6 +17,7 @@
 package com.ailiwean.core.zxing.core;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.ailiwean.core.zxing.core.common.HybridBinarizer;
 import com.ailiwean.core.zxing.core.common.HybridBinarizerCrude;

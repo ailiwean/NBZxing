@@ -154,18 +154,22 @@ public class CustomMultiFormatReader implements Reader {
     }
 
     private Result decodeInternal(BinaryBitmap image) {
+        Result resultFinal = null;
         if (readers != null) {
             for (Reader reader : readers) {
                 try {
-                    return reader.decode(image, hints);
+                    Result result = reader.decode(image, hints);
+                    if (result != null)
+                        resultFinal = result;
+                    if (result != null && result.getText() != null)
+                        return resultFinal;
                 } catch (ReaderException re) {
                     // continue
                 } catch (Exception ignored) {
-
                 }
             }
         }
-        return null;
+        return resultFinal;
     }
 
 
