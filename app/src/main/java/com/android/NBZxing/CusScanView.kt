@@ -42,11 +42,12 @@ class CusScanView @JvmOverloads constructor(context: Context, attributeSet: Attr
         return AspectRatio.of(16, 9)
     }
 
-    override fun resultBackFile(content: String) {
-        if (content.isEmpty())
+    override fun resultBackFile(content: com.ailiwean.core.zxing.core.Result?) {
+        if (content == null)
             Toast.makeText(context, "未扫描到内容", Toast.LENGTH_SHORT).show()
-        else Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
+        else Toast.makeText(context, content.text, Toast.LENGTH_SHORT).show()
     }
+
 
     /***
      *  是否支持黑边二维码扫描

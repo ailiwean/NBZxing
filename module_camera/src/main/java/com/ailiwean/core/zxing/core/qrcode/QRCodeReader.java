@@ -70,9 +70,9 @@ public class QRCodeReader implements Reader {
     public final Result decode(BinaryBitmap image, Map<DecodeHintType, ?> hints)
             throws ChecksumException, FormatException {
         DecoderResult decoderResult;
-        ResultPoint[] points = null;
+        ResultPoint[] points;
         if (hints != null && hints.containsKey(DecodeHintType.PURE_BARCODE)) {
-            BitMatrix bits = null;
+            BitMatrix bits;
             try {
                 bits = extractPureBits(image.getBlackMatrix());
             } catch (NotFoundException e) {

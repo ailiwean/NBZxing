@@ -15,9 +15,6 @@ public class BitmapLuminanceSource extends LuminanceSource {
 
     public BitmapLuminanceSource(Bitmap bitmap) {
         super(bitmap.getWidth(), bitmap.getHeight());
-        Bitmap ori = bitmap;
-        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
-        ori.recycle();
         int[] data = new int[bitmap.getWidth() * bitmap.getHeight()];
         bitmap.getPixels(data, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
         source = new RGBLuminanceSource(bitmap.getWidth(), bitmap.getHeight(), data);

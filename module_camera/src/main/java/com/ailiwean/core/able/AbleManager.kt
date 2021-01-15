@@ -58,10 +58,6 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         executeToParseWay2(data, dataWidth, dataHeight, ScanHelper.getScanByteRect(dataWidth, dataHeight))
     }
 
-    override fun cusActionNoCrop(data: ByteArray, dataWidth: Int, dataHeight: Int) {
-        executeToParseWay2(data, dataWidth, dataHeight, ScanHelper.getScanByteRect(dataWidth, dataHeight))
-    }
-
     /***
      * 灰度处理后解析
      */

@@ -41,12 +41,6 @@ public abstract class PixsValuesAble {
     }
 
     /***
-     * 相册数据解析
-     */
-    protected void cusActionNoCrop(byte[] data, int dataWidth, int dataHeight) {
-    }
-
-    /***
      * 需要解析二维码子类重写这个
      * @param source
      */

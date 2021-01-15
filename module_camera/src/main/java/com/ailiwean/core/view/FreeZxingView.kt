@@ -244,9 +244,9 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
 
     /***
      * 图片文件扫码
-     * 扫码失败返回空字符串，详见{ @link #parseBitmap}
+     * 扫码失败返回null，详见{ @link #parseBitmap}
      */
-    protected open fun resultBackFile(content: String) {}
+    protected open fun resultBackFile(content: com.ailiwean.core.zxing.core.Result?) {}
 
     /***
      * 启动相机后的操作
@@ -304,14 +304,14 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
 
     private fun onParseResult(result: com.ailiwean.core.zxing.core.Result?) {
 
-        if (result != null) {
+        if (result != null && !result.text.isNullOrEmpty()) {
             mainHand.post {
-                resultBackFile(result.text)
+                resultBackFile(result)
                 scanSucHelper()
             }
         } else {
             mainHand.post {
-                resultBackFile("")
+                resultBackFile(null)
                 unProscibeCamera()
             }
         }
