@@ -74,7 +74,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
                     server.post(TypeRunnable.create(
                             able.isImportant(false),
                             //区分类型
-                            TypeRunnable.SCALE, source.tagId) {
+                            TypeRunnable.SCALE) {
                         able.needParseDeploy(source, false)
                     })
                 }
@@ -101,42 +101,11 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
                 server.post(TypeRunnable.create(
                         able.isImportant(true),
                         //区分类型
-                        TypeRunnable.NORMAL, source.tagId) {
+                        TypeRunnable.NORMAL) {
                     able.cusAction(data, dataWidth, dataHeight, true)
                     able.needParseDeploy(source, true)
                 })
         }
-    }
-
-    /***
-     * 任务调度
-     * 方式一： 原始数据扫描后基于原始数据进行灰度变换后再处理
-     *  这种方式占用内存最少，速度有点慢
-     */
-    private fun executeToParseWay1(data: ByteArray, dataWidth: Int, dataHeight: Int, rect: Rect) {
-        //生成全局YUVLuminanceSource
-        val source = generateGlobeYUVLuminanceSource(data, dataWidth, dataHeight, rect) ?: return
-        var typeRunList = ArrayList<TypeRunnable>()
-        ableList.forEach { able ->
-            if (able.isCycleRun(true))
-                TypeRunnable.create(
-                        //任务是否为重要的(不会被线程池舍弃)
-                        able.isImportant(true),
-                        //区分类型
-                        TypeRunnable.NORMAL, source.tagId) {
-                    able.cusAction(data, dataWidth, dataHeight, true)
-                    able.needParseDeploy(source, true)
-                }.apply {
-                    typeRunList.add(this)
-                }
-        }
-        //原始任务结束后回调
-        server.regPostListBack(source.tagId, typeRunList.size) {
-            //灰度处理与解析
-            grayscaleProcess(source)
-        }
-        //执行原始数据解析
-        originProcess(typeRunList)
     }
 
     /***

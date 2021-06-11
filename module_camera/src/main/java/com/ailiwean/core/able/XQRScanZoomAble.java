@@ -30,7 +30,7 @@ public class XQRScanZoomAble extends XQRScanAble {
         if (result == null)
             return;
 
-        if (result != null && result.getText() != null)
+        if (result.getText() != null)
             return;
 
         ResultPoint[] points = result.getResultPoints();
@@ -38,9 +38,8 @@ public class XQRScanZoomAble extends XQRScanAble {
             return;
 
         int lenght = ScanHelper.getQrLenght(points);
-        if (points != null && points.length >= 3)
-            sendMessage(Config.RT_LOCATION,
-                    ScanHelper.rotatePoint(points));
+        sendMessage(Config.RT_LOCATION,
+                ScanHelper.rotatePoint(points));
 
         //自动变焦时间间隔为500ms
         if (System.currentTimeMillis() - zoomTime < 500)

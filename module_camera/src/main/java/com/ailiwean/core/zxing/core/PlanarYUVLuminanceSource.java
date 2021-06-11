@@ -16,9 +16,6 @@
 
 package com.ailiwean.core.zxing.core;
 
-import android.text.TextUtils;
-import android.util.Log;
-
 import com.ailiwean.core.zxing.core.common.HybridBinarizer;
 import com.ailiwean.core.zxing.core.common.HybridBinarizerCrude;
 
@@ -161,13 +158,5 @@ public final class PlanarYUVLuminanceSource extends LuminanceSource {
      */
     public PlanarYUVLuminanceSourceRotate onlyCopyWarpRotate() {
         return new PlanarYUVLuminanceSourceRotate(matrix, getWidth(), getHeight());
-    }
-
-    String tagId;
-
-    public String getTagId() {
-        if (TextUtils.isEmpty(tagId))
-            tagId = System.currentTimeMillis() + "";
-        return tagId;
     }
 }

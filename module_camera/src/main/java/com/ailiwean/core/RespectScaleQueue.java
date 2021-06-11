@@ -22,12 +22,11 @@ class RespectScaleQueue<T extends TypeRunnable> implements BlockingQueue<T>, jav
     ArrayBlockingQueue<T> normalQueue;
     ArrayBlockingQueue<T> scaleQueue;
 
-    int ratio;
+    int ratio = 1;
 
     private RespectScaleQueue(int normalSize, int scaleSize) {
         normalQueue = new ArrayBlockingQueue<>(normalSize, true);
         scaleQueue = new ArrayBlockingQueue<>(scaleSize, true);
-        ratio = (normalSize + scaleSize) / scaleSize;
     }
 
     public static RespectScaleQueue<TypeRunnable> create(int normalSize, int scaleSize) {
