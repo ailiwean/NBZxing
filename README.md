@@ -1,6 +1,8 @@
+## 推荐优先使用华为统一扫码(比微信都猛😲)，这个库后期不会进行重大改动升级， 但是出问题我还是会及时处理的
+
+
 #  NBZxing
  一个稳定完善的扫码库，几行代码既可接入，完美适配各种分辨率无拉伸，可插拔式自定义UI 。
-  
   
 # 亮点 #  
        
@@ -20,9 +22,9 @@
 
 
 ```
-	        implementation 'com.github.ailiwean:NBZxing:0.2.1'
+	        implementation 'com.github.ailiwean:NBZxing:tag'
 		//若需要使用灰度算法增强库，再次添加以下依赖(纯java超轻量，两个同时依赖,包体积只增大约400kb,混淆后仅200k)
-		implementation 'com.github.ailiwean:NBZxing-Scale:0.0.6'
+		implementation 'com.github.ailiwean:NBZxing-Scale:tag'
 ```
 [NBZxing-Scale](https://github.com/ailiwean/NBZxing-Scale "NBZxing-Scale")
 
