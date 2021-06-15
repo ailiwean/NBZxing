@@ -49,7 +49,7 @@ dependencies {
     api 'com.tencent.bugly:crashreport:3.2.3'
 //
 
-//    implementation 'com.github.ailiwean:NBZxing-Scale:0.0.5'
-//    implementation 'com.github.ailiwean:NBZxing:0.1.1'
+//    implementation 'com.github.ailiwean:NBZxing-Scale:0.0.6'
+//    implementation 'com.github.ailiwean:NBZxing:0.2.3'
 
 }

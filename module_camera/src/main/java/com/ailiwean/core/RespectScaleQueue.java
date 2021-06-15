@@ -1,6 +1,5 @@
 package com.ailiwean.core;
 
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -21,116 +20,73 @@ class RespectScaleQueue<T extends TypeRunnable> implements BlockingQueue<T>, jav
 
     ArrayBlockingQueue<T> normalQueue;
     ArrayBlockingQueue<T> scaleQueue;
+    ArrayBlockingQueue<T> otherQueue;
 
-    int ratio = 1;
-
-    private RespectScaleQueue(int normalSize, int scaleSize) {
+    private RespectScaleQueue(int normalSize, int scaleSize, int otherSize) {
         normalQueue = new ArrayBlockingQueue<>(normalSize, true);
         scaleQueue = new ArrayBlockingQueue<>(scaleSize, true);
+        otherQueue = new ArrayBlockingQueue<>(otherSize, true);
     }
 
-    public static RespectScaleQueue<TypeRunnable> create(int normalSize, int scaleSize) {
-        return new RespectScaleQueue<>(normalSize, scaleSize);
+    public static RespectScaleQueue<TypeRunnable> create(int normalSize, int scaleSize, int otherSize) {
+        return new RespectScaleQueue<>(normalSize, scaleSize, otherSize);
     }
 
     @Override
     public boolean add(T t) {
-        if (t.getType() == TypeRunnable.NORMAL)
-            return normalQueue.add(t);
-        else return scaleQueue.add(t);
+        return false;
     }
 
     @Override
     public boolean offer(T t) {
-        if (t.getType() == TypeRunnable.NORMAL)
-            return normalQueue.offer(t);
-        else return scaleQueue.offer(t);
+        if (t.getType() == TypeRunnable.NORMAL) return normalQueue.offer(t);
+        else if (t.getType() == TypeRunnable.SCALE) return scaleQueue.offer(t);
+        else return otherQueue.offer(t);
     }
-
-    int removeIndex = 0;
 
     @Override
     public T remove() {
-        if (removeIndex++ % ratio == 0)
-            return scaleQueue.remove();
-        else return normalQueue.remove();
+        return null;
     }
-
-    int pollIndex = 0;
 
     @Nullable
     @Override
     public T poll() {
-        if (pollIndex++ % ratio == 0)
-            return scaleQueue.poll();
-        else return normalQueue.poll();
+        return null;
     }
 
-    public T poll(@IntRange(from = 0, to = 1) int type) {
-
-        switch (type) {
-            case TypeRunnable.NORMAL:
-                for (T t : normalQueue) {
-                    //舍弃非重要任务
-                    if (!t.isImportant()) {
-                        normalQueue.remove(t);
-                        return t;
-                    }
-                }
-                break;
-
-            case TypeRunnable.SCALE:
-                for (T t : scaleQueue) {
-                    //舍弃非重要任务
-                    if (!t.isImportant()) {
-                        scaleQueue.remove(t);
-                        return t;
-                    }
-                }
-                break;
-        }
-        //找不到合适的则强制出队第一项
+    public T poll(@TypeRunnable.Range int type) {
         if (type == TypeRunnable.NORMAL) {
             return normalQueue.poll();
+        } else if (type == TypeRunnable.SCALE) {
+            return scaleQueue.poll();
+        } else if (type == TypeRunnable.OTHER) {
+            return otherQueue.poll();
         }
-        return scaleQueue.poll();
+        return null;
     }
-
-    int elementIndex = 0;
 
     @Override
     public T element() {
-        if (elementIndex++ % ratio == 0)
-            return scaleQueue.peek();
-        else return normalQueue.peek();
+        return null;
     }
-
-    int peekIndex = 0;
 
     @Nullable
     @Override
     public T peek() {
-        if (peekIndex++ % ratio == 0)
-            return normalQueue.peek();
-        else return scaleQueue.peek();
+        return null;
     }
 
     @Override
-    public void put(T t) throws InterruptedException {
-        if (t.getType() == TypeRunnable.NORMAL)
-            normalQueue.put(t);
-        else scaleQueue.put(t);
+    public void put(T t) {
     }
 
     @Override
-    public boolean offer(T t, long timeout, TimeUnit unit) throws InterruptedException {
-        if (t.getType() == TypeRunnable.NORMAL)
-            return normalQueue.offer(t, timeout, unit);
-        else return scaleQueue.offer(t, timeout, unit);
+    public boolean offer(T t, long timeout, TimeUnit unit) {
+        return false;
     }
 
-
-    int takeIndex = 0;
+    int takeIndex = -1;
 
     /***
      * core
@@ -139,149 +95,102 @@ class RespectScaleQueue<T extends TypeRunnable> implements BlockingQueue<T>, jav
      */
     @Override
     public T take() throws InterruptedException {
-        if (takeIndex++ % ratio != 0) {
-            T t = null;
-            if (normalQueue.size() != 0)
-                t = normalQueue.take();
-            else if (scaleQueue.size() != 0)
-                t = scaleQueue.take();
-            return t;
-        } else {
-            T t = null;
-            if (scaleQueue.size() != 0)
-                t = scaleQueue.take();
-            else if (normalQueue.size() != 0)
-                t = normalQueue.take();
-            return t;
+        takeIndex = ++takeIndex % 3;
+        T result = null;
+        if (takeIndex == 0 && !normalQueue.isEmpty()) result = normalQueue.take();
+        else if (takeIndex == 1 && !scaleQueue.isEmpty()) result = scaleQueue.take();
+        else if (takeIndex == 2 && !otherQueue.isEmpty()) result = otherQueue.take();
+        if (result == null) {
+            if (!scaleQueue.isEmpty()) result = scaleQueue.take();
+            else if (!otherQueue.isEmpty()) result = otherQueue.take();
+            else result = normalQueue.take();
         }
+        return result;
     }
 
     @Override
-    public T poll(long timeout, TimeUnit unit) throws InterruptedException {
-        if (pollIndex++ % ratio != 0)
-            return normalQueue.poll(timeout, unit);
-        else return scaleQueue.poll(timeout, unit);
+    public T poll(long timeout, TimeUnit unit) {
+        return null;
     }
 
     @Override
     public int remainingCapacity() {
-        return normalQueue.remainingCapacity() + scaleQueue.remainingCapacity();
+        return -1;
     }
 
     @Override
     public boolean remove(Object o) {
-        if (o instanceof TypeRunnable) {
-            if (((TypeRunnable) o).getType() == TypeRunnable.NORMAL)
-                return normalQueue.remove(o);
-            else return scaleQueue.remove(o);
-        } else return normalQueue.remove(o) || scaleQueue.remove(o);
+        return false;
     }
 
     @Override
     public boolean containsAll(@NonNull Collection<?> c) {
-        return normalQueue.containsAll(c) || scaleQueue.containsAll(c);
+        return false;
     }
 
     @Override
     public boolean addAll(@NonNull Collection<? extends T> c) {
-        if (isNormal(c))
-            return normalQueue.addAll(c);
-        else return scaleQueue.addAll(c);
+        return false;
     }
 
     @Override
     public boolean removeAll(@NonNull Collection<?> c) {
-        if (isNormal(c))
-            return normalQueue.removeAll(c);
-        else return scaleQueue.removeAll(c);
+        return false;
     }
 
     @Override
     public boolean retainAll(@NonNull Collection<?> c) {
-        if (isNormal(c))
-            return normalQueue.retainAll(c);
-        else return scaleQueue.retainAll(c);
+        return false;
     }
 
     @Override
     public void clear() {
         normalQueue.clear();
         scaleQueue.clear();
+        otherQueue.clear();
     }
 
     @Override
     public int size() {
-        return normalQueue.size() + scaleQueue.size();
+        return normalQueue.size() + scaleQueue.size() + otherQueue.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return normalQueue.isEmpty() && scaleQueue.isEmpty();
+        return normalQueue.isEmpty() && scaleQueue.isEmpty() && otherQueue.isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        if (o instanceof TypeRunnable) {
-            if (((TypeRunnable) o).getType() == TypeRunnable.NORMAL)
-                return normalQueue.contains(o);
-            else return scaleQueue.contains(o);
-        } else return normalQueue.contains(o) || scaleQueue.contains(o);
+        return false;
     }
 
     @NonNull
     @Override
     public Iterator<T> iterator() {
-        ArrayBlockingQueue<T> all = new ArrayBlockingQueue<>(normalQueue.size()
-                + scaleQueue.size(), true);
-        all.addAll(normalQueue);
-        all.addAll(scaleQueue);
-        return all.iterator();
+        return normalQueue.iterator();
     }
 
     @NonNull
     @Override
     public Object[] toArray() {
-        ArrayBlockingQueue<T> all = new ArrayBlockingQueue<>(normalQueue.size()
-                + scaleQueue.size(), true);
-        all.addAll(normalQueue);
-        all.addAll(scaleQueue);
-        return all.toArray();
+        return new Object[]{};
     }
 
     @NonNull
     @Override
     public <T1> T1[] toArray(@NonNull T1[] a) {
-        if (a.length == 0)
-            return a;
-        if (a[0] instanceof TypeRunnable) {
-            if (((TypeRunnable) a[0]).getType() == TypeRunnable.NORMAL)
-                return normalQueue.toArray(a);
-            else return scaleQueue.toArray(a);
-        }
         return a;
     }
 
     @Override
     public int drainTo(Collection<? super T> c) {
-        if (isNormal(c))
-            return normalQueue.drainTo(c);
-        else return scaleQueue.drainTo(c);
+        return -1;
     }
 
     @Override
     public int drainTo(Collection<? super T> c, int maxElements) {
-        if (isNormal(c))
-            return normalQueue.drainTo(c, maxElements);
-        else return scaleQueue.drainTo(c, maxElements);
-    }
-
-    private boolean isNormal(Collection<?> c) {
-        Iterator<?> iterator = c.iterator();
-        if (iterator.hasNext()) {
-            Object o = iterator.next();
-            return o instanceof TypeRunnable && ((TypeRunnable) o).getType() == TypeRunnable.NORMAL;
-        }
-        return false;
+        return -1;
     }
 }
 

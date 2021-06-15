@@ -4,6 +4,7 @@ import android.graphics.PointF;
 import android.os.Handler;
 
 import com.ailiwean.core.Config;
+import com.ailiwean.core.TypeRunnable;
 import com.ailiwean.core.helper.ScanHelper;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.Result;

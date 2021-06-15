@@ -3,10 +3,10 @@ package com.ailiwean.core.able;
 import android.os.Handler;
 import android.os.Message;
 
+import com.ailiwean.core.TypeRunnable;
 import com.ailiwean.core.zxing.CustomMultiFormatReader;
 import com.ailiwean.core.zxing.core.Binarizer;
 import com.ailiwean.core.zxing.core.BinaryBitmap;
-import com.ailiwean.core.zxing.core.LuminanceSource;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
 import com.ailiwean.core.zxing.core.Result;
 
@@ -64,19 +64,17 @@ public abstract class PixsValuesAble {
     }
 
     /***
-     * 是否为重要，重要则先不舍弃， 除非线程池已满
-     * @return
-     */
-    public boolean isImportant(boolean isNative) {
-        return false;
-    }
-
-    /***
      *  根据时间控制周期
      * @return
      */
     public boolean isCycleRun(boolean isNative) {
         return true;
+    }
+
+    public @TypeRunnable.Range
+    int provideType(boolean isNative) {
+        if (isNative) return TypeRunnable.NORMAL;
+        else return TypeRunnable.SCALE;
     }
 
 }

@@ -14,7 +14,6 @@ import java.util.concurrent.TimeUnit;
  */
 class RespectScalePool extends ThreadPoolExecutor {
 
-
     public RespectScalePool(int corePoolSize,
                             int maximumPoolSize,
                             long keepAliveTime,

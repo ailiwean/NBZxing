@@ -1,6 +1,6 @@
 package com.ailiwean.core;
 
-import androidx.annotation.IntRange;
+import androidx.annotation.IntDef;
 
 /**
  * @Package: com.ailiwean.core
@@ -13,21 +13,18 @@ public class TypeRunnable implements Runnable {
 
     public static final int NORMAL = 0;
     public static final int SCALE = 1;
-
-    private final boolean isImportant;
+    public static final int OTHER = 2;
     private final Runnable runnable;
     final int type;
 
-    private TypeRunnable(int type, boolean isImportant, Runnable runnable) {
+    private TypeRunnable(int type,  Runnable runnable) {
         this.type = type;
         this.runnable = runnable;
-        this.isImportant = isImportant;
     }
 
-    public static TypeRunnable create(boolean isImportant,
-                                      @IntRange(from = 0, to = 1) int type,
+    public static TypeRunnable create(@Range int type,
                                       Runnable runnable) {
-        return new TypeRunnable(type, isImportant, runnable);
+        return new TypeRunnable(type, runnable);
     }
 
     @Override
@@ -39,7 +36,7 @@ public class TypeRunnable implements Runnable {
         return type;
     }
 
-    public boolean isImportant() {
-        return isImportant;
+    @IntDef(value = {NORMAL, SCALE, OTHER})
+    public @interface Range {
     }
 }

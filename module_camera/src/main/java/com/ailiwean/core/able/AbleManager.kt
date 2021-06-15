@@ -70,8 +70,6 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
      * 灰度处理后解析
      */
     private fun grayscaleProcess(source: PlanarYUVLuminanceSource) {
-        if (processDispatch == null)
-            return
         grayProcessHandler.removeCallbacksAndMessages(null)
         grayProcessHandler.post {
             processDispatch!!.dispatch(source.matrix, source.width, source.height)
@@ -79,11 +77,10 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
                 //任务是否可以执行(由任务内部逻辑实现)
                 if (able.isCycleRun(false)) {
                     //线程池推送任务
-                    server.post(TypeRunnable.create(
-                        able.isImportant(false),
-                        //区分类型
-                        TypeRunnable.SCALE
-                    ) { able.needParseDeploy(source, false) })
+                    server.post(TypeRunnable.create(able.provideType(false)) {
+                        able.cusAction(source.matrix, source.width, source.height, false)
+                        able.needParseDeploy(source, false)
+                    })
                 }
             }
         }
@@ -100,11 +97,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     ) {
         ableList.forEach { able ->
             if (able.isCycleRun(true))
-                server.post(TypeRunnable.create(
-                    able.isImportant(true),
-                    //区分类型
-                    TypeRunnable.NORMAL
-                ) {
+                server.post(TypeRunnable.create(able.provideType(true)) {
                     able.cusAction(data, dataWidth, dataHeight, true)
                     able.needParseDeploy(source, true)
                 })
@@ -123,7 +116,8 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         originProcess(oriSource, data, dataWidth, dataHeight)
         //copy一份相同的数据后处理灰度
         val graySource = oriSource.copyAll()
-        grayscaleProcess(graySource)
+        if (processDispatch != null)
+            grayscaleProcess(graySource)
     }
 
     private fun generateGlobeYUVLuminanceSource(

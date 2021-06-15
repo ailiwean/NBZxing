@@ -53,7 +53,7 @@ class CusScanView2 @JvmOverloads constructor(
     }
 
     override fun isSupportAutoZoom(): Boolean {
-        return false;
+        return false
     }
 
 }

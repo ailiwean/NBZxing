@@ -3,6 +3,7 @@ package com.ailiwean.core.able;
 import android.os.Handler;
 
 import com.ailiwean.core.Config;
+import com.ailiwean.core.TypeRunnable;
 import com.ailiwean.core.helper.LightHelper;
 
 /**
@@ -58,12 +59,8 @@ public class LighSolveAble extends PixsValuesAble {
         return true;
     }
 
-    /***
-     *  采集环境亮度对于原始数据来说是重要且不能舍弃的
-     * @return
-     */
     @Override
-    public boolean isImportant(boolean isNative) {
-        return isNative;
+    public int provideType(boolean isNative) {
+        return TypeRunnable.OTHER;
     }
 }
