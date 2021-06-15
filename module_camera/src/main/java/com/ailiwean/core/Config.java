@@ -83,4 +83,7 @@ public class Config {
     //是否支持黑边二维码识别
     public static boolean isSupportBlackEdge = true;
 
+    //是否支持自动缩放
+    public static boolean isSupportAutoZoom = true;
+
 }

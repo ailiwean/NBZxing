@@ -10,7 +10,6 @@ import com.ailiwean.core.helper.ScanHelper
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource
 import com.ailiwean.module_grayscale.Dispatch
 import com.ailiwean.module_grayscale.GrayScaleDispatch
-import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
@@ -30,8 +29,8 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     private val grayProcessHandler by lazy {
         Handler(HandlerThread("GrayProcessThread")
-                .apply { start() }
-                .looper)
+            .apply { start() }
+            .looper)
     }
 
     init {
@@ -43,10 +42,14 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
 
     fun loadAbility() {
         ableList.clear()
-        ableList.add(XQRScanCrudeAble(handlerHolder.get()))
-        ableList.add(XQRScanZoomAble(handlerHolder.get()))
-        ableList.add(XQRScanAbleRotate(handlerHolder.get()))
-        ableList.add(LighSolveAble(handlerHolder.get()))
+        ableList.apply {
+            add(XQRScanCrudeAble(handlerHolder.get()))
+            if (Config.isSupportAutoZoom)
+                add(XQRScanZoomAble(handlerHolder.get()))
+            else add(XQRScanAble(handlerHolder.get()))
+            add(XQRScanAbleRotate(handlerHolder.get()))
+            add(LighSolveAble(handlerHolder.get()))
+        }
 //        ableList.add(XQRScanAble(handlerHolder.get()))
 //        ableList.add(GrayscaleStrengAble(handlerHolder.get()))
     }
@@ -55,7 +58,12 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
      * 相机实时数据解析
      */
     public override fun cusAction(data: ByteArray, dataWidth: Int, dataHeight: Int) {
-        executeToParseWay2(data, dataWidth, dataHeight, ScanHelper.getScanByteRect(dataWidth, dataHeight))
+        executeToParseWay2(
+            data,
+            dataWidth,
+            dataHeight,
+            ScanHelper.getScanByteRect(dataWidth, dataHeight)
+        )
     }
 
     /***
@@ -72,11 +80,10 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
                 if (able.isCycleRun(false)) {
                     //线程池推送任务
                     server.post(TypeRunnable.create(
-                            able.isImportant(false),
-                            //区分类型
-                            TypeRunnable.SCALE) {
-                        able.needParseDeploy(source, false)
-                    })
+                        able.isImportant(false),
+                        //区分类型
+                        TypeRunnable.SCALE
+                    ) { able.needParseDeploy(source, false) })
                 }
             }
         }
@@ -85,23 +92,19 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     /***
      *  解析原始数据
      */
-    private fun originProcess(typeRunList: ArrayList<TypeRunnable>) {
-        for (item in typeRunList) {
-            //线程池推送任务
-            server.post(item)
-        }
-    }
-
-    /***
-     *  解析原始数据
-     */
-    private fun originProcess(source: PlanarYUVLuminanceSource, data: ByteArray, dataWidth: Int, dataHeight: Int) {
+    private fun originProcess(
+        source: PlanarYUVLuminanceSource,
+        data: ByteArray,
+        dataWidth: Int,
+        dataHeight: Int
+    ) {
         ableList.forEach { able ->
             if (able.isCycleRun(true))
                 server.post(TypeRunnable.create(
-                        able.isImportant(true),
-                        //区分类型
-                        TypeRunnable.NORMAL) {
+                    able.isImportant(true),
+                    //区分类型
+                    TypeRunnable.NORMAL
+                ) {
                     able.cusAction(data, dataWidth, dataHeight, true)
                     able.needParseDeploy(source, true)
                 })
@@ -123,7 +126,12 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
         grayscaleProcess(graySource)
     }
 
-    private fun generateGlobeYUVLuminanceSource(data: ByteArray?, dataWidth: Int, dataHeight: Int, rect: Rect): PlanarYUVLuminanceSource? {
+    private fun generateGlobeYUVLuminanceSource(
+        data: ByteArray?,
+        dataWidth: Int,
+        dataHeight: Int,
+        rect: Rect
+    ): PlanarYUVLuminanceSource? {
         return ScanHelper.buildLuminanceSource(data, dataWidth, dataHeight, rect)
     }
 
@@ -134,13 +142,10 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
     }
 
     override fun release() {
-        ableList.forEach {
-            it.release()
-        }
+        ableList.forEach { it.release() }
         ableList.clear()
         server.quit()
-        if (processDispatch == null)
-            return
+        if (processDispatch == null) return
         grayProcessHandler.removeCallbacksAndMessages(null)
         grayProcessHandler.looper.quit()
     }

@@ -16,7 +16,11 @@ import com.google.android.cameraview.AspectRatio
  * @Author:         SWY
  * @CreateDate:     2020/4/30 4:06 PM
  */
-class CusScanView2 @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) : NBZxingView(context, attributeSet, def) {
+class CusScanView2 @JvmOverloads constructor(
+    context: Context,
+    attributeSet: AttributeSet? = null,
+    def: Int = 0
+) : NBZxingView(context, attributeSet, def) {
 
     override fun resultBack(content: Result) {
         Toast.makeText(context, content.text, Toast.LENGTH_LONG).show()
@@ -46,6 +50,10 @@ class CusScanView2 @JvmOverloads constructor(context: Context, attributeSet: Att
         if (content == null)
             Toast.makeText(context, "未扫描到内容", Toast.LENGTH_SHORT).show()
         else Toast.makeText(context, content.text, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun isSupportAutoZoom(): Boolean {
+        return false;
     }
 
 }

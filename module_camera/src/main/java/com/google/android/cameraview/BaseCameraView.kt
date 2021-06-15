@@ -4,9 +4,10 @@ import android.content.Context
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
+import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import com.ailiwean.core.Config
 import com.ailiwean.core.Utils
 import com.ailiwean.core.helper.ZoomHelper
@@ -19,14 +20,18 @@ import com.ailiwean.core.view.LifeOwner
  * @Author:         SWY
  * @CreateDate:     2020/4/19 12:02 AM
  */
-abstract class BaseCameraView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
-        CameraView(context, attributeSet, def), LifeOwner {
+abstract class BaseCameraView @JvmOverloads constructor(
+    context: Context,
+    attributeSet: AttributeSet? = null,
+    def: Int = 0
+) :
+    CameraView(context, attributeSet, def), LifeOwner {
 
     //保证避免多次调用start()
-    var isShoudCreateOpen = true
+    private var isShoudCreateOpen = true
 
     //是否禁止相机
-    var isProscribeCamera = false
+    private var isProscribeCamera = false
 
     init {
         Utils.init(context)
@@ -76,11 +81,11 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
     }
 
     /***
-     * 绑定AppCompatActivity生命周期并启动相机
+     * 绑定生命周期并启动相机
      */
-    fun synchLifeStart(appCompatActivity: AppCompatActivity) {
-        appCompatActivity.lifecycle.addObserver(this)
-        appCompatActivity.lifecycle.addObserver(object : LifeOwner {
+    fun synchLifeStart(lifecycle: Lifecycle) {
+        lifecycle.addObserver(this)
+        lifecycle.addObserver(object : LifeOwner {
             //在onCreate()中调用提升相机打开速度
             override fun onCreate() {
                 onCameraCreate()
@@ -104,46 +109,9 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         })
     }
 
-    fun synchLifeStart(fragment: Fragment) {
-        fragment.fragmentManager?.registerFragmentLifecycleCallbacks(object : FragmentManager.FragmentLifecycleCallbacks() {
-            override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
-                if (f != fragment) {
-                    return
-                }
-                if (isShoudCreateOpen) {
-                    onCreate()
-                    onResume()
-                    onCameraCreate()
-                } else {
-                    onResume()
-                    onCameraResume()
-                }
-            }
+    fun synchLifeStart(activity: AppCompatActivity) = this.synchLifeStart(activity.lifecycle)
 
-            override fun onFragmentPaused(fm: FragmentManager, f: Fragment) {
-                if (f != fragment) {
-                    return
-                }
-                onPause()
-                onCameraPause()
-            }
-
-
-            override fun onFragmentStopped(fm: FragmentManager, f: Fragment) {
-                if (f != fragment) {
-                    return
-                }
-                onStop()
-            }
-
-            override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
-                if (f != fragment) {
-                    return
-                }
-                onDestroy()
-            }
-        }, false)
-    }
+    fun synchLifeStart(fragment: Fragment) = this.synchLifeStart(fragment.lifecycle)
 
     private fun onCameraCreate() {
         if (!isShoudCreateOpen)
@@ -155,7 +123,6 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
             Utils.requstPermission(context)
         }
     }
-
 
     /***
      *  外部使用该方法启动相机
@@ -205,9 +172,9 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
         val handlerThread = HandlerThread("CameraProcessThread")
         handlerThread.start()
         Handler(handlerThread.looper)
-                .apply {
-                    provideCameraHandler(this)
-                }
+            .apply {
+                provideCameraHandler(this)
+            }
     }
 
     var cameraStartTime = 0L
@@ -269,6 +236,7 @@ abstract class BaseCameraView @JvmOverloads constructor(context: Context, attrib
 
     }
 
+    @CallSuper
     override fun onDestroy() {
         cameraHandler.looper.quit()
     }

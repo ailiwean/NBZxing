@@ -30,8 +30,11 @@ import java.lang.ref.WeakReference
  * @Author:         SWY
  * @CreateDate:     2020/8/23 12:38 AM
  */
-abstract class FreeZxingView @JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, def: Int = 0) :
-        BaseCameraView(context, attributeSet, def), Handler.Callback, FreeInterface {
+abstract class FreeZxingView @JvmOverloads constructor(
+    context: Context,
+    attributeSet: AttributeSet? = null,
+    def: Int = 0
+) : BaseCameraView(context, attributeSet, def), Handler.Callback, FreeInterface {
 
     private var ableCollect: AbleManager? = null
 
@@ -258,10 +261,10 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
             removeView(it)
         }
         LayoutInflater.from(context).inflate(provideFloorView(), this, false)
-                .let {
-                    it.id = R.id.provideViewId
-                    addView(it)
-                }
+            .let {
+                it.id = R.id.provideViewId
+                addView(it)
+            }
         cameraStartLaterConfig()
     }
 
@@ -273,6 +276,7 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
     private fun initScanType() {
         scanTypeConfig = configScanType()
         isSupportBlackEdge = isSupportBlackEdgeQrScan()
+        isSupportAutoZoom = isSupportAutoZoom()
     }
 
     /***
@@ -329,6 +333,14 @@ abstract class FreeZxingView @JvmOverloads constructor(context: Context, attribu
      * 默认支持
      */
     open fun isSupportBlackEdgeQrScan(): Boolean {
+        return true
+    }
+
+
+    /***
+     *  是否支持缩放
+     */
+    open fun isSupportAutoZoom(): Boolean {
         return true
     }
 

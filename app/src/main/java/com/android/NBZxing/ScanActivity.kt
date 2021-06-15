@@ -6,12 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.cameraview.AspectRatio
@@ -32,13 +29,15 @@ class ScanActivity : AppCompatActivity() {
 //                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
 //        }
         setContentView(R.layout.activity_main)
-        findViewById<CusScanView>(R.id.zxingview)
-                .synchLifeStart(this)
-        initView()
-//        ZxingFragment fragment = new ZxingFragment();
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.parent, fragment)
-//                .commit();
+//        findViewById<CusScanView>(R.id.zxingview)
+//                .synchLifeStart(this)
+//        initView()
+
+        val fragment =  ZxingFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.parent, fragment)
+            .commit();
+
     }
 
     companion object {
