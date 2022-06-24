@@ -44,7 +44,7 @@ public abstract class PixsValuesAble {
      * 需要解析二维码子类重写这个
      * @param source
      */
-    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative, Result result) {
     }
 
     Result toLaunchParse(Binarizer binarizer) {

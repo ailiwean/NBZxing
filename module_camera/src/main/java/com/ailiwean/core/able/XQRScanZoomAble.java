@@ -5,6 +5,7 @@ import android.os.Handler;
 import com.ailiwean.core.Config;
 import com.ailiwean.core.helper.ScanHelper;
 import com.ailiwean.core.zxing.core.PlanarYUVLuminanceSource;
+import com.ailiwean.core.zxing.core.Result;
 import com.ailiwean.core.zxing.core.ResultPoint;
 
 /**
@@ -25,8 +26,8 @@ public class XQRScanZoomAble extends XQRScanAble {
     }
 
     @Override
-    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
-        super.needParseDeploy(source, isNative);
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative, Result result) {
+        super.needParseDeploy(source, isNative, result);
         if (result == null)
             return;
 

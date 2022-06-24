@@ -19,16 +19,13 @@ import com.ailiwean.core.zxing.core.Result;
  */
 public class XQRScanAble extends PixsValuesAble {
 
-    protected Result result;
 
     XQRScanAble(Handler handler) {
         super(handler);
     }
 
     @Override
-    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
-        if (result != null && result.getText() != null)
-            return;
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative, Result result) {
         result = toLaunchParse(source.getHybridBinary());
         if (result != null && result.getText() != null && !"".equals(result.getText())) {
             sendMessage(Config.RT_LOCATION,

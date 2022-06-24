@@ -50,8 +50,6 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
             add(XQRScanAbleRotate(handlerHolder.get()))
             add(LighSolveAble(handlerHolder.get()))
         }
-//        ableList.add(XQRScanAble(handlerHolder.get()))
-//        ableList.add(GrayscaleStrengAble(handlerHolder.get()))
     }
 
     /**
@@ -79,7 +77,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
                     //线程池推送任务
                     server.post(TypeRunnable.create(able.provideType(false)) {
                         able.cusAction(source.matrix, source.width, source.height, false)
-                        able.needParseDeploy(source, false)
+                        able.needParseDeploy(source, false, null)
                     })
                 }
             }
@@ -99,7 +97,7 @@ class AbleManager private constructor(handler: Handler) : PixsValuesAble(handler
             if (able.isCycleRun(true))
                 server.post(TypeRunnable.create(able.provideType(true)) {
                     able.cusAction(data, dataWidth, dataHeight, true)
-                    able.needParseDeploy(source, true)
+                    able.needParseDeploy(source, true, null)
                 })
         }
     }

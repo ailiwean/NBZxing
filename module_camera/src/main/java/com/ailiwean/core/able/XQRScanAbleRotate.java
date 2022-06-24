@@ -19,14 +19,12 @@ import com.ailiwean.core.zxing.core.common.HybridBinarizer;
  */
 public class XQRScanAbleRotate extends PixsValuesAble {
 
-    protected Result result;
-
     XQRScanAbleRotate(Handler handler) {
         super(handler);
     }
 
     @Override
-    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative) {
+    protected void needParseDeploy(PlanarYUVLuminanceSource source, boolean isNative, Result result) {
         result = toLaunchParse(new HybridBinarizer(source.onlyCopyWarpRotate()));
         if (result != null && result.getText() != null && !"".equals(result.getText())) {
             sendMessage(Config.SCAN_RESULT, covertResultRotate(result));
